@@ -20,6 +20,7 @@ src/app/
 src/theme/       Colours, type colours, spacing, typography (Figma tokens)
 src/hooks/       use-app-fonts.ts (Rubik)
 src/components/  type-badge.tsx, state-views.tsx
+src/services/    PokeAPI client, JSON readers, ApiError, QueryClient + __tests__/
 src/utils/       Pure helpers (format.ts) + __tests__/
 src/__tests__/screens/  Screen tests (kept out of src/app/)
 assets/

@@ -18,6 +18,10 @@ A Pokédex for iOS and Android: browse, search, inspect, favorite, compare and s
 - **State views**: `src/components/state-views.tsx` (`LoadingView`, `ErrorView` with Try again, `EmptyState`). Every screen that loads data uses them.
 - **Type badge**: `src/components/type-badge.tsx` (`TypeBadge`, `capitalize`).
 - **Icons**: PNGs exported from Figma in `assets/icons/` (@1x/@2x/@3x), SVG sources in `assets/icons/figma/`. Tint them with `tintColor`; don't add an icon library.
+- **API client**: `src/services/pokeapi.ts` (`fetchPokemonPage`, `fetchPokemon`, `fetchSpecies`, `fetchEvolutionChain`, `getIdFromUrl`, `spriteUrl`, `artworkUrl`, `PAGE_SIZE`). Types in `src/services/pokeapi-types.ts`. Never call `fetch` anywhere else.
+- **JSON readers**: `src/services/json.ts` turns `unknown` JSON into typed data and throws `ApiError('invalid')` on a wrong shape. Use them for any new endpoint; no `any`, no `as`, no zod.
+- **Errors**: `src/services/api-error.ts` (`ApiError` with `kind` network / http / invalid, `getErrorMessage` for the error views).
+- **Query client**: `src/services/query-client.ts` (`createQueryClient`, `queryKeys`, `shouldRetry`), provided once in `src/app/_layout.tsx`. Add new keys to `queryKeys`; never create a second QueryClient.
 - **Formatting helpers**: `src/utils/format.ts` (`formatPokemonNumber`).
 
 ### Rules learned while building
@@ -25,6 +29,7 @@ A Pokédex for iOS and Android: browse, search, inspect, favorite, compare and s
 - RNTL 14: `render` is async. Always `await render(...)`, or `screen` throws "render function has not been called".
 - `npx expo install` puts dev tools in `dependencies`: move test and lint packages to `devDependencies`.
 - Jest resolves `@/assets/*` only because of the `moduleNameMapper` in `package.json` (TypeScript and Metro pick the most specific path, Jest the first). Keep `@/assets` above `@/`.
+- jest-expo replaces `fetch` in every test environment (node too). Mock it with `jest.spyOn(globalThis, 'fetch')` and real `new Response(...)` objects; tests never hit the network.
 - The Figma connector is on the Starter plan, with a small call limit. Download the assets you need (they expire after 7 days) and note design values in this file or the spec, so you don't need to call Figma again.
 
 ## Documentation

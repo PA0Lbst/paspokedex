@@ -41,6 +41,8 @@ Each choice: what we picked, what else we could have done, and why.
 - **Loading, error and empty states**, not in Figma: a Purple spinner, a white card with "Try again", and an outlined Poké Ball (`mockups/01-theme.html`).
 - **Icons as PNG exported from Figma**, not an icon library or `react-native-svg`: NativeTabs needs an image source, and PNGs tinted with `tintColor` cover the few icons we have without a new dependency.
 - **TanStack Query** for all API data, rather than `fetch` in hand-written hooks: cache, loading and error states, retry and infinite pages come built in, and it prepares the Offline (#16) and Optimistic update (#20) optionals.
+- **Typed API data without a library**: `response.json()` is read as `unknown` and checked by small readers (`src/services/json.ts`), rather than trusting it untyped or adding zod. It keeps the Clean TypeScript optional (#12) within reach with no new dependency, and a changed API shows a clear error instead of a crash deeper in the UI.
+- **Retry and freshness**: failed calls are retried twice, except 404 and broken responses, which can't get better. Data stays fresh for a day, since Pokémon data barely changes.
 - **Pagination, 20 per page** with infinite scroll in FlashList, rather than the whole list at once: the first screen shows fast, and it covers the Pagination optional (#11). Search (#5) needs all names, which it handles on its own.
 - **iOS and Android only**: the brief and Figma only cover mobile, so the template's web support was removed (#21).
 - **Template code deleted, not kept in `/example`**: git history keeps it (#21).
