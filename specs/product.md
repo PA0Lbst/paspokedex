@@ -10,7 +10,7 @@ Find a Pokémon and see what it is worth.
 
 Each feature is one file in `specs/features/` and one GitHub issue. The file is written when the issue starts.
 
-1. [Browse the list](./features/list.md) (#4): all Pokémon in a 2-column grid, loaded page by page.
+1. [Browse the list](./features/list.md) (#4, done): all Pokémon in a 2-column grid, loaded page by page.
 2. [Search by name](./features/search.md) (#5): part of the name, any case, over all Pokémon.
 3. [Detail](./features/detail.md) (#6): name, number, artwork, types, about / stats / evolution chain.
 4. [Favorites](./features/favorites.md) (#7): own screen, kept after a restart.
@@ -44,14 +44,15 @@ Each choice: what we picked, what else we could have done, and why.
 - **Typed API data without a library**: `response.json()` is read as `unknown` and checked by small readers (`src/services/json.ts`), rather than trusting it untyped or adding zod. It keeps the Clean TypeScript optional (#12) within reach with no new dependency, and a changed API shows a clear error instead of a crash deeper in the UI.
 - **Retry and freshness**: failed calls are retried twice, except 404 and broken responses, which can't get better. Data stays fresh for a day, since Pokémon data barely changes.
 - **Pagination, 20 per page** with infinite scroll in FlashList, rather than the whole list at once: the first screen shows fast, and it covers the Pagination optional (#11). Search (#5) needs all names, which it handles on its own.
+- **Stack over tabs**: the root is a Stack with the tab group `(tabs)` inside it, so the detail opens on top of the tabs without the tab bar, as in Figma. Putting the detail inside the tabs would keep the tab bar on screen.
 - **iOS and Android only**: the brief and Figma only cover mobile, so the template's web support was removed (#21).
 - **Template code deleted, not kept in `/example`**: git history keeps it (#21).
 
 ## Technical core
 
 - [ ] Runs in Expo Go
-- [ ] Live data through TanStack Query
-- [ ] At least 2 screens with Expo Router
+- [x] Live data through TanStack Query
+- [x] At least 2 screens with Expo Router
 - [ ] Something in SQLite that survives a restart
 - [ ] Loading and error state on every load
 - [ ] One native feature: Share, from the card's Options sheet
@@ -62,13 +63,13 @@ Each choice: what we picked, what else we could have done, and why.
 
 - [ ] Three different Reanimated animations, each with a purpose (#9)
 - [ ] Dark mode: every screen looks right, all colours from the theme (#10)
-- [ ] Pagination: page by page while you scroll, not all at once (#11)
+- [x] Pagination: page by page while you scroll, not all at once (#11)
 - [ ] Clean TypeScript: no `any`, no `as` casts, no `@ts-ignore` (#12)
 - [ ] Design: a consistent own style, same buttons, cards and spacing on every screen (#13)
 - [ ] Localization: two languages, follows the phone's language (#14)
 - [ ] No warnings: no `console.log`, no warnings in the terminal or on screen (#15)
 - [ ] Offline: works in airplane mode with the last loaded data (#16)
 - [ ] Tests: at least one logic test per feature; `npm test` passes (#17)
-- [ ] CI: a GitHub Action runs lint, tsc and tests on every push (#18)
+- [x] CI: a GitHub Action runs lint, tsc and tests on every push (#18)
 - [ ] Accessibility: labels for VoiceOver/TalkBack, works with the largest text size (#19)
 - [ ] Optimistic update: saving or removing shows at once, rolls back on failure (#20)

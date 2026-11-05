@@ -14,12 +14,15 @@ What exists in the app today. Update this file whenever an issue changes the str
 
 ```
 src/app/
-  _layout.tsx    Root navigator: native bottom tabs (NativeTabs)
-  index.tsx      Pokémons tab (placeholder, built in #4)
-  favorites.tsx  Favorites tab (placeholder, built in #7)
+  _layout.tsx          Root Stack: QueryClient, fonts, splash screen
+  (tabs)/_layout.tsx   Native bottom tabs (Pokémons, Favorites)
+  (tabs)/index.tsx     Pokémons tab: the grid (#4)
+  (tabs)/favorites.tsx Favorites tab (placeholder, built in #7)
+  pokemon/[id].tsx     Detail, pushed over the tabs (placeholder, built in #6)
+src/test-utils/  Query wrapper and fake list pages for tests
 src/theme/       Colours, type colours, spacing, typography (Figma tokens)
-src/hooks/       use-app-fonts.ts (Rubik)
-src/components/  type-badge.tsx, state-views.tsx
+src/hooks/       use-app-fonts.ts (Rubik), use-pokemon-list.ts
+src/components/  type-badge.tsx, state-views.tsx, pokemon-card.tsx, pokemon-grid.tsx
 src/services/    PokeAPI client, JSON readers, ApiError, QueryClient + __tests__/
 src/utils/       Pure helpers (format.ts) + __tests__/
 src/__tests__/screens/  Screen tests (kept out of src/app/)
@@ -44,7 +47,7 @@ Non-route code (components, hooks, services) goes in folders next to `src/app/`,
 
 ## Navigation
 
-Two tabs, as in Figma: **Pokémons** (`index`) and **Favorites** (`favorites`). They use `NativeTabs` from `expo-router/native-tabs`. The tab icons are the Figma Pokémon and Favorite icons (PNG), Midnight by default and Purple when selected.
+A root Stack holds the tab group and the screens pushed over it. Two tabs, as in Figma: **Pokémons** (`index`) and **Favorites** (`favorites`), with `NativeTabs` from `expo-router/native-tabs`. Tapping a card pushes `pokemon/[id]`. The tab icons are the Figma Pokémon and Favorite icons (PNG), Midnight by default and Purple when selected.
 
 ## Checks
 

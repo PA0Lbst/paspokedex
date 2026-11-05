@@ -42,6 +42,27 @@ export function ErrorView({
   );
 }
 
+/** Outlined Poké Ball in Silver, for empty states and missing sprites. Decorative. */
+export function PokeBallOutline({ size = 64, background = colors.daylight }: { size?: number; background?: string }) {
+  const border = size / 16;
+  const center = (size * 3) / 8;
+  return (
+    <View
+      testID="poke-ball-outline"
+      accessibilityElementsHidden
+      importantForAccessibility="no-hide-descendants"
+      style={[styles.ball, { width: size, height: size, borderRadius: size / 2, borderWidth: border }]}>
+      <View style={[styles.ballLine, { height: border, left: -border, right: -border }]} />
+      <View
+        style={[
+          styles.ballCenter,
+          { width: center, height: center, borderRadius: center / 2, borderWidth: border, backgroundColor: background },
+        ]}
+      />
+    </View>
+  );
+}
+
 type EmptyProps = {
   title: string;
   message?: string;
@@ -50,10 +71,7 @@ type EmptyProps = {
 export function EmptyState({ title, message }: EmptyProps) {
   return (
     <View style={styles.center}>
-      <View style={styles.ball} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
-        <View style={styles.ballLine} />
-        <View style={styles.ballCenter} />
-      </View>
+      <PokeBallOutline />
       <Text style={text.heading}>{title}</Text>
       {message ? <Text style={[text.body, styles.message]}>{message}</Text> : null}
     </View>
@@ -88,22 +106,7 @@ const styles = StyleSheet.create({
   },
   pressed: { opacity: 0.8 },
   buttonLabel: { color: colors.white },
-  ball: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    borderWidth: 4,
-    borderColor: colors.silver,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  ballLine: { position: 'absolute', left: -4, right: -4, height: 4, backgroundColor: colors.silver },
-  ballCenter: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 4,
-    borderColor: colors.silver,
-    backgroundColor: colors.daylight,
-  },
+  ball: { borderColor: colors.silver, alignItems: 'center', justifyContent: 'center' },
+  ballLine: { position: 'absolute', backgroundColor: colors.silver },
+  ballCenter: { borderColor: colors.silver },
 });

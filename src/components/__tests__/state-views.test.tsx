@@ -15,7 +15,7 @@ describe('ErrorView', () => {
     const onRetry = jest.fn();
     await render(<ErrorView onRetry={onRetry} />);
     expect(screen.getByText('Something went wrong')).toBeOnTheScreen();
-    fireEvent.press(screen.getByRole('button', { name: 'Try again' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Try again' }));
     expect(onRetry).toHaveBeenCalledTimes(1);
   });
 

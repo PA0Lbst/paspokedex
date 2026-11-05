@@ -1,5 +1,5 @@
 import { QueryClientProvider } from '@tanstack/react-query';
-import { NativeTabs } from 'expo-router/native-tabs';
+import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 
@@ -11,6 +11,7 @@ SplashScreen.preventAutoHideAsync();
 
 const queryClient = createQueryClient();
 
+/** Root: providers, fonts behind the splash screen, and a stack with the tabs and the detail on top. */
 export default function RootLayout() {
   const fontsReady = useAppFonts();
 
@@ -26,22 +27,17 @@ export default function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <NativeTabs
-        backgroundColor={colors.daylight}
-        iconColor={{ default: colors.midnight, selected: colors.purple }}
-        labelStyle={{
-          default: { fontFamily: fonts.medium, fontSize: 10, color: colors.midnight },
-          selected: { fontFamily: fonts.bold, fontSize: 10, color: colors.purple },
+      <Stack
+        screenOptions={{
+          contentStyle: { backgroundColor: colors.daylight },
+          headerStyle: { backgroundColor: colors.daylight },
+          headerTintColor: colors.midnight,
+          headerTitleStyle: { fontFamily: fonts.semiBold },
+          headerShadowVisible: false,
         }}>
-        <NativeTabs.Trigger name="index">
-          <NativeTabs.Trigger.Label>Pokémons</NativeTabs.Trigger.Label>
-          <NativeTabs.Trigger.Icon src={require('@/assets/icons/tab-pokemon.png')} />
-        </NativeTabs.Trigger>
-        <NativeTabs.Trigger name="favorites">
-          <NativeTabs.Trigger.Label>Favorites</NativeTabs.Trigger.Label>
-          <NativeTabs.Trigger.Icon src={require('@/assets/icons/favorite.png')} />
-        </NativeTabs.Trigger>
-      </NativeTabs>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="pokemon/[id]" options={{ title: '' }} />
+      </Stack>
     </QueryClientProvider>
   );
 }

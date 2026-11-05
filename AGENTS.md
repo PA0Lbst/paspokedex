@@ -22,11 +22,20 @@ A Pokédex for iOS and Android: browse, search, inspect, favorite, compare and s
 - **JSON readers**: `src/services/json.ts` turns `unknown` JSON into typed data and throws `ApiError('invalid')` on a wrong shape. Use them for any new endpoint; no `any`, no `as`, no zod.
 - **Errors**: `src/services/api-error.ts` (`ApiError` with `kind` network / http / invalid, `getErrorMessage` for the error views).
 - **Query client**: `src/services/query-client.ts` (`createQueryClient`, `queryKeys`, `shouldRetry`), provided once in `src/app/_layout.tsx`. Add new keys to `queryKeys`; never create a second QueryClient.
-- **Formatting helpers**: `src/utils/format.ts` (`formatPokemonNumber`).
+- **Routes**: `src/app/_layout.tsx` is a Stack (providers, fonts, splash). The tabs live in `src/app/(tabs)/` (`index` = Pokémons, `favorites`), with their NativeTabs in `src/app/(tabs)/_layout.tsx`. Screens pushed on top of the tabs (no tab bar) go next to `(tabs)`, like `src/app/pokemon/[id].tsx`. Open a Pokémon with `router.push({ pathname: '/pokemon/[id]', params: { id: String(id) } })`.
+- **List data**: `src/hooks/use-pokemon-list.ts` (`usePokemonList`: infinite query, 20 per page, `loadMore` is safe to call often).
+- **Cards and grid**: `src/components/pokemon-card.tsx` (`PokemonCard`, Figma Pokecard, sprite placeholder) and `src/components/pokemon-grid.tsx` (`PokemonGrid`: FlashList, 2 columns, `header` slot above the first row, footer for loading more and its error). Any screen that shows Pokémon as cards (search results, favorites) reuses them.
+- **Test helpers**: `src/test-utils/query.tsx` (`createWrapper` with a no-retry QueryClient, `makePage` for fake list pages).
+- **Formatting helpers**: `src/utils/format.ts` (`formatPokemonNumber`, `formatPokemonName`).
 
 ### Rules learned while building
 
-- RNTL 14: `render` is async. Always `await render(...)`, or `screen` throws "render function has not been called".
+- RNTL 14: `render`, `renderHook` and `fireEvent` are async. Always `await` them, or `screen` throws "render function has not been called" and state updates land after your assertions.
+- RNTL skips elements hidden from screen readers (`accessibilityElementsHidden`, `importantForAccessibility="no-hide-descendants"`). Query decorative elements with `{ includeHiddenElements: true }`.
+- FlashList ships ESM: it is listed in `transformIgnorePatterns` in `package.json` (the jest-expo default pattern plus `@shopify/flash-list`), and `@shopify/flash-list/jestSetup` is in `setupFiles`. Keep both when changing the Jest config.
+- TanStack `fetchNextPage()` restarts a page that is already loading (`cancelRefetch` defaults to true). Pass `{ cancelRefetch: false }` when it is called from scroll events.
+- expo-image test events need a `nativeEvent`: `fireEvent(image, 'error', { nativeEvent: { error: '...' } })`.
+- No Xcode on this Mac (Command Line Tools only), so no iOS simulator: check UI changes with the user in Expo Go on their phone.
 - `npx expo install` puts dev tools in `dependencies`: move test and lint packages to `devDependencies`.
 - Jest resolves `@/assets/*` only because of the `moduleNameMapper` in `package.json` (TypeScript and Metro pick the most specific path, Jest the first). Keep `@/assets` above `@/`.
 - jest-expo replaces `fetch` in every test environment (node too). Mock it with `jest.spyOn(globalThis, 'fetch')` and real `new Response(...)` objects; tests never hit the network.
@@ -58,6 +67,7 @@ Screens in Figma (Page 1, each in an iOS and an Android version):
 - **Favorites**: "My favorites" title, same 2-column grid.
 - **Options**: bottom sheet opened from a card's ⋮ button, with "Open Pokémon", "Add to favorites" and "Share" (plus a Cancel button on iOS). Share is the app's native feature.
 - **Tokens**: Midnight `#0E0940` (text), Purple `#5631E8` (accent), Daylight `#EDF6FF` (background), Silver `#DBDAE6`, card image background `#F6F6FF`, soft shadow `0 2 15 #30377326`.
+- **Search field** (Home and Search frames): white, radius 8, Figma drop shadow `0 2 7.5 rgba(48,55,115,0.15)`, padding 12 vertical / 16 horizontal, gap 12, 16 from the screen edges, search icon 24 (`assets/icons/search.png`), placeholder "Search for Pokémon.." in Inter Regular 16 at 30% (we use Rubik Regular). It sits above the "All Pokémon" title, which is 32 below it. On the Android Search frame the search icon becomes a back arrow while typing.
 - **Not in Figma:** Compare, and the loading, error and empty states. Design these in the Figma style.
 
 ## Workflow for every issue or request
