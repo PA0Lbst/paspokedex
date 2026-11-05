@@ -17,6 +17,8 @@ src/app/
   _layout.tsx    Root navigator: native bottom tabs (NativeTabs)
   index.tsx      Pokémons tab (placeholder, built in #4)
   favorites.tsx  Favorites tab (placeholder, built in #7)
+src/utils/       Pure helpers (format.ts) + __tests__/
+src/__tests__/screens/  Screen tests (kept out of src/app/)
 assets/
   expo.icon/     iOS app icon (still the Expo default)
   images/        App icon, Android adaptive icon, splash icon (still the Expo defaults)
@@ -45,7 +47,7 @@ Two tabs, as in Figma: **Pokémons** (`index`) and **Favorites** (`favorites`). 
 | `npx expo lint` | passes |
 | `npx tsc --noEmit` | passes |
 | `npx expo-doctor` | 20/20 |
-| `npm test` | not set up yet (#3) |
+| `npm test` | passes (Jest + RNTL, #3) |
 | CI | not set up yet (#18) |
 
 ## Decisions
