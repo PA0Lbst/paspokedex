@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Theme mockup (#1)</title>
+<style>
+  @font-face { font-family: Rubik; src: url(../assets/fonts/Rubik-Regular.ttf); font-weight: 400; }
+  @font-face { font-family: Rubik; src: url(../assets/fonts/Rubik-Medium.ttf); font-weight: 500; }
+  @font-face { font-family: Rubik; src: url(../assets/fonts/Rubik-SemiBold.ttf); font-weight: 600; }
+  @font-face { font-family: Rubik; src: url(../assets/fonts/Rubik-Bold.ttf); font-weight: 700; }
+  :root {
+    --midnight: #0E0940; --purple: #5631E8; --daylight: #EDF6FF; --silver: #DBDAE6;
+    --card-image: #F6F6FF; --white: #FFFFFF; --shadow: 0 2px 15px rgba(48,55,115,.15);
+    --chip: rgba(14,9,64,.08);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 32px 16px; background: #c9ced6; font-family: Rubik, sans-serif; color: var(--midnight); }
+  h1 { font-weight: 700; font-size: 24px; margin: 0 0 4px; }
+  .note { font-size: 14px; opacity: .7; margin: 0 0 32px; max-width: 760px; }
+  section { margin-bottom: 40px; }
+  h2 { font-weight: 600; font-size: 16px; margin: 0 0 12px; text-transform: uppercase; letter-spacing: .04em; opacity: .7; }
+  .row { display: flex; flex-wrap: wrap; gap: 16px; }
+  .swatch { width: 150px; background: var(--white); border-radius: 8px; box-shadow: var(--shadow); overflow: hidden; font-size: 13px; }
+  .swatch div { height: 64px; }
+  .swatch p { margin: 8px 10px; }
+  .swatch b { font-weight: 600; display: block; }
+  .type-grid { display: flex; flex-wrap: wrap; gap: 8px; max-width: 760px; }
+  .chip { display: inline-flex; align-items: center; gap: 8px; padding: 4px 14px 4px 12px; border-radius: 99px; background: var(--chip); font-weight: 600; font-size: 16px; line-height: 24px; }
+  .chip i { width: 12px; height: 12px; border-radius: 50%; display: block; }
+  .chip.ours { outline: 1px dashed rgba(14,9,64,.35); outline-offset: 2px; }
+  .legend { font-size: 13px; opacity: .7; margin-top: 10px; }
+  .type-scale p { margin: 6px 0; }
+  .phones { display: flex; flex-wrap: wrap; gap: 24px; }
+  .phone { width: 300px; height: 560px; background: var(--daylight); border-radius: 32px; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,.15); display: flex; flex-direction: column; }
+  .phone .label { position: absolute; top: -26px; left: 0; font-size: 13px; font-weight: 600; }
+  .wrap { position: relative; }
+  .screen { flex: 1; padding: 56px 24px 0; display: flex; flex-direction: column; }
+  .screen h3 { font-weight: 700; font-size: 24px; line-height: 1.2; margin: 0; }
+  .center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 12px; padding-bottom: 40px; }
+  .spinner { width: 36px; height: 36px; border-radius: 50%; border: 4px solid rgba(86,49,232,.2); border-top-color: var(--purple); animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .muted { font-size: 16px; font-weight: 500; opacity: .6; margin: 0; }
+  .card { background: var(--white); border-radius: 8px; box-shadow: var(--shadow); padding: 24px 20px; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .card .title { font-weight: 600; font-size: 18px; margin: 0; }
+  .card .msg { font-size: 14px; opacity: .65; margin: 0 0 8px; line-height: 1.4; }
+  .btn { background: var(--purple); color: var(--white); border: 0; border-radius: 8px; padding: 12px 24px; font: 600 16px Rubik, sans-serif; }
+  .ball { width: 64px; height: 64px; border-radius: 50%; border: 4px solid var(--silver); position: relative; }
+  .ball::before { content: ""; position: absolute; left: -4px; right: -4px; top: 26px; height: 4px; background: var(--silver); }
+  .ball::after { content: ""; position: absolute; left: 20px; top: 20px; width: 16px; height: 16px; border-radius: 50%; background: var(--daylight); border: 4px solid var(--silver); }
+  .tabbar { height: 72px; background: rgba(237,246,255,.5); backdrop-filter: blur(25px); border-top: 1px solid rgba(14,9,64,.06); display: flex; padding-top: 8px; }
+  .tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; font: 500 10px -apple-system, system-ui, sans-serif; }
+  .tab.on { color: var(--purple); font-weight: 700; }
+  .tab svg { width: 24px; height: 24px; }
+</style>
+</head>
+<body>
+  <h1>Theme mockup — issue #1</h1>
+  <p class="note">Tokens from Figma, Rubik everywhere (replaces Cabinet Grotesk and Inter). Type colours with a solid outline come from Figma; dashed outlines are our own choice for types Figma doesn't show. Loading, error and empty states are not in Figma: designed in its style.</p>
+
+  <section>
+    <h2>Colours</h2>
+    <div class="row">
+      <div class="swatch"><div style="background:#0E0940"></div><p><b>Midnight</b>#0E0940 · text</p></div>
+      <div class="swatch"><div style="background:#5631E8"></div><p><b>Purple</b>#5631E8 · accent</p></div>
+      <div class="swatch"><div style="background:#EDF6FF"></div><p><b>Daylight</b>#EDF6FF · background</p></div>
+      <div class="swatch"><div style="background:#DBDAE6"></div><p><b>Silver</b>#DBDAE6 · lines</p></div>
+      <div class="swatch"><div style="background:#F6F6FF"></div><p><b>Card image</b>#F6F6FF</p></div>
+      <div class="swatch"><div style="background:#FFFFFF"></div><p><b>White</b>cards, sheets</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Typography (Rubik)</h2>
+    <div class="type-scale">
+      <p style="font-weight:700;font-size:32px">Bulbasaur <span style="font-weight:400;font-size:24px;opacity:.3">#001</span></p>
+      <p style="font-weight:700;font-size:24px">All Pokémon — title, Bold 24</p>
+      <p style="font-weight:500;font-size:16px">Bulbasaur — card name, Medium 16</p>
+      <p style="font-weight:600;font-size:14px">About · Stats · Evolution — tabs, SemiBold 14</p>
+      <p style="font-weight:400;font-size:14px;opacity:.65">7,0 kg — body, Regular 14</p>
+      <p style="font-weight:400;font-size:16px;opacity:.3">Search for Pokémon.. — Regular 16</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Type badges</h2>
+    <div class="type-grid" id="types"></div>
+    <p class="legend">Solid = Figma · dashed = our choice</p>
+  </section>
+
+  <section>
+    <h2>States (not in Figma)</h2>
+    <div class="phones">
+      <div class="wrap"><span class="label">Loading</span>
+        <div class="phone"><div class="screen"><h3>All Pokémon</h3>
+          <div class="center"><div class="spinner"></div><p class="muted">Loading Pokémon…</p></div></div>
+          <div class="tabbar"><div class="tab on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h6m6 0h6"/><circle cx="12" cy="12" r="3"/></svg>Pokémons</div><div class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>Favorites</div></div>
+        </div></div>
+      <div class="wrap"><span class="label">Error</span>
+        <div class="phone"><div class="screen"><h3>All Pokémon</h3>
+          <div class="center"><div class="card"><p class="title">Something went wrong</p><p class="msg">We couldn't load the Pokémon. Check your connection and try again.</p><button class="btn">Try again</button></div></div></div>
+          <div class="tabbar"><div class="tab on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h6m6 0h6"/><circle cx="12" cy="12" r="3"/></svg>Pokémons</div><div class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>Favorites</div></div>
+        </div></div>
+      <div class="wrap"><span class="label">Empty (e.g. favorites)</span>
+        <div class="phone"><div class="screen"><h3>My favorites</h3>
+          <div class="center"><div class="ball"></div><p class="title" style="font-weight:600;font-size:18px;margin:4px 0 0">No favorites yet</p><p class="muted" style="font-size:14px;font-weight:400;opacity:.65;max-width:220px">Tap ⋮ on a Pokémon and choose “Add to favorites”.</p></div></div>
+          <div class="tabbar"><div class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h6m6 0h6"/><circle cx="12" cy="12" r="3"/></svg>Pokémons</div><div class="tab on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>Favorites</div></div>
+        </div></div>
+    </div>
+    <p class="legend">Tab bar icons here are stand-ins; the app uses the Pokémon and Favorite icons exported from Figma.</p>
+  </section>
+
+<script>
+  const types = [
+    ['Normal','#A8A77A',0],['Fire','#FF4F68',1],['Water','#6390F0',0],['Electric','#FFCF00',1],['Grass','#64BC55',1],['Ice','#96D9D6',0],
+    ['Fighting','#C22E28',0],['Poison','#AB6AC8',1],['Ground','#E2BF65',0],['Flying','#A98FF3',0],['Psychic','#F95587',0],['Bug','#A6B91A',0],
+    ['Rock','#B6A136',0],['Ghost','#735797',0],['Dragon','#6F35FC',0],['Dark','#705746',0],['Steel','#B7B7CE',0],['Fairy','#D685AD',0]];
+  document.getElementById('types').innerHTML = types.map(([n,c,f]) =>
+    `<span class="chip ${f ? '' : 'ours'}"><i style="background:${c}"></i>${n}</span>`).join('');
+</script>
+</body>
+</html>

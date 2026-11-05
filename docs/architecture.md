@@ -17,12 +17,17 @@ src/app/
   _layout.tsx    Root navigator: native bottom tabs (NativeTabs)
   index.tsx      Pokémons tab (placeholder, built in #4)
   favorites.tsx  Favorites tab (placeholder, built in #7)
+src/theme/       Colours, type colours, spacing, typography (Figma tokens)
+src/hooks/       use-app-fonts.ts (Rubik)
+src/components/  type-badge.tsx, state-views.tsx
 src/utils/       Pure helpers (format.ts) + __tests__/
 src/__tests__/screens/  Screen tests (kept out of src/app/)
 assets/
   expo.icon/     iOS app icon (still the Expo default)
   images/        App icon, Android adaptive icon, splash icon (still the Expo defaults)
 assets/fonts/    Rubik (all weights), from the course fonts.zip
+assets/icons/    Figma icons as PNG (@1x/@2x/@3x); figma/ holds the SVG sources
+mockups/         HTML mockups shown before each UI issue
 specs/
   product.md       What the app is, data, technical choices
   features/        One spec per feature (written when its issue starts)
@@ -38,7 +43,7 @@ Non-route code (components, hooks, services) goes in folders next to `src/app/`,
 
 ## Navigation
 
-Two tabs, as in Figma: **Pokémons** (`index`) and **Favorites** (`favorites`). They use `NativeTabs` from `expo-router/native-tabs`. The tab icons are system symbols for now (`sf` on iOS, `md` on Android).
+Two tabs, as in Figma: **Pokémons** (`index`) and **Favorites** (`favorites`). They use `NativeTabs` from `expo-router/native-tabs`. The tab icons are the Figma Pokémon and Favorite icons (PNG), Midnight by default and Purple when selected.
 
 ## Checks
 

@@ -17,5 +17,6 @@
 <What the agent suggested, what you did instead and why, how you noticed. Point at the chat in `chat-history/` or the commit.>
 
 Candidates so far:
+- Fonts: the Expo docs recommend one font family with several weights; the agent chose one name per weight (`src/hooks/use-app-fonts.ts`) because families only load their default face on older Android versions.
 - The agent assumed the icon on each card was a favorite heart; checking Figma showed a ⋮ button that opens the Options sheet (open, add to favorites, share). The native feature became Share from that sheet.
 - The agent planned the specs in `docs/specs/`; the course templates put them in `specs/features/`, so the issues were changed.
