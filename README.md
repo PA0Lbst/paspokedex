@@ -1,5 +1,7 @@
 # paspokedex
 
+[![CI](https://github.com/PA0Lbst/paspokedex/actions/workflows/ci.yml/badge.svg)](https://github.com/PA0Lbst/paspokedex/actions/workflows/ci.yml)
+
 A Pokédex app for iOS and Android, built with Expo and Expo Router. Data comes live from [PokeAPI](https://pokeapi.co).
 
 ## Run it
@@ -14,6 +16,7 @@ npx expo start
 ```bash
 npx expo lint
 npx tsc --noEmit
+npm test
 ```
 
 ## Docs

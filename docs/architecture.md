@@ -48,7 +48,7 @@ Two tabs, as in Figma: **Pokémons** (`index`) and **Favorites** (`favorites`). 
 | `npx tsc --noEmit` | passes |
 | `npx expo-doctor` | 20/20 |
 | `npm test` | passes (Jest + RNTL, #3) |
-| CI | not set up yet (#18) |
+| CI | GitHub Actions: lint, tsc, tests on every push (#18) |
 
 ## Decisions
 

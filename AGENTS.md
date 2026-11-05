@@ -12,6 +12,7 @@ A Pokédex for iOS and Android: browse, search, inspect, favorite, compare and s
 ### Shared setup
 
 - **Tests**: Jest 30 + jest-expo preset + React Native Testing Library 14 (`package.json` → `jest`). Run with `npm test`. Logic tests sit next to the code in `__tests__/` (`src/utils/__tests__/`, `src/hooks/__tests__/`...); screen tests go in `src/__tests__/screens/`, never inside `src/app/` (every file there is a route).
+- **CI**: `.github/workflows/ci.yml` runs lint, tsc and tests on every push and pull request. Keep it green; never push a red build.
 - **Formatting helpers**: `src/utils/format.ts` (`formatPokemonNumber`).
 
 ### Rules learned while building
