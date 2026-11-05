@@ -20,9 +20,16 @@ src/app/
 assets/
   expo.icon/     iOS app icon (still the Expo default)
   images/        App icon, Android adaptive icon, splash icon (still the Expo defaults)
+assets/fonts/    Rubik (all weights), from the course fonts.zip
+specs/
+  product.md       What the app is, data, technical choices
+  features/        One spec per feature (written when its issue starts)
 docs/
-  backlog.md       Issues and tracking decisions
+  backlog.md       Issues and tracking order
   architecture.md  This file
+  explanation.md   Hand-in explanation (filled before hand-in)
+chat-history/      Exported agent conversations
+templates/         Course templates (reference)
 ```
 
 Non-route code (components, hooks, services) goes in folders next to `src/app/`, never inside it.
@@ -43,11 +50,4 @@ Two tabs, as in Figma: **Pokémons** (`index`) and **Favorites** (`favorites`). 
 
 ## Decisions
 
-### Green baseline (#21, 2026-11-05)
-
-- **Template demo code deleted**, not moved to `/example`. Git history keeps it.
-- **iOS and Android only.** The brief and Figma cover only mobile. Removed the web config, the `web` script, `react-dom`, `react-native-web` and `expo-web-browser`.
-- **Two empty tabs** as the navigation skeleton, matching Figma. #4 and #7 fill them in.
-- **Template theme helpers deleted.** The theme is rebuilt from Figma in #1, and dark mode is optional (#10).
-- **Tab icons are placeholders** (system symbols) until #1 brings in the Figma icons.
-- **App icon and splash screen** are still the Expo defaults. Changing them is out of scope for #21.
+Technical choices live in [specs/product.md](../specs/product.md) → "Technical choices".

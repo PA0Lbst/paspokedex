@@ -7,7 +7,8 @@ Source of truth for the GitHub issues and the Project board. Each section below 
 - **Tracking:** GitHub issues plus a GitHub Project board (Todo / In progress / Done). Board: https://github.com/users/PA0Lbst/projects/1. Issue numbers below match the GitHub issue numbers (#1–#20).
 - **Order:** core tasks first. Optionals get issues too, but with the `priority: low` label, and we start them only after the core is done.
 - **Constraints** (loading/error states, design font) are not features. They're listed as acceptance criteria in every feature issue, and the font itself is set up in one setup issue (#1).
-- **One feature = one spec file + one issue.** Each feature issue starts by writing `docs/specs/<feature>.md`, following the workflow in CLAUDE.md.
+- **One feature = one spec file + one issue.** Each feature issue starts by writing `specs/features/<feature>.md` (course template: Goal, Constraints, Acceptance Criteria, Out of Scope), following the workflow in AGENTS.md.
+- **Course templates** (`templates/`, 2026-11-05): the course expects `specs/product.md`, `specs/features/`, `docs/explanation.md` and `chat-history/`. They are the project documentation. Technical core adds SQLite (favorites, #7) and one native feature (Share, #22).
 
 ## Labels
 
@@ -31,7 +32,7 @@ Source of truth for the GitHub issues and the Project board. Each section below 
 
 ## Core: setup
 
-Order: #21 → #3 → #18 (moved up from the optionals as the no-regression guard) → #1 → #2, then the features #4 → #8.
+Order: #21 → #3 → #18 (moved up from the optionals as the no-regression guard) → #1 → #2 → #4. Then #5 Search in its own English conversation (for the teacher), then #6 → #7 → #22 → #8, and #24 (Figma check) and #23 (hand-in) last.
 
 ### 21. Setup: green baseline
 `setup` `priority: high`
@@ -84,7 +85,7 @@ Order: #21 → #3 → #18 (moved up from the optionals as the no-regression guar
 ### 7. Feature: Favorites
 `feature` `priority: high`
 - [ ] Own screen.
-- [ ] Favorites are still there after a restart.
+- [ ] Favorites are stored in SQLite and still there after a restart.
 - [ ] Empty state.
 - [ ] Tapping a favorite opens the detail.
 
@@ -94,6 +95,19 @@ Order: #21 → #3 → #18 (moved up from the optionals as the no-regression guar
 - [ ] Per stat, it's clear who is stronger.
 - [ ] Follows the Figma style (no Figma screen exists; we make our own mockup).
 - [ ] Loading and error state.
+
+### 22. Feature: card options and share (native feature)
+`feature` `priority: high`
+- The ⋮ button on a card opens the Figma Options sheet: Open Pokémon, Add to favorites, Share (native share sheet). Depends on #4 and #7.
+
+## Core: hand-in
+
+### 24. Check: every Figma screen and state is implemented
+`setup` `priority: high`
+
+### 23. Hand-in: explanation and chat history
+`setup` `priority: high`
+- `docs/explanation.md`, `specs/` up to date, conversations in `chat-history/`.
 
 ## Optionals (+0.5 each)
 
