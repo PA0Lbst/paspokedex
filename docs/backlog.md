@@ -31,6 +31,12 @@ Source of truth for the GitHub issues and the Project board. Each section below 
 
 ## Core: setup
 
+Order: #21 → #3 → #18 (moved up from the optionals as the no-regression guard) → #1 → #2, then the features #4 → #8.
+
+### 21. Setup: green baseline
+`setup` `priority: high`
+- Remove the Expo template demo code; lint and tsc pass; `.idea/` ignored; `docs/architecture.md` and README written.
+
 ### 1. Setup: theme, type colours and design font
 `setup` `priority: high`
 - Load the font from `fonts.zip` with Expo Font, and keep the splash screen up until it's loaded.
