@@ -1,4 +1,4 @@
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Image, type ImageSourcePropType, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { colors, radius, softShadow, spacing, text } from '@/theme';
 
@@ -66,12 +66,18 @@ export function PokeBallOutline({ size = 64, background = colors.daylight }: { s
 type EmptyProps = {
   title: string;
   message?: string;
+  /** Shown instead of the outlined Poké Ball (e.g. Snorlax on the empty Favorites tab). */
+  image?: ImageSourcePropType;
 };
 
-export function EmptyState({ title, message }: EmptyProps) {
+export function EmptyState({ title, message, image }: EmptyProps) {
   return (
     <View style={styles.center}>
-      <PokeBallOutline />
+      {image ? (
+        <Image testID="empty-image" source={image} style={styles.emptyImage} resizeMode="contain" accessible={false} />
+      ) : (
+        <PokeBallOutline />
+      )}
       <Text style={text.heading}>{title}</Text>
       {message ? <Text style={[text.body, styles.message]}>{message}</Text> : null}
     </View>
@@ -106,6 +112,7 @@ const styles = StyleSheet.create({
   },
   pressed: { opacity: 0.8 },
   buttonLabel: { color: colors.white },
+  emptyImage: { width: 200, height: 200 },
   ball: { borderColor: colors.silver, alignItems: 'center', justifyContent: 'center' },
   ballLine: { position: 'absolute', backgroundColor: colors.silver },
   ballCenter: { borderColor: colors.silver },

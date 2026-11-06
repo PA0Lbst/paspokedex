@@ -32,7 +32,7 @@ export default function FavoritesScreen() {
   if (isLoading) body = <LoadingView message="Loading favorites…" />;
   else if (isError) body = <ErrorView message="We couldn't read your favorites." onRetry={retry} />;
   else if (favorites.length === 0) {
-    body = <EmptyState title="No favorites yet" message="Tap ⋮ on a Pokémon and choose “Add to favorites”." />;
+    body = <EmptyState title="No favorites yet" image={require('@/assets/images/snorlax.png')} />;
   }
 
   return (

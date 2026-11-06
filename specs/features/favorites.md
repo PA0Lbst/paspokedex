@@ -17,7 +17,7 @@ Keep the Pokémon I like on their own tab, still there after I close the app.
 - [ ] Add or remove from the detail heart and from the Options sheet.
 - [ ] The Favorites tab lists them, most recently added first, as cards; tapping one opens its detail.
 - [ ] They are still there after a restart.
-- [ ] No favorites: empty state "No favorites yet".
+- [ ] No favorites: Snorlax (bundled artwork, works offline) above "No favorites yet", nothing else.
 - [ ] Pressing the active Favorites tab scrolls back to the top.
 
 ## Out of Scope

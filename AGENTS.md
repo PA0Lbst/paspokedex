@@ -15,7 +15,7 @@ A Pokédex for iOS and Android: browse, search, inspect, favorite, compare and s
 - **CI**: `.github/workflows/ci.yml` runs lint, tsc and tests on every push and pull request. Keep it green; never push a red build.
 - **Theme**: `src/theme/` (`colors`, `spacing`, `radius`, `softShadow`, `fonts`, `text`, `getTypeColor`). Import from `@/theme`; never hard-code a colour, size or font in a screen.
 - **Fonts**: `src/hooks/use-app-fonts.ts` loads Rubik as `Rubik-Regular`, `Rubik-Medium`, `Rubik-SemiBold`, `Rubik-Bold` (one name per weight, no `fontWeight`). The root layout keeps the splash screen up until they are loaded.
-- **State views**: `src/components/state-views.tsx` (`LoadingView`, `ErrorView` with Try again, `EmptyState`). Every screen that loads data uses them.
+- **State views**: `src/components/state-views.tsx` (`LoadingView`, `ErrorView` with Try again, `EmptyState` with an optional `image`, e.g. Snorlax `assets/images/snorlax.png` on the empty Favorites tab). Every screen that loads data uses them.
 - **Type badge**: `src/components/type-badge.tsx` (`TypeBadge`, `capitalize`).
 - **Icons**: PNGs exported from Figma in `assets/icons/` (@1x/@2x/@3x), SVG sources in `assets/icons/figma/`. Tint them with `tintColor`; don't add an icon library. Exception: `favorite-filled.png` is the filled red heart (`#FF4F68`, Figma red) shown once a Pokémon is a favorite; never tint it, and never show a favorite as a tinted outline.
 - **API client**: `src/services/pokeapi.ts` (`fetchPokemonPage`, `fetchPokemon`, `fetchSpecies`, `fetchEvolutionChain`, `getIdFromUrl`, `spriteUrl`, `artworkUrl`, `PAGE_SIZE`). Types in `src/services/pokeapi-types.ts`. Never call `fetch` anywhere else.

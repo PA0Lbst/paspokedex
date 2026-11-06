@@ -31,6 +31,10 @@ describe('Favorites tab and Options sheet', () => {
   it('shows the empty state with no favorites', async () => {
     await render(<FavoritesScreen />, { wrapper: createWrapper() });
     expect(await screen.findByText('No favorites yet')).toBeOnTheScreen();
+    // Snorlax above the title; no Poké Ball and no subtitle.
+    expect(screen.getByTestId('empty-image', { includeHiddenElements: true })).toBeOnTheScreen();
+    expect(screen.queryByTestId('poke-ball-outline', { includeHiddenElements: true })).toBeNull();
+    expect(screen.queryByText(/Add to favorites/)).toBeNull();
   });
 
   it('lists stored favorites and opens one', async () => {
