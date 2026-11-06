@@ -49,7 +49,7 @@ A Pokédex for iOS and Android: browse, search, inspect, favorite, compare and s
 - expo-image test events need a `nativeEvent`: `fireEvent(image, 'error', { nativeEvent: { error: '...' } })`.
 - No Xcode on this Mac (Command Line Tools only), so no iOS simulator: check UI changes with the user in Expo Go on their phone.
 - When a test mocks `@/services/pokeapi`, spread `jest.requireActual('@/services/pokeapi')` and override only the fetchers: stores use its helpers (`spriteUrl`), and a missing helper makes a query fail silently (it keeps its old data).
-- The ⋮ Options must open from the bottom of the screen as a native sheet (user's rule), with the Figma rows and icons: the `formSheet` route above. Not a JS Modal, not `ActionSheetIOS` (alert style, no icons), not a SwiftUI `Menu` (opens at the button).
+- The ⋮ Options are the Figma sheet with our own rows and icons in a Stack `formSheet` (user's final choice): it rises from the bottom like Figma. Fully system-drawn sheets were tried and rejected: `ActionSheetIOS` (React Native presents it as a popover, iOS 26 centres it), SwiftUI `Menu` (opens at the button), SwiftUI `ConfirmationDialog` (no Figma icons or font). Don't switch again without asking.
 - If a SwiftUI `Menu` is ever used: its label must be SwiftUI (`Image systemName`), never an RN view in `RNHostView`, and its `Host` needs a fixed size outside any RN `Pressable`, or it doesn't get the tap.
 - iOS 26 draws native Stack header buttons inside Liquid Glass capsules, which Figma doesn't have. Pushed screens hide the native header and use `ScreenHeader`.
 - RN 0.88 removed `StyleSheet.absoluteFillObject`: use `StyleSheet.absoluteFill`.

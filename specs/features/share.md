@@ -25,7 +25,7 @@ From any card, open the Figma Options sheet to open the Pokémon, add or remove 
 
 ## Decisions
 
-- **A native bottom sheet, after three tries**: a JS Modal sheet didn't feel native; `ActionSheetIOS` had the old alert style and no icons; a SwiftUI `Menu` opened at the button. The user wanted the sheet that rises from the bottom, as in Figma, so the options are a Stack `formSheet` route: native presentation, Figma rows and icons.
+- **The Figma sheet, after trying the system ones**: a JS Modal sheet, `ActionSheetIOS` (centred on iOS 26), a SwiftUI `Menu` (opens at the button) and the SwiftUI `ConfirmationDialog` (drawn by iOS, no Figma icons or font) were tried on the phone. The user chose the Figma look: our rows and icons in a Stack `formSheet`, which rises from the bottom.
 
 - **React Native `Share`, not `expo-sharing`**: `expo-sharing` shares files; we share text, which every chat app accepts.
 - **The favorite option says "Remove from favorites"** when it already is one, instead of a label that does nothing.
