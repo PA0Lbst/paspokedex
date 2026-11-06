@@ -21,15 +21,15 @@ Find any Pokémon by typing part of its name or its number in the field on Home,
 - [x] Spaces, dashes and apostrophes are ignored: "mr mime" finds Mr. Mime (`mr-mime`), "farfetchd" finds Farfetch'd.
 - [x] A number finds that Pokémon: "25" and "025" find Pikachu. Digits also match names that contain them ("2" finds Porygon2).
 - [x] Finds every Pokémon, including ones the list hasn't loaded yet (for example "zygarde" on first launch). Results are in number order, forms (ids above 10000) last.
-- [ ] No match shows the empty state "No Pokémon found for "xyz"". A blank or whitespace-only field shows the normal list again, at the scroll position it had.
+- [x] No match shows the empty state "No Pokémon found for "xyz"". A blank or whitespace-only field shows the normal list again, at the scroll position it had.
 - [x] While the index downloads for the first time, the loading state shows under the field. If it fails with nothing stored, the error state shows with "Try again".
-- [ ] After a first successful launch, search works in airplane mode. A copy older than 7 days is refreshed in the background, and the old results keep showing meanwhile.
-- [ ] Pull to refresh on Home (list or results) downloads the index again and reloads the list from page 1.
+- [x] After a first successful launch, search works in airplane mode. A copy older than 7 days is refreshed in the background, and the old results keep showing meanwhile.
+- [x] Pull to refresh on Home (list or results) downloads the index again and reloads the list from page 1.
 - [x] Android: while the field is focused or has text, the search icon becomes a back arrow (Figma Search frame). The arrow and the system back button clear the query and hide the keyboard.
-- [ ] Dragging the grid or pressing the keyboard's Search key hides the keyboard and keeps the query.
-- [ ] Opening a result and coming back shows the same query and results.
+- [x] Dragging the grid or pressing the keyboard's Search key hides the keyboard and keeps the query.
+- [x] Opening a result and coming back shows the same query and results.
 
-Unticked criteria are covered by logic tests but need a check in Expo Go on a phone (real SQLite, gestures, keyboard, scroll position).
+Checked by logic and screen tests, and in Expo Go on an iPhone (2026-11-06). The Android back arrow and system back are covered by screen tests only so far.
 
 ## Out of Scope
 
