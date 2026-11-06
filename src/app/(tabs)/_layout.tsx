@@ -17,7 +17,7 @@ export default function TabsLayout() {
         <NativeTabs.Trigger.Label>Pokémons</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon src={require('@/assets/icons/tab-pokemon.png')} />
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="favorites">
+      <NativeTabs.Trigger name="favorites" disableScrollToTop>
         <NativeTabs.Trigger.Label>Favorites</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon src={require('@/assets/icons/favorite.png')} />
       </NativeTabs.Trigger>

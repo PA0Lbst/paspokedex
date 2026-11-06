@@ -24,6 +24,7 @@ export function createQueryClient(): QueryClient {
 export const queryKeys = {
   pokemonList: ['pokemon', 'list'] as const,
   pokemonIndex: ['pokemon', 'index'] as const,
+  favorites: ['favorites'] as const,
   pokemon: (id: number) => ['pokemon', id] as const,
   species: (id: number) => ['species', id] as const,
   evolutionChain: (id: number) => ['evolution-chain', id] as const,

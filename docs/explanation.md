@@ -23,6 +23,7 @@ Notes for the tab re-press (#5, added after the first phone test): `useTabRePres
 <What the agent suggested, what you did instead and why, how you noticed. Point at the chat in `chat-history/` or the commit.>
 
 Candidates so far:
+- Share: `expo-sharing` is the Expo module for sharing, but it shares files; React Native `Share` (`src/hooks/use-pokemon-options.tsx`) sends text, which is what a Pokémon link needs.
 - List paging: the first version of `loadMore` called `fetchNextPage()` as is. A test ("does not request the same page twice", `src/hooks/__tests__/use-pokemon-list.test.tsx`) showed 3 requests instead of 2, because a second call restarts the page that is loading. Fixed with `{ cancelRefetch: false }` (`src/hooks/use-pokemon-list.ts`).
 - Fonts: the Expo docs recommend one font family with several weights; the agent chose one name per weight (`src/hooks/use-app-fonts.ts`) because families only load their default face on older Android versions.
 - The agent assumed the icon on each card was a favorite heart; checking Figma showed a ⋮ button that opens the Options sheet (open, add to favorites, share). The native feature became Share from that sheet.

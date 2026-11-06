@@ -7,7 +7,7 @@ import { openDatabaseAsync, type SQLiteDatabase } from 'expo-sqlite';
  */
 
 const DATABASE_NAME = 'paspokedex.db';
-export const DATABASE_VERSION = 1;
+export const DATABASE_VERSION = 2;
 
 /** Brings the schema up to DATABASE_VERSION, one step at a time (`PRAGMA user_version`). */
 export async function migrateDatabase(db: SQLiteDatabase): Promise<void> {
@@ -22,6 +22,14 @@ export async function migrateDatabase(db: SQLiteDatabase): Promise<void> {
       CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY NOT NULL, value TEXT NOT NULL);
     `);
     version = 1;
+  }
+
+  if (version === 1) {
+    // Favorites (#7): newest first, so `added_at` is stored.
+    await db.execAsync(
+      'CREATE TABLE IF NOT EXISTS favorites (id INTEGER PRIMARY KEY NOT NULL, name TEXT NOT NULL, added_at INTEGER NOT NULL);',
+    );
+    version = 2;
   }
 
   await db.execAsync(`PRAGMA user_version = ${DATABASE_VERSION}`);

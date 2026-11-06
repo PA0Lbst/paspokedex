@@ -13,6 +13,7 @@ export function createFakeDatabase() {
   let tablesCreated = false;
   const index = new Map<number, string>();
   const meta = new Map<string, string>();
+  const favorites = new Map<number, { name: string; addedAt: number }>();
 
   const flat = (params: unknown[]): Param[] =>
     params.flat().filter((p): p is Param => typeof p === 'string' || typeof p === 'number');
@@ -24,10 +25,12 @@ export function createFakeDatabase() {
   const db = {
     index,
     meta,
+    favorites,
     /** Empties the tables, keeping the schema (between tests). */
     clearData() {
       index.clear();
       meta.clear();
+      favorites.clear();
     },
     get userVersion() {
       return userVersion;
@@ -51,6 +54,12 @@ export function createFakeDatabase() {
         requireTables();
         return [...index.entries()].sort(([a], [b]) => a - b).map(([id, name]) => ({ id, name }));
       }
+      if (sql.startsWith('SELECT id, name, added_at FROM favorites')) {
+        requireTables();
+        return [...favorites.entries()]
+          .sort(([, a], [, b]) => b.addedAt - a.addedAt)
+          .map(([id, { name, addedAt }]) => ({ id, name, added_at: addedAt }));
+      }
       throw new Error(`Fake database: unexpected query ${sql}`);
     }),
     runAsync: jest.fn(async (sql: string, ...params: unknown[]) => {
@@ -60,6 +69,10 @@ export function createFakeDatabase() {
         index.clear();
       } else if (sql.startsWith('INSERT OR REPLACE INTO pokemon_index')) {
         for (let i = 0; i < values.length; i += 2) index.set(Number(values[i]), String(values[i + 1]));
+      } else if (sql.startsWith('INSERT OR REPLACE INTO favorites')) {
+        favorites.set(Number(values[0]), { name: String(values[1]), addedAt: Number(values[2]) });
+      } else if (sql === 'DELETE FROM favorites WHERE id = ?') {
+        favorites.delete(Number(values[0]));
       } else if (sql.startsWith('INSERT OR REPLACE INTO meta')) {
         meta.set(String(values[0]), String(values[1]));
       } else {

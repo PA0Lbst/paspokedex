@@ -12,10 +12,10 @@ Each feature is one file in `specs/features/` and one GitHub issue. The file is 
 
 1. [Browse the list](./features/list.md) (#4, done): all Pokémon in a 2-column grid, loaded page by page.
 2. [Search by name](./features/search.md) (#5): part of the name, any case, over all Pokémon.
-3. [Detail](./features/detail.md) (#6): name, number, artwork, types, about / stats / evolution chain.
-4. [Favorites](./features/favorites.md) (#7): own screen, kept after a restart.
-5. [Compare](./features/compare.md) (#8): two Pokémon side by side, who is stronger per stat.
-6. [Card options and share](./features/share.md) (#22): the ⋮ sheet on a card: open, add to favorites, share.
+3. [Detail](./features/detail.md) (#6, done): name, number, artwork, types, about / stats / evolution chain.
+4. [Favorites](./features/favorites.md) (#7, done): own screen, kept after a restart.
+5. [Compare](./features/compare.md) (#8, done): two Pokémon side by side, who is stronger per stat.
+6. [Card options and share](./features/share.md) (#22, done): the ⋮ sheet on a card: open, add to favorites, share.
 
 ## Data
 
@@ -36,7 +36,7 @@ Each feature is one file in `specs/features/` and one GitHub issue. The file is 
 Each choice: what we picked, what else we could have done, and why.
 
 - **Stored in SQLite**: the favorites (#7) and the search index (#5). Other API data is only cached by TanStack Query. The index was first meant to stay in memory too, but storing it lets search work offline after the first launch and avoids downloading 93 KB at every start; it is refreshed after 7 days or on pull to refresh.
-- **Native feature**: Share, from the ⋮ Options sheet on a card (as in Figma), using the native share sheet. Details in #22.
+- **Native feature**: Share, from the ⋮ Options sheet on a card (as in Figma), with React Native `Share` (the system share sheet, works in Expo Go). `expo-sharing` was the alternative, but it shares files and we send text.
 - **Expo Go, fonts with `useFonts`**: the Expo docs recommend the `expo-font` config plugin, but it needs a development build. We run in Expo Go, so the font is loaded at startup with `useFonts`, behind the splash screen.
 - **Rubik only**: Figma also uses Cabinet Grotesk (titles) and Inter (search field), but the course provides Rubik only. Titles use Rubik Bold, the search field Rubik Regular. Adding the other two would mean more files and a new dependency for a small visual gain.
 - **Fonts as one name per weight** (`Rubik-Regular`, `Rubik-Medium`...), not one `Rubik` family with `fontWeight`: expo-font 58 supports families, but on Android below API 29 a family only loads its default face. Separate names behave the same everywhere in Expo Go.
@@ -52,19 +52,21 @@ Each choice: what we picked, what else we could have done, and why.
 - **Pull to refresh on Home** (#5): reloads the search index and the list. It was out of scope in #4; the index needed a way to force a refresh.
 - **Pressing the active tab resets it** (#5): the usual iOS/Android pattern. On Pokémons the first press scrolls to the top and the second clears the search, so one stray press never loses it; Favorites gets the same scroll-to-top in #7. Done in JS from the `tabPress` event (`useTabRePress`), not with the native special effect, so the screen decides what "reset" means.
 - **Stack over tabs**: the root is a Stack with the tab group `(tabs)` inside it, so the detail opens on top of the tabs without the tab bar, as in Figma. Putting the detail inside the tabs would keep the tab bar on screen.
+- **Compare opens from the detail**, not from a third tab: Figma has two tabs, and a comparison starts from a Pokémon you are looking at.
+- **Native Stack header on the detail**: its back button is the iOS chevron of Figma; Compare and the favorite heart sit on its right.
 - **iOS and Android only**: the brief and Figma only cover mobile, so the template's web support was removed (#21).
 - **Template code deleted, not kept in `/example`**: git history keeps it (#21).
 
 ## Technical core
 
-- [ ] Runs in Expo Go
+- [x] Runs in Expo Go
 - [x] Live data through TanStack Query
 - [x] At least 2 screens with Expo Router
-- [ ] Something in SQLite that survives a restart
-- [ ] Loading and error state on every load
-- [ ] One native feature: Share, from the card's Options sheet
+- [x] Something in SQLite that survives a restart
+- [x] Loading and error state on every load
+- [x] One native feature: Share, from the card's Options sheet
 - [x] TypeScript and ESLint without errors
-- [ ] UI, data and logic in separate files
+- [x] UI, data and logic in separate files
 
 ## Optional
 

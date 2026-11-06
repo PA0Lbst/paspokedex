@@ -17,8 +17,9 @@ src/app/
   _layout.tsx          Root Stack: QueryClient, fonts, splash screen
   (tabs)/_layout.tsx   Native bottom tabs (Pokémons, Favorites)
   (tabs)/index.tsx     Pokémons tab: search field (#5) above the grid (#4)
-  (tabs)/favorites.tsx Favorites tab (placeholder, built in #7)
-  pokemon/[id].tsx     Detail, pushed over the tabs (placeholder, built in #6)
+  (tabs)/favorites.tsx Favorites tab, from SQLite (#7)
+  pokemon/[id].tsx     Detail, pushed over the tabs (#6)
+  compare.tsx          Compare two Pokémon (#8)
 src/test-utils/  Query wrapper, fake list pages and in-memory fake database for tests
 src/theme/       Colours, type colours, spacing, typography (Figma tokens)
 src/hooks/       use-app-fonts.ts (Rubik), use-pokemon-list.ts, use-pokemon-index.ts, use-pokemon-search.ts, use-debounced-value.ts, use-tab-repress.ts, use-two-press-reset.ts

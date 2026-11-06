@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image as NativeImage, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import type { PokemonSummary } from '@/services/pokeapi-types';
 import { colors, radius, softShadow, spacing, text } from '@/theme';
@@ -11,10 +11,12 @@ import { PokeBallOutline } from './state-views';
 type Props = {
   pokemon: PokemonSummary;
   onPress: (pokemon: PokemonSummary) => void;
+  /** The ⋮ button, shown only when given: opens the Options sheet (#22). */
+  onMore?: (pokemon: PokemonSummary) => void;
 };
 
 /** Figma "Pokecard": sprite on a light square, Purple number label, name. */
-export function PokemonCard({ pokemon, onPress }: Props) {
+export function PokemonCard({ pokemon, onPress, onMore }: Props) {
   const [spriteFailed, setSpriteFailed] = useState(false);
   const name = formatPokemonName(pokemon.name);
   const number = formatPokemonNumber(pokemon.id);
@@ -43,9 +45,20 @@ export function PokemonCard({ pokemon, onPress }: Props) {
           <Text style={text.badge}>{number}</Text>
         </View>
       </View>
-      <Text style={[text.cardName, styles.name]} numberOfLines={1}>
-        {name}
-      </Text>
+      <View style={styles.footer}>
+        <Text style={[text.cardName, styles.name]} numberOfLines={1}>
+          {name}
+        </Text>
+        {onMore ? (
+          <Pressable
+            onPress={() => onMore(pokemon)}
+            hitSlop={spacing.s}
+            accessibilityRole="button"
+            accessibilityLabel={`Options for ${name}`}>
+            <NativeImage source={require('@/assets/icons/more.png')} style={styles.more} tintColor={colors.midnight} />
+          </Pressable>
+        ) : null}
+      </View>
     </Pressable>
   );
 }
@@ -76,5 +89,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: colors.purple,
   },
-  name: { padding: spacing.m },
+  footer: { flexDirection: 'row', alignItems: 'center', padding: spacing.m, gap: spacing.xs },
+  name: { flex: 1 },
+  more: { width: 24, height: 24 },
 });

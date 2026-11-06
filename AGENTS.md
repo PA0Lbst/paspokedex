@@ -25,6 +25,10 @@ A Pokédex for iOS and Android: browse, search, inspect, favorite, compare and s
 - **Routes**: `src/app/_layout.tsx` is a Stack (providers, fonts, splash). The tabs live in `src/app/(tabs)/` (`index` = Pokémons, `favorites`), with their NativeTabs in `src/app/(tabs)/_layout.tsx`. Screens pushed on top of the tabs (no tab bar) go next to `(tabs)`, like `src/app/pokemon/[id].tsx`. Open a Pokémon with `router.push({ pathname: '/pokemon/[id]', params: { id: String(id) } })`.
 - **List data**: `src/hooks/use-pokemon-list.ts` (`usePokemonList`: infinite query, 20 per page, `loadMore` is safe to call often).
 - **Cards and grid**: `src/components/pokemon-card.tsx` (`PokemonCard`, Figma Pokecard, sprite placeholder) and `src/components/pokemon-grid.tsx` (`PokemonGrid`: FlashList, 2 columns, `header` slot above the first row, footer for loading more and its error). Any screen that shows Pokémon as cards (search results, favorites) reuses them.
+- **Favorites**: `src/services/favorites-store.ts` (SQLite table `favorites`, migration step 2) and `src/hooks/use-favorites.ts` (`useFavorites`: list, `isFavorite`, `toggleFavorite`). Never read the table anywhere else.
+- **Options sheet and share**: `src/hooks/use-pokemon-options.tsx` (`usePokemonOptions` → `openOptions` for a grid's `onMorePokemon`, and `sheet` to render once per screen); sheet UI in `src/components/pokemon-options-sheet.tsx`; share text in `src/utils/share.ts`.
+- **Detail**: `src/hooks/use-pokemon-detail.ts` (pokemon → species → evolution chain), sections in `src/components/pokemon-detail-sections.tsx` (`DetailTabs`, `AboutSection`, `StatsSection`, `StatBar`, `EvolutionSection`), helpers in `src/utils/pokemon-detail.ts`.
+- **Compare**: `src/app/compare.tsx` (params `first`, `second`), `src/hooks/use-compare.ts`, `src/utils/compare.ts`, picker `src/components/pokemon-picker.tsx` (search over the stored index).
 - **Test helpers**: `src/test-utils/query.tsx` (`createWrapper` with a no-retry QueryClient, `makePage` for fake list pages).
 - **Formatting helpers**: `src/utils/format.ts` (`formatPokemonNumber`, `formatPokemonName`).
 - **Database**: `src/services/database.ts` (`getDatabase`: the one expo-sqlite connection, `paspokedex.db`, migrated with `PRAGMA user_version`). Add a table as a new migration step there; never open a second database.
@@ -43,6 +47,8 @@ A Pokédex for iOS and Android: browse, search, inspect, favorite, compare and s
 - TanStack `fetchNextPage()` restarts a page that is already loading (`cancelRefetch` defaults to true). Pass `{ cancelRefetch: false }` when it is called from scroll events.
 - expo-image test events need a `nativeEvent`: `fireEvent(image, 'error', { nativeEvent: { error: '...' } })`.
 - No Xcode on this Mac (Command Line Tools only), so no iOS simulator: check UI changes with the user in Expo Go on their phone.
+- RN 0.88 removed `StyleSheet.absoluteFillObject`: use `StyleSheet.absoluteFill`.
+- Typed routes (`.expo/types/router.d.ts`) only learn a new route when Metro runs: after adding a route, run `npx expo start` or `npx expo export` before `tsc`.
 - `npx expo install` puts dev tools in `dependencies`: move test and lint packages to `devDependencies`.
 - Jest resolves `@/assets/*` only because of the `moduleNameMapper` in `package.json` (TypeScript and Metro pick the most specific path, Jest the first). Keep `@/assets` above `@/`.
 - jest-expo replaces `fetch` in every test environment (node too). Mock it with `jest.spyOn(globalThis, 'fetch')` and real `new Response(...)` objects; tests never hit the network.

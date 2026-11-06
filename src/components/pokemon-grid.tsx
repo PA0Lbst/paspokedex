@@ -10,6 +10,8 @@ import { PokemonCard } from './pokemon-card';
 type Props = {
   pokemon: PokemonSummary[];
   onPressPokemon: (pokemon: PokemonSummary) => void;
+  /** ⋮ on each card: opens the Options sheet. */
+  onMorePokemon?: (pokemon: PokemonSummary) => void;
   /** Shown above the first row (the title). */
   header?: ReactElement;
   onEndReached?: () => void;
@@ -30,6 +32,7 @@ type Props = {
 export function PokemonGrid({
   pokemon,
   onPressPokemon,
+  onMorePokemon,
   header,
   onEndReached,
   isLoadingMore = false,
@@ -49,7 +52,7 @@ export function PokemonGrid({
       keyExtractor={(item) => String(item.id)}
       renderItem={({ item, index }) => (
         <View style={[styles.cell, index % 2 === 0 ? styles.cellLeft : styles.cellRight]}>
-          <PokemonCard pokemon={item} onPress={onPressPokemon} />
+          <PokemonCard pokemon={item} onPress={onPressPokemon} onMore={onMorePokemon} />
         </View>
       )}
       ListHeaderComponent={header}

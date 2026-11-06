@@ -33,7 +33,7 @@ describe('database', () => {
 
     expect(first).toBe(second);
     expect(mockDb.userVersion).toBe(DATABASE_VERSION);
-    expect(mockDb.execAsync.mock.calls.filter(([sql]) => sql.includes('CREATE TABLE'))).toHaveLength(1);
+    expect(mockDb.execAsync.mock.calls.filter(([sql]) => sql.includes('CREATE TABLE'))).toHaveLength(DATABASE_VERSION); // one step per version
   });
 });
 
