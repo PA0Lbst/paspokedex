@@ -72,7 +72,7 @@ Order: #21 → #3 → #18 (moved up from the optionals as the no-regression guar
 - [x] Finds every Pokémon, including ones not scrolled to yet.
 - [x] Results use the same grid cards as the list (Figma Search frame); no match shows an empty state.
 - Note: PokeAPI has no search endpoint. Study what the API returns before choosing an approach in the spec.
-- Pressing the active Pokémons tab clears the search and scrolls to the top (added after the first phone test).
+- Pressing the active Pokémons tab: first press scrolls to the top, second clears the search (added after the first phone test).
 - Spec: `specs/features/search.md`. One index call (`/pokemon?limit=100000`) stored in SQLite, filtered on the phone. Also brought pull to refresh into scope.
 
 ### 6. Feature: Detail
@@ -83,6 +83,7 @@ Order: #21 → #3 → #18 (moved up from the optionals as the no-regression guar
 - [ ] Evolution chain from the API; tapping a stage opens its detail.
 - [ ] Favorite / unfavorite.
 - [ ] Loading and error state on detail and on the evolution chain.
+- Found while testing #5: the detail's iOS back button reads "(tabs)". The root Stack shows its native header on `pokemon/[id]`, and iOS labels the back button with the previous screen's title; the `(tabs)` screen has none, so the route group name is used. Fix in #6 with the Figma Detail header (check the back label there).
 
 ### 7. Feature: Favorites
 `feature` `priority: high`

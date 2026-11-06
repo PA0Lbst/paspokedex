@@ -23,6 +23,7 @@ type Props = {
   onRefresh?: () => void;
   /** To scroll from outside, e.g. back to the top when the active tab is pressed. */
   listRef?: Ref<FlashListRef<PokemonSummary>>;
+  onScrollBeginDrag?: () => void;
 };
 
 /** 2-column grid of PokemonCards, with a footer for "loading more" and its error. */
@@ -38,6 +39,7 @@ export function PokemonGrid({
   refreshing = false,
   onRefresh,
   listRef,
+  onScrollBeginDrag,
 }: Props) {
   return (
     <FlashList
@@ -56,6 +58,7 @@ export function PokemonGrid({
       }
       onEndReached={onEndReached}
       onEndReachedThreshold={0.5}
+      onScrollBeginDrag={onScrollBeginDrag}
       contentContainerStyle={{ ...styles.content, paddingTop: topInset + spacing.l }}
       // Dragging the grid hides the keyboard of the search field; a tap on a card still works.
       keyboardDismissMode="on-drag"

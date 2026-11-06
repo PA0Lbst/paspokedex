@@ -21,7 +21,7 @@ src/app/
   pokemon/[id].tsx     Detail, pushed over the tabs (placeholder, built in #6)
 src/test-utils/  Query wrapper, fake list pages and in-memory fake database for tests
 src/theme/       Colours, type colours, spacing, typography (Figma tokens)
-src/hooks/       use-app-fonts.ts (Rubik), use-pokemon-list.ts, use-pokemon-index.ts, use-pokemon-search.ts, use-debounced-value.ts, use-tab-repress.ts
+src/hooks/       use-app-fonts.ts (Rubik), use-pokemon-list.ts, use-pokemon-index.ts, use-pokemon-search.ts, use-debounced-value.ts, use-tab-repress.ts, use-two-press-reset.ts
 src/components/  type-badge.tsx, state-views.tsx, pokemon-card.tsx, pokemon-grid.tsx, search-field.tsx
 src/services/    PokeAPI client, JSON readers, ApiError, QueryClient, SQLite database, search index + __tests__/
 src/utils/       Pure helpers (format.ts, search.ts) + __tests__/
@@ -49,7 +49,7 @@ Non-route code (components, hooks, services) goes in folders next to `src/app/`,
 
 A root Stack holds the tab group and the screens pushed over it. Two tabs, as in Figma: **Pokémons** (`index`) and **Favorites** (`favorites`), with `NativeTabs` from `expo-router/native-tabs`. Tapping a card pushes `pokemon/[id]`. The tab icons are the Figma Pokémon and Favorite icons (PNG), Midnight by default and Purple when selected.
 
-Pressing the tab you are already on resets that tab's screen (`useTabRePress`): on Pokémons it clears the search and scrolls to the top. The native iOS scroll-to-top is turned off on that trigger.
+Pressing the tab you are already on resets that tab's screen (`useTabRePress`): on Pokémons the first press scrolls to the top and the second clears the search (`useTwoPressReset`). The native iOS scroll-to-top is turned off on that trigger.
 
 ## Storage
 

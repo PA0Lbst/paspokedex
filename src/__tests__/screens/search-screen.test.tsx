@@ -124,10 +124,15 @@ describe('Search on the Pokémons tab', () => {
     expect(await screen.findByText('Pikachu')).toBeOnTheScreen();
   });
 
-  it('clears the search and shows the list when the Pokémons tab is pressed while on it', async () => {
+  it('keeps the search on a first press of the active Pokémons tab, and clears it on the second', async () => {
     await renderScreen();
     await fireEvent.changeText(field(), 'pika');
     await screen.findByText('Pikachu');
+
+    await act(async () => pressPokemonsTab());
+
+    expect(field()).toHaveDisplayValue('pika');
+    expect(screen.getByText('Pikachu')).toBeOnTheScreen();
 
     await act(async () => pressPokemonsTab());
 
@@ -142,6 +147,7 @@ describe('Search on the Pokémons tab', () => {
     await screen.findByText('Pikachu');
     mockTabFocused = false;
 
+    await act(async () => pressPokemonsTab());
     await act(async () => pressPokemonsTab());
 
     expect(field()).toHaveDisplayValue('pika');

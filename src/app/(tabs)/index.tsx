@@ -1,6 +1,6 @@
 import type { FlashListRef } from '@shopify/flash-list';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState, type RefObject } from 'react';
 import { BackHandler, Keyboard, Platform, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -10,6 +10,7 @@ import { EmptyState, ErrorView, LoadingView } from '@/components/state-views';
 import { usePokemonList } from '@/hooks/use-pokemon-list';
 import { type PokemonSearch, usePokemonSearch } from '@/hooks/use-pokemon-search';
 import { useTabRePress } from '@/hooks/use-tab-repress';
+import { useTwoPressReset } from '@/hooks/use-two-press-reset';
 import { getErrorMessage } from '@/services/api-error';
 import type { PokemonSummary } from '@/services/pokeapi-types';
 import { colors, spacing, text } from '@/theme';
@@ -25,17 +26,25 @@ export default function PokemonListScreen() {
   const search = usePokemonSearch();
   const [refreshing, setRefreshing] = useState(false);
   const listRef = useRef<FlashListRef<PokemonSummary>>(null);
+  const resultsRef = useRef<FlashListRef<PokemonSummary>>(null);
 
   useBackClearsSearch(search.query !== '', search.clear);
 
-  // Pressing the Pokémons tab while on it resets Home in one press (specs/features/search.md).
-  const { clear } = search;
-  const resetHome = useCallback(() => {
-    clear();
-    Keyboard.dismiss();
-    listRef.current?.scrollToOffset({ offset: 0, animated: true });
-  }, [clear]);
-  useTabRePress(resetHome);
+  // Pressing the Pokémons tab while on it: 1st press scrolls to the top, 2nd clears the search
+  // (specs/features/search.md).
+  const reset = useTwoPressReset({
+    query: search.query,
+    scrollToTop: () => {
+      Keyboard.dismiss();
+      (search.isSearching ? resultsRef : listRef).current?.scrollToOffset({ offset: 0, animated: true });
+    },
+    clearSearch: () => {
+      search.clear();
+      Keyboard.dismiss();
+      listRef.current?.scrollToOffset({ offset: 0, animated: false });
+    },
+  });
+  useTabRePress(reset.onRePress);
 
   const openPokemon = (pokemon: PokemonSummary) => {
     router.push({ pathname: '/pokemon/[id]', params: { id: String(pokemon.id) } });
@@ -88,7 +97,14 @@ export default function PokemonListScreen() {
 
       {search.isSearching ? (
         <View style={styles.body}>
-          <SearchResults search={search} onPressPokemon={openPokemon} refreshing={refreshing} onRefresh={refresh} />
+          <SearchResults
+            search={search}
+            onPressPokemon={openPokemon}
+            refreshing={refreshing}
+            onRefresh={refresh}
+            resultsRef={resultsRef}
+            onScrollBeginDrag={reset.cancel}
+          />
         </View>
       ) : null}
     </View>
@@ -100,11 +116,15 @@ function SearchResults({
   onPressPokemon,
   refreshing,
   onRefresh,
+  resultsRef,
+  onScrollBeginDrag,
 }: {
   search: PokemonSearch;
   onPressPokemon: (pokemon: PokemonSummary) => void;
   refreshing: boolean;
   onRefresh: () => void;
+  resultsRef: RefObject<FlashListRef<PokemonSummary> | null>;
+  onScrollBeginDrag: () => void;
 }) {
   if (search.isLoading) return <LoadingView />;
   if (search.isError) return <ErrorView message={getErrorMessage(search.error)} onRetry={search.retry} />;
@@ -123,6 +143,8 @@ function SearchResults({
       topInset={spacing.l}
       refreshing={refreshing}
       onRefresh={onRefresh}
+      listRef={resultsRef}
+      onScrollBeginDrag={onScrollBeginDrag}
     />
   );
 }

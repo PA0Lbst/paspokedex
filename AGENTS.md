@@ -32,7 +32,7 @@ A Pokédex for iOS and Android: browse, search, inspect, favorite, compare and s
 - **Search rules**: `src/utils/search.ts` (`normalizeSearchText`, `isSearchQuery`, `searchPokemon`). Reuse them for any other search field.
 - **Search field**: `src/components/search-field.tsx` (`SearchField`, Figma field with the Android back arrow). Theme token `fieldShadow` for its shadow.
 - **Debounce**: `src/hooks/use-debounced-value.ts` (`useDebouncedValue`).
-- **Tab re-press**: `src/hooks/use-tab-repress.ts` (`useTabRePress(onRePress)`: fires when the user presses the tab they are already on). Every tab screen uses it to reset itself (scroll to top, clear its state), and its trigger in `src/app/(tabs)/_layout.tsx` gets `disableScrollToTop` so the native effect doesn't scroll the wrong list.
+- **Tab re-press**: `src/hooks/use-tab-repress.ts` (`useTabRePress(onRePress)`: fires when the user presses the tab they are already on). Every tab screen uses it to reset itself (scroll to top, clear its state; Home goes through `useTwoPressReset` in `src/hooks/use-two-press-reset.ts` so a search needs two presses to clear), and its trigger in `src/app/(tabs)/_layout.tsx` gets `disableScrollToTop` so the native effect doesn't scroll the wrong list.
 - **Fake database for tests**: `src/test-utils/fake-database.ts` (`createFakeDatabase`, an in-memory stand-in for expo-sqlite: `jest.mock('expo-sqlite', () => ({ openDatabaseAsync: jest.fn(async () => mockDb) }))`). It throws on SQL it doesn't know, so teach it each new statement.
 
 ### Rules learned while building
