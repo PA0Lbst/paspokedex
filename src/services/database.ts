@@ -7,7 +7,7 @@ import { openDatabaseAsync, type SQLiteDatabase } from 'expo-sqlite';
  */
 
 const DATABASE_NAME = 'paspokedex.db';
-export const DATABASE_VERSION = 2;
+export const DATABASE_VERSION = 3;
 
 /** Brings the schema up to DATABASE_VERSION, one step at a time (`PRAGMA user_version`). */
 export async function migrateDatabase(db: SQLiteDatabase): Promise<void> {
@@ -30,6 +30,12 @@ export async function migrateDatabase(db: SQLiteDatabase): Promise<void> {
       'CREATE TABLE IF NOT EXISTS favorites (id INTEGER PRIMARY KEY NOT NULL, name TEXT NOT NULL, added_at INTEGER NOT NULL);',
     );
     version = 2;
+  }
+
+  if (version === 2) {
+    // Offline (#16): the persisted TanStack Query cache, one row.
+    await db.execAsync('CREATE TABLE IF NOT EXISTS query_cache (key TEXT PRIMARY KEY NOT NULL, value TEXT NOT NULL);');
+    version = 3;
   }
 
   await db.execAsync(`PRAGMA user_version = ${DATABASE_VERSION}`);

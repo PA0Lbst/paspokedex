@@ -1,6 +1,7 @@
 import { QueryClient } from '@tanstack/react-query';
 
 import { ApiError } from './api-error';
+import { PERSIST_MAX_AGE_MS } from './query-persister';
 
 /** Don't retry what can't get better (404, broken response). */
 export function shouldRetry(failureCount: number, error: unknown): boolean {
@@ -15,6 +16,10 @@ export function createQueryClient(): QueryClient {
       queries: {
         retry: shouldRetry,
         staleTime: 24 * 60 * 60 * 1000,
+        // Kept as long as the saved cache, so it can be restored offline (#16).
+        gcTime: PERSIST_MAX_AGE_MS,
+        // Offline: show cached data first; a failed fetch doesn't hide it.
+        networkMode: 'offlineFirst',
       },
     },
   });

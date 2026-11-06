@@ -2,6 +2,7 @@ import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import Animated, { FadeIn } from 'react-native-reanimated';
 
 import {
   AboutSection,
@@ -88,11 +89,14 @@ export default function PokemonDetailScreen() {
         </View>
         <View style={styles.panel}>
           <DetailTabs active={tab} onChange={setTab} />
-          {tab === 'About' ? <AboutSection pokemon={pokemon} /> : null}
-          {tab === 'Stats' ? <StatsSection pokemon={pokemon} /> : null}
-          {tab === 'Evolution' ? (
-            <EvolutionSection currentId={pokemon.speciesId} {...detail.evolution} onRetry={detail.evolution.retry} onOpen={openStage} />
-          ) : null}
+          {/* Animation 3 (#9): the new tab fades in, so the switch reads as a change of content. */}
+          <Animated.View key={tab} entering={FadeIn.duration(220)}>
+            {tab === 'About' ? <AboutSection pokemon={pokemon} /> : null}
+            {tab === 'Stats' ? <StatsSection pokemon={pokemon} /> : null}
+            {tab === 'Evolution' ? (
+              <EvolutionSection currentId={pokemon.speciesId} {...detail.evolution} onRetry={detail.evolution.retry} onOpen={openStage} />
+            ) : null}
+          </Animated.View>
         </View>
       </ScrollView>
     </View>

@@ -14,6 +14,7 @@ export function createFakeDatabase() {
   const index = new Map<number, string>();
   const meta = new Map<string, string>();
   const favorites = new Map<number, { name: string; addedAt: number }>();
+  const queryCache = new Map<string, string>();
 
   const flat = (params: unknown[]): Param[] =>
     params.flat().filter((p): p is Param => typeof p === 'string' || typeof p === 'number');
@@ -26,11 +27,13 @@ export function createFakeDatabase() {
     index,
     meta,
     favorites,
+    queryCache,
     /** Empties the tables, keeping the schema (between tests). */
     clearData() {
       index.clear();
       meta.clear();
       favorites.clear();
+      queryCache.clear();
     },
     get userVersion() {
       return userVersion;
@@ -42,6 +45,11 @@ export function createFakeDatabase() {
     }),
     getFirstAsync: jest.fn(async (sql: string, ...params: unknown[]) => {
       if (sql === 'PRAGMA user_version') return { user_version: userVersion };
+      if (sql.startsWith('SELECT value FROM query_cache')) {
+        requireTables();
+        const value = queryCache.get(String(flat(params)[0]));
+        return value === undefined ? null : { value };
+      }
       if (sql.startsWith('SELECT value FROM meta')) {
         requireTables();
         const value = meta.get(String(flat(params)[0]));
@@ -73,6 +81,10 @@ export function createFakeDatabase() {
         favorites.set(Number(values[0]), { name: String(values[1]), addedAt: Number(values[2]) });
       } else if (sql === 'DELETE FROM favorites WHERE id = ?') {
         favorites.delete(Number(values[0]));
+      } else if (sql.startsWith('INSERT OR REPLACE INTO query_cache')) {
+        queryCache.set(String(values[0]), String(values[1]));
+      } else if (sql === 'DELETE FROM query_cache WHERE key = ?') {
+        queryCache.delete(String(values[0]));
       } else if (sql.startsWith('INSERT OR REPLACE INTO meta')) {
         meta.set(String(values[0]), String(values[1]));
       } else {

@@ -1,10 +1,11 @@
-import { QueryClientProvider } from '@tanstack/react-query';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 
 import { useAppFonts } from '@/hooks/use-app-fonts';
-import { createQueryClient } from '@/services/query-client';
+import { createQueryClient, queryKeys } from '@/services/query-client';
+import { PERSIST_MAX_AGE_MS, sqlitePersister } from '@/services/query-persister';
 import { colors, fonts } from '@/theme';
 
 SplashScreen.preventAutoHideAsync();
@@ -26,7 +27,19 @@ export default function RootLayout() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{
+        persister: sqlitePersister,
+        maxAge: PERSIST_MAX_AGE_MS,
+        dehydrateOptions: {
+          // Favorites and the search index already live in their own SQLite tables.
+          shouldDehydrateQuery: (query) =>
+            query.state.status === 'success' &&
+            query.queryKey[0] !== queryKeys.favorites[0] &&
+            query.queryKey[1] !== queryKeys.pokemonIndex[1],
+        },
+      }}>
       <Stack
         screenOptions={{
           contentStyle: { backgroundColor: colors.daylight },
@@ -53,6 +66,6 @@ export default function RootLayout() {
           }}
         />
       </Stack>
-    </QueryClientProvider>
+    </PersistQueryClientProvider>
   );
 }

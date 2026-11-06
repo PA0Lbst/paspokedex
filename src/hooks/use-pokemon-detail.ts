@@ -26,7 +26,8 @@ export function usePokemonDetail(id: number) {
   return {
     pokemon: pokemon.data,
     isLoading: pokemon.isPending,
-    isError: pokemon.isError,
+    // Offline: a failed refresh keeps the saved detail on screen.
+    isError: pokemon.isError && !pokemon.data,
     error: pokemon.error,
     retry: () => {
       pokemon.refetch();
@@ -34,7 +35,7 @@ export function usePokemonDetail(id: number) {
     evolution: {
       rows: chain.data ? flattenEvolution(chain.data) : [],
       isLoading: species.isPending || chain.isPending,
-      isError: species.isError || chain.isError,
+      isError: (species.isError && !species.data) || (chain.isError && !chain.data),
       error: species.error ?? chain.error,
       retry: () => {
         if (species.isError) species.refetch();

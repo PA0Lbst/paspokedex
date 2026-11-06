@@ -1,6 +1,7 @@
 import { Image } from 'expo-image';
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import type { Pokemon } from '@/services/pokeapi-types';
 import { colors, radius, softShadow, spacing, text } from '@/theme';
@@ -81,10 +82,20 @@ export function StatsSection({ pokemon }: { pokemon: Pokemon }) {
   );
 }
 
+/**
+ * Animation 1 (#9): the bar fills from 0 to its value, so the eye reads the size of each stat
+ * and, in Compare, who is ahead. Skipped when the phone asks for reduced motion.
+ */
 export function StatBar({ ratio, color = colors.purple }: { ratio: number; color?: string }) {
+  const progress = useSharedValue(0);
+  useEffect(() => {
+    progress.set(withTiming(ratio, { duration: 600, easing: Easing.out(Easing.cubic) }));
+  }, [progress, ratio]);
+  const fill = useAnimatedStyle(() => ({ width: `${progress.get() * 100}%` }));
+
   return (
     <View style={styles.barTrack}>
-      <View testID="stat-bar-fill" style={[styles.barFill, { width: `${ratio * 100}%`, backgroundColor: color }]} />
+      <Animated.View testID="stat-bar-fill" style={[styles.barFill, { backgroundColor: color }, fill]} />
     </View>
   );
 }

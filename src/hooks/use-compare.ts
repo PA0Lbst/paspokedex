@@ -21,7 +21,7 @@ export function useCompare(firstId: number | null, secondId: number | null) {
     first: first.data,
     second: second.data,
     isLoading: (firstId !== null && first.isPending) || (secondId !== null && second.isPending),
-    isError: first.isError || second.isError,
+    isError: (first.isError && !first.data) || (second.isError && !second.data),
     error: first.error ?? second.error,
     retry: () => {
       if (first.isError) first.refetch();

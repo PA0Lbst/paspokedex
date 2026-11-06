@@ -12,8 +12,7 @@ beforeEach(() => mockDb.clearData());
 describe('favorites store', () => {
   it('migrates the database to the version with the favorites table', async () => {
     await getDatabase();
-    expect(DATABASE_VERSION).toBe(2);
-    expect(mockDb.userVersion).toBe(2);
+    expect(mockDb.userVersion).toBe(DATABASE_VERSION);
     expect(mockDb.execAsync).toHaveBeenCalledWith(expect.stringContaining('CREATE TABLE IF NOT EXISTS favorites'));
   });
 
