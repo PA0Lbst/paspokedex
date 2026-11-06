@@ -52,6 +52,7 @@ export default function FavoritesScreen() {
           listRef={listRef}
         />
       )}
+      {options.dialog}
     </View>
   );
 }
