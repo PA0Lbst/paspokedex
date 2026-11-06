@@ -21,7 +21,8 @@ src/app/
   pokemon/[id].tsx     Detail, pushed over the tabs (#6)
   compare.tsx          Compare two Pokémon (#8)
 src/test-utils/  Query wrapper, fake list pages and in-memory fake database for tests
-src/theme/       Colours, type colours, spacing, typography (Figma tokens)
+src/theme/       Light/dark palettes, useTheme, makeStyles, type colours, spacing, typography
+src/i18n/        English and French strings, type names (follows the phone)
 src/hooks/       use-app-fonts.ts (Rubik), use-pokemon-list.ts, use-pokemon-index.ts, use-pokemon-search.ts, use-debounced-value.ts, use-tab-repress.ts, use-two-press-reset.ts
 src/components/  type-badge.tsx, state-views.tsx, pokemon-card.tsx, pokemon-grid.tsx, search-field.tsx
 src/services/    PokeAPI client, JSON readers, ApiError, QueryClient, SQLite database, search index + __tests__/

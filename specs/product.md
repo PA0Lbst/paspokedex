@@ -55,6 +55,11 @@ Each choice: what we picked, what else we could have done, and why.
 - **Compare opens from the detail**, not from a third tab: Figma has two tabs, and a comparison starts from a Pokémon you are looking at.
 - **Own header on pushed screens** (`ScreenHeader`), not the native Stack header: on iOS 26 the native header puts its buttons in glass capsules, which don't match Figma (plain chevron, "Back", heart). Seen on the phone, fixed by hiding the native header.
 - **Own splash logo**: the Figma splash shows a logo image (216 × 79) that couldn't be exported (Figma connector call limit, no browser sign-in). `assets/images/splash-logo.png` is our own mark in the Figma style: the Purple Poké Ball of the tab bar and "Pokédex" in Rubik Bold Midnight, centred on Daylight. Swap it for the Figma export if it becomes available.
+- **Dark mode with `useTheme` and `makeStyles`** (#10), not a theme library: a light and a dark palette with the same roles; components build their styles from the current one and re-render when the phone switches.
+- **Two languages without an i18n library** (#14): English and French dictionaries in `src/i18n/`, typed so French can't miss a key, with `expo-localization` for the phone's language. Pokémon and ability names stay in English (the API's), types and stats are translated.
+- **Offline in our own database** (#16): the TanStack cache is saved in SQLite (`query_cache`) by a small persister, rather than `expo-sqlite/kv-store`, which would open a second database. Sprites come from expo-image's disk cache.
+- **Optimistic favorites** (#20): the change shows at once and rolls back if SQLite fails.
+- **Animations with a purpose** (#9): stat bars fill up (read the values), the heart pops (confirms the tap), tabs fade in (shows the content changed). They follow the phone's "reduce motion" setting.
 - **iOS and Android only**: the brief and Figma only cover mobile, so the template's web support was removed (#21).
 - **Template code deleted, not kept in `/example`**: git history keeps it (#21).
 
@@ -71,15 +76,15 @@ Each choice: what we picked, what else we could have done, and why.
 
 ## Optional
 
-- [ ] Three different Reanimated animations, each with a purpose (#9)
-- [ ] Dark mode: every screen looks right, all colours from the theme (#10)
+- [x] Three different Reanimated animations, each with a purpose (#9)
+- [x] Dark mode: every screen looks right, all colours from the theme (#10)
 - [x] Pagination: page by page while you scroll, not all at once (#11)
-- [ ] Clean TypeScript: no `any`, no `as` casts, no `@ts-ignore` (#12)
-- [ ] Design: a consistent own style, same buttons, cards and spacing on every screen (#13)
-- [ ] Localization: two languages, follows the phone's language (#14)
-- [ ] No warnings: no `console.log`, no warnings in the terminal or on screen (#15)
-- [ ] Offline: works in airplane mode with the last loaded data (#16)
-- [ ] Tests: at least one logic test per feature; `npm test` passes (#17)
+- [x] Clean TypeScript: no `any`, no `as` casts, no `@ts-ignore` (#12)
+- [-] Design: a consistent own style (battle simulator and own idea routes only), same buttons, cards and spacing on every screen (#13)
+- [x] Localization: two languages, follows the phone's language (#14)
+- [x] No warnings: no `console.log`, no warnings in the terminal or on screen (#15)
+- [x] Offline: works in airplane mode with the last loaded data (#16)
+- [x] Tests: at least one logic test per feature; `npm test` passes (#17)
 - [x] CI: a GitHub Action runs lint, tsc and tests on every push (#18)
-- [ ] Accessibility: labels for VoiceOver/TalkBack, works with the largest text size (#19)
-- [ ] Optimistic update: saving or removing shows at once, rolls back on failure (#20)
+- [x] Accessibility: labels for VoiceOver/TalkBack, works with the largest text size (#19)
+- [x] Optimistic update: saving or removing shows at once, rolls back on failure (#20)
