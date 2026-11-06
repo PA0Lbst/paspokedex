@@ -1,3 +1,5 @@
+import { t } from '@/i18n';
+
 export type ApiErrorKind = 'http' | 'network' | 'invalid';
 
 /** Every failure of the PokeAPI client. The error views show `message`. */
@@ -17,8 +19,8 @@ export class ApiError extends Error {
 /** A short message for the user, whatever went wrong. */
 export function getErrorMessage(error: unknown): string {
   if (error instanceof ApiError) {
-    if (error.kind === 'network') return "You seem to be offline. Check your connection and try again.";
-    if (error.status === 404) return "This Pokémon doesn't exist.";
+    if (error.kind === 'network') return t('errorOffline');
+    if (error.status === 404) return t('errorNotFound');
   }
-  return "We couldn't load the Pokémon. Check your connection and try again.";
+  return t('errorDefault');
 }

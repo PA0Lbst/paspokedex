@@ -17,12 +17,14 @@ import { ErrorView, LoadingView } from '@/components/state-views';
 import { TypeBadge } from '@/components/type-badge';
 import { usePokemonDetail } from '@/hooks/use-pokemon-detail';
 import { getErrorMessage } from '@/services/api-error';
-import { colors, spacing, text } from '@/theme';
+import { makeStyles, spacing, useTheme } from '@/theme';
 import { formatPokemonName, formatPokemonNumber } from '@/utils/format';
 import { shouldShowTitle } from '@/utils/pokemon-detail';
 
 /** Figma Detail: name, number, types, artwork, then About / Stats / Evolution (specs/features/detail.md). */
 export default function PokemonDetailScreen() {
+  const { text } = useTheme();
+  const styles = useStyles();
   const router = useRouter();
   const params = useLocalSearchParams<{ id: string }>();
   const id = Number(params.id);
@@ -105,7 +107,8 @@ export default function PokemonDetailScreen() {
 
 const ARTWORK = 200;
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, text }) =>
+  StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.daylight },
   scroll: { flex: 1 },
   content: { flexGrow: 1 },
@@ -116,4 +119,5 @@ const styles = StyleSheet.create({
   types: { flexDirection: 'row', gap: spacing.s },
   artwork: { width: ARTWORK, height: ARTWORK, alignSelf: 'center', marginTop: spacing.l, marginBottom: -ARTWORK / 4, zIndex: 1 },
   panel: { flexGrow: 1, backgroundColor: colors.white, paddingTop: ARTWORK / 4 + spacing.xl, paddingHorizontal: spacing.xl, paddingBottom: spacing.xxl },
-});
+}),
+);

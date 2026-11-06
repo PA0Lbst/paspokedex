@@ -1,6 +1,6 @@
 import type { TextStyle } from 'react-native';
 
-import { colors } from './colors';
+import type { Colors } from './colors';
 
 /**
  * Rubik faces, one fontFamily name per weight (see src/hooks/use-app-fonts.ts).
@@ -13,7 +13,9 @@ export const fonts = {
   bold: 'Rubik-Bold',
 } as const;
 
-export const text = {
+/** Text styles for a palette (light or dark). */
+export function makeText(colors: Colors) {
+  return {
   /** Detail name: Figma 32, Cabinet Grotesk ExtraBold. */
   display: { fontFamily: fonts.bold, fontSize: 32, lineHeight: 38, color: colors.midnight },
   /** "All Pokémon", "My favorites": Figma 24, Cabinet Grotesk ExtraBold. */
@@ -30,5 +32,8 @@ export const text = {
   /** Search field: Figma 16, Inter Regular. */
   input: { fontFamily: fonts.regular, fontSize: 16, color: colors.midnight },
   /** Card number label ("001"). */
-  badge: { fontFamily: fonts.medium, fontSize: 10, color: colors.white },
-} satisfies Record<string, TextStyle>;
+  badge: { fontFamily: fonts.medium, fontSize: 10, color: colors.onAccent },
+  } satisfies Record<string, TextStyle>;
+}
+
+export type TextStyles = ReturnType<typeof makeText>;

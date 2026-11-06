@@ -1,13 +1,16 @@
 import { ActivityIndicator, Image, type ImageSourcePropType, Pressable, type StyleProp, StyleSheet, Text, View, type ViewStyle } from 'react-native';
 
-import { colors, radius, softShadow, spacing, text } from '@/theme';
+import { makeStyles, radius, softShadow, spacing, useTheme } from '@/theme';
+import { t } from '@/i18n';
 
 /**
  * Loading, error and empty states. Not in Figma: designed in its style
  * (see mockups/01-theme.html).
  */
 
-export function LoadingView({ message = 'Loading Pokémon…' }: { message?: string }) {
+export function LoadingView({ message = t('loadingPokemon') }: { message?: string }) {
+  const { colors } = useTheme();
+  const styles = useStyles();
   return (
     <View style={styles.center} accessibilityRole="progressbar" accessibilityLabel={message}>
       <ActivityIndicator size="large" color={colors.purple} />
@@ -22,20 +25,22 @@ type ErrorProps = {
 };
 
 export function ErrorView({
-  message = "We couldn't load the Pokémon. Check your connection and try again.",
+  message = t('errorDefault'),
   onRetry,
 }: ErrorProps) {
+  const { text } = useTheme();
+  const styles = useStyles();
   return (
     <View style={styles.center}>
       <View style={styles.card}>
-        <Text style={text.heading}>Something went wrong</Text>
+        <Text style={text.heading}>{t('somethingWrong')}</Text>
         <Text style={[text.body, styles.message]}>{message}</Text>
         <Pressable
           onPress={onRetry}
           accessibilityRole="button"
-          accessibilityLabel="Try again"
+          accessibilityLabel={t('tryAgain')}
           style={({ pressed }) => [styles.button, pressed && styles.pressed]}>
-          <Text style={[text.label, styles.buttonLabel]}>Try again</Text>
+          <Text style={[text.label, styles.buttonLabel]}>{t('tryAgain')}</Text>
         </Pressable>
       </View>
     </View>
@@ -43,7 +48,10 @@ export function ErrorView({
 }
 
 /** Outlined Poké Ball in Silver, for empty states and missing sprites. Decorative. */
-export function PokeBallOutline({ size = 64, background = colors.daylight }: { size?: number; background?: string }) {
+export function PokeBallOutline({ size = 64, background }: { size?: number; background?: string }) {
+  const { colors } = useTheme();
+  const styles = useStyles();
+  const centerColor = background ?? colors.daylight;
   const border = size / 16;
   const center = (size * 3) / 8;
   return (
@@ -56,7 +64,7 @@ export function PokeBallOutline({ size = 64, background = colors.daylight }: { s
       <View
         style={[
           styles.ballCenter,
-          { width: center, height: center, borderRadius: center / 2, borderWidth: border, backgroundColor: background },
+          { width: center, height: center, borderRadius: center / 2, borderWidth: border, backgroundColor: centerColor },
         ]}
       />
     </View>
@@ -73,6 +81,8 @@ type EmptyProps = {
 };
 
 export function EmptyState({ title, message, image, style }: EmptyProps) {
+  const { text } = useTheme();
+  const styles = useStyles();
   return (
     <View style={[styles.center, style]}>
       {image ? (
@@ -86,7 +96,8 @@ export function EmptyState({ title, message, image, style }: EmptyProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, text }) =>
+  StyleSheet.create({
   center: {
     flex: 1,
     alignItems: 'center',
@@ -113,9 +124,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.purple,
   },
   pressed: { opacity: 0.8 },
-  buttonLabel: { color: colors.white },
+  buttonLabel: { color: colors.onAccent },
   emptyImage: { width: 200, height: 200 },
   ball: { borderColor: colors.silver, alignItems: 'center', justifyContent: 'center' },
   ballLine: { position: 'absolute', backgroundColor: colors.silver },
   ballCenter: { borderColor: colors.silver },
-});
+}),
+);

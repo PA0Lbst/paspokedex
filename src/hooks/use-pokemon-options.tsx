@@ -5,6 +5,7 @@ import type { PokemonSummary } from '@/services/pokeapi-types';
 import { buildShareMessage } from '@/utils/share';
 
 import { useFavorites } from './use-favorites';
+import { t } from '@/i18n';
 
 export type PokemonOption = {
   key: 'open' | 'favorite' | 'share';
@@ -14,7 +15,7 @@ export type PokemonOption = {
 
 /** Labels of the Figma Options sheet, in order. The favorite one depends on the current state. */
 export function optionLabels(isFavorite: boolean): [string, string, string] {
-  return ['Open Pokémon', isFavorite ? 'Remove from favorites' : 'Add to favorites', 'Share'];
+  return [t('openPokemon'), isFavorite ? t('removeFavorite') : t('addFavorite'), t('share')];
 }
 
 /** Opens the Options sheet of a card's ⋮ (#22): a native bottom sheet (route `options/[id]`). */

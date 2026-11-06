@@ -1,21 +1,27 @@
 import type { EvolutionStage } from '@/services/pokeapi-types';
 
 import { formatPokemonName } from './format';
+import { formatDecimal, type MessageKey, t, typeName } from '@/i18n';
 
 /** Helpers for the detail screen (specs/features/detail.md). */
 
 /** The API gives hectograms: 69 → "6.9 kg". */
 export function formatWeight(hectograms: number): string {
-  return `${(hectograms / 10).toFixed(1)} kg`;
+  return `${formatDecimal(hectograms / 10)} kg`;
 }
 
 /** The API gives decimetres: 7 → "0.7 m". */
 export function formatHeight(decimetres: number): string {
-  return `${(decimetres / 10).toFixed(1)} m`;
+  return `${formatDecimal(decimetres / 10)} m`;
 }
 
 export function formatBaseExperience(value: number | null): string {
   return value === null ? '—' : `${value} XP`;
+}
+
+/** Types in the app's language: ["grass", "poison"] → "Grass, Poison" / "Plante, Poison". */
+export function formatTypeList(types: string[]): string {
+  return types.length === 0 ? '—' : types.map((type) => typeName(type)).join(', ');
 }
 
 /** "grass", "lightning-rod" → "Grass, Lightning rod". */
@@ -23,17 +29,18 @@ export function formatNameList(names: string[]): string {
   return names.length === 0 ? '—' : names.map(formatPokemonName).join(', ');
 }
 
-const STAT_LABELS: Record<string, string> = {
-  hp: 'HP',
-  attack: 'Attack',
-  defense: 'Defense',
-  'special-attack': 'Sp. Atk',
-  'special-defense': 'Sp. Def',
-  speed: 'Speed',
+const STAT_LABELS: Record<string, MessageKey> = {
+  hp: 'statHp',
+  attack: 'statAttack',
+  defense: 'statDefense',
+  'special-attack': 'statSpAttack',
+  'special-defense': 'statSpDefense',
+  speed: 'statSpeed',
 };
 
 export function statLabel(name: string): string {
-  return STAT_LABELS[name] ?? formatPokemonName(name);
+  const key = STAT_LABELS[name];
+  return key ? t(key) : formatPokemonName(name);
 }
 
 /** Highest base stat in the games (Blissey's HP), so bars compare across Pokémon. */

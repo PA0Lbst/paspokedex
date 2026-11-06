@@ -3,17 +3,17 @@ import { Image, type ImageSourcePropType, Platform, Pressable, StyleSheet, Text,
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { type PokemonOption, usePokemonActions } from '@/hooks/use-pokemon-options';
-import { colors, fonts, radius, spacing } from '@/theme';
+import { fonts, makeStyles, radius, spacing, useTheme } from '@/theme';
 import { formatPokemonName } from '@/utils/format';
-
-/** System blue of the Figma Options sheet. */
-const ACTION_BLUE = '#006DF8';
+import { t } from '@/i18n';
 
 /**
  * Figma "Options", as a native bottom sheet (Stack `formSheet`, see the root layout):
  * Open Pokémon, Add to / Remove from favorites, Share, and Cancel on iOS (specs/features/share.md).
  */
 export default function PokemonOptionsScreen() {
+  const { colors } = useTheme();
+  const styles = useStyles();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ id: string; name: string }>();
@@ -42,30 +42,32 @@ export default function PokemonOptionsScreen() {
             <Image
               source={icons[option.key]}
               style={styles.icon}
-              tintColor={option.key === 'favorite' && isFavorite ? undefined : ACTION_BLUE}
+              tintColor={option.key === 'favorite' && isFavorite ? undefined : colors.actionBlue}
             />
             <Text style={styles.label}>{option.label}</Text>
           </Pressable>
         ))}
       </View>
       {Platform.OS === 'ios' ? (
-        <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel="Cancel" style={({ pressed }) => [styles.cancel, pressed && styles.pressed]}>
-          <Text style={styles.cancelLabel}>Cancel</Text>
+        <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={t('cancel')} style={({ pressed }) => [styles.cancel, pressed && styles.pressed]}>
+          <Text style={styles.cancelLabel}>{t('cancel')}</Text>
         </Pressable>
       ) : null}
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors }) =>
+  StyleSheet.create({
   sheet: { paddingTop: spacing.xl, paddingHorizontal: spacing.m, gap: spacing.m, backgroundColor: colors.daylight },
   title: { fontFamily: fonts.semiBold, fontSize: 16, color: colors.midnight, textAlign: 'center' },
-  group: { borderRadius: radius.sheet, overflow: 'hidden', backgroundColor: '#F0F0F0' },
+  group: { borderRadius: radius.sheet, overflow: 'hidden', backgroundColor: colors.sheetGroup },
   option: { flexDirection: 'row', alignItems: 'center', gap: 20, paddingHorizontal: 20, paddingVertical: 18 },
-  separator: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#DADADA' },
+  separator: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.sheetSeparator },
   pressed: { opacity: 0.6 },
   icon: { width: 24, height: 24 },
-  label: { fontFamily: fonts.regular, fontSize: 18, color: '#000000' },
-  cancel: { borderRadius: radius.sheet, backgroundColor: '#FEFEFE', paddingVertical: spacing.l, alignItems: 'center' },
-  cancelLabel: { fontFamily: fonts.bold, fontSize: 20, color: ACTION_BLUE },
-});
+  label: { fontFamily: fonts.regular, fontSize: 18, color: colors.sheetText },
+  cancel: { borderRadius: radius.sheet, backgroundColor: colors.sheetCancel, paddingVertical: spacing.l, alignItems: 'center' },
+  cancelLabel: { fontFamily: fonts.bold, fontSize: 20, color: colors.actionBlue },
+}),
+);

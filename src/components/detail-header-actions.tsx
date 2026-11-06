@@ -4,11 +4,14 @@ import Animated, { useAnimatedStyle, useSharedValue, withSequence, withSpring } 
 
 import { useFavorites } from '@/hooks/use-favorites';
 import type { Pokemon } from '@/services/pokeapi-types';
-import { colors, spacing, text } from '@/theme';
+import { makeStyles, spacing, useTheme } from '@/theme';
 import { formatPokemonName } from '@/utils/format';
+import { t } from '@/i18n';
 
 /** Compare and the favorite heart, on the right of the native header. */
 export function HeaderActions({ pokemon }: { pokemon: Pokemon }) {
+  const { colors, text } = useTheme();
+  const styles = useStyles();
   const router = useRouter();
   const { isFavorite, toggleFavorite } = useFavorites();
   const favorite = isFavorite(pokemon.id);
@@ -25,14 +28,14 @@ export function HeaderActions({ pokemon }: { pokemon: Pokemon }) {
       <Pressable
         onPress={() => router.push({ pathname: '/compare', params: { first: String(pokemon.id) } })}
         accessibilityRole="button"
-        accessibilityLabel={`Compare ${name}`}
+        accessibilityLabel={t('compareNamed', { name })}
         hitSlop={spacing.s}>
-        <Text style={[text.labelSmall, styles.compare]}>Compare</Text>
+        <Text style={[text.labelSmall, styles.compare]}>{t('compare')}</Text>
       </Pressable>
       <Pressable
         onPress={toggle}
         accessibilityRole="button"
-        accessibilityLabel={favorite ? 'Remove from favorites' : 'Add to favorites'}
+        accessibilityLabel={favorite ? t('removeFavorite') : t('addFavorite')}
         accessibilityState={{ selected: favorite }}
         hitSlop={spacing.s}>
         {/* Favorite: filled red heart; not yet: Midnight outline (Figma Favorite icon). */}
@@ -48,8 +51,10 @@ export function HeaderActions({ pokemon }: { pokemon: Pokemon }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors }) =>
+  StyleSheet.create({
   headerActions: { flexDirection: 'row', alignItems: 'center', gap: spacing.l },
   compare: { color: colors.purple },
   heart: { width: 24, height: 24 },
-});
+}),
+);

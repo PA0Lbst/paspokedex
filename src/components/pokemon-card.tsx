@@ -4,12 +4,13 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 
 import type { PokemonSummary } from '@/services/pokeapi-types';
-import { colors, radius, softShadow, spacing, text } from '@/theme';
+import { makeStyles, radius, softShadow, spacing, useTheme } from '@/theme';
 import { formatPokemonName, formatPokemonNumber } from '@/utils/format';
 
 import { MENU_SIZE } from './menu-size';
 import { MoreIcon } from './more-icon';
 import { PokeBallOutline } from './state-views';
+import { t } from '@/i18n';
 
 type Props = {
   pokemon: PokemonSummary;
@@ -20,6 +21,8 @@ type Props = {
 
 /** Figma "Pokecard": sprite on a light square, Purple number label, name. */
 export function PokemonCard({ pokemon, onPress, onMore }: Props) {
+  const { colors, text } = useTheme();
+  const styles = useStyles();
   const [spriteFailed, setSpriteFailed] = useState(false);
   const name = formatPokemonName(pokemon.name);
   const number = formatPokemonNumber(pokemon.id);
@@ -29,7 +32,7 @@ export function PokemonCard({ pokemon, onPress, onMore }: Props) {
       <Pressable
         onPress={() => onPress(pokemon)}
         accessibilityRole="button"
-        accessibilityLabel={`${name}, number ${number}`}
+        accessibilityLabel={t('cardLabel', { name, number })}
         style={({ pressed }) => pressed && styles.pressed}>
         <View style={styles.imageBox}>
           {spriteFailed ? (
@@ -62,7 +65,7 @@ export function PokemonCard({ pokemon, onPress, onMore }: Props) {
           onPress={() => onMore(pokemon)}
           hitSlop={spacing.xs}
           accessibilityRole="button"
-          accessibilityLabel={`Options for ${name}`}
+          accessibilityLabel={t('optionsFor', { name })}
           style={({ pressed }) => [styles.menu, pressed && styles.pressed]}>
           <MoreIcon />
         </Pressable>
@@ -71,7 +74,8 @@ export function PokemonCard({ pokemon, onPress, onMore }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors }) =>
+  StyleSheet.create({
   card: {
     flex: 1,
     overflow: 'hidden',
@@ -110,4 +114,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-});
+}),
+);

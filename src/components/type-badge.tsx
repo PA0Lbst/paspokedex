@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { colors, getTypeColor, radius, spacing, text } from '@/theme';
+import { getTypeColor, makeStyles, radius, spacing, useTheme } from '@/theme';
+import { t, typeName } from '@/i18n';
 
 type Props = {
   /** Type name as the API gives it, e.g. "grass". */
@@ -13,15 +14,18 @@ export function capitalize(name: string): string {
 
 /** Figma "Type": a neutral pill with a dot in the type colour. */
 export function TypeBadge({ type }: Props) {
+  const { text } = useTheme();
+  const styles = useStyles();
   return (
-    <View style={styles.badge} accessibilityLabel={`Type ${capitalize(type)}`}>
+    <View style={styles.badge} accessibilityLabel={t('typeLabel', { type: typeName(type) })}>
       <View testID="type-dot" style={[styles.dot, { backgroundColor: getTypeColor(type) }]} />
-      <Text style={text.label}>{capitalize(type)}</Text>
+      <Text style={text.label}>{typeName(type)}</Text>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors }) =>
+  StyleSheet.create({
   badge: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -34,4 +38,5 @@ const styles = StyleSheet.create({
     backgroundColor: colors.chip,
   },
   dot: { width: 12, height: 12, borderRadius: 6 },
-});
+}),
+);

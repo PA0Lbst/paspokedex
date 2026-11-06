@@ -14,13 +14,16 @@ import { useTabRePress } from '@/hooks/use-tab-repress';
 import { useTwoPressReset } from '@/hooks/use-two-press-reset';
 import { getErrorMessage } from '@/services/api-error';
 import type { PokemonSummary } from '@/services/pokeapi-types';
-import { colors, spacing, text } from '@/theme';
+import { makeStyles, spacing, useTheme } from '@/theme';
+import { t } from '@/i18n';
 
 /**
  * Pokémons tab: the search field (specs/features/search.md) above every Pokémon in a
  * 2-column grid, 20 at a time (specs/features/list.md).
  */
 export default function PokemonListScreen() {
+  const { text } = useTheme();
+  const styles = useStyles();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const list = usePokemonList();
@@ -61,7 +64,7 @@ export default function PokemonListScreen() {
     }
   };
 
-  const title = <Text style={[text.title, styles.title]}>All Pokémon</Text>;
+  const title = <Text style={[text.title, styles.title]}>{t('allPokemon')}</Text>;
 
   return (
     <View style={styles.screen}>
@@ -137,8 +140,8 @@ function SearchResults({
   if (search.results.length === 0) {
     return (
       <EmptyState
-        title={`No Pokémon found for “${search.searchedText}”`}
-        message="Check the spelling, or try part of the name or the number."
+        title={t('noResults', { query: search.searchedText })}
+        message={t('noResultsHint')}
       />
     );
   }
@@ -171,7 +174,8 @@ function useBackClearsSearch(hasQuery: boolean, clear: () => void) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors }) =>
+  StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.daylight },
   // Above the grid, so cards scroll under the field and its shadow.
   searchRow: { paddingHorizontal: spacing.l, zIndex: 1 },
@@ -179,4 +183,5 @@ const styles = StyleSheet.create({
   hidden: { display: 'none' },
   titleRow: { paddingHorizontal: spacing.xl, paddingTop: spacing.xxl },
   title: { marginBottom: spacing.l, marginHorizontal: spacing.s / 2 },
-});
+}),
+);

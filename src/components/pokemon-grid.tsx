@@ -3,9 +3,10 @@ import type { ReactElement, Ref } from 'react';
 import { ActivityIndicator, Pressable, RefreshControl, StyleSheet, Text, View } from 'react-native';
 
 import type { PokemonSummary } from '@/services/pokeapi-types';
-import { colors, radius, spacing, text } from '@/theme';
+import { makeStyles, radius, spacing, useTheme } from '@/theme';
 
 import { PokemonCard } from './pokemon-card';
+import { t } from '@/i18n';
 
 type Props = {
   pokemon: PokemonSummary[];
@@ -44,6 +45,8 @@ export function PokemonGrid({
   listRef,
   onScrollBeginDrag,
 }: Props) {
+  const { colors } = useTheme();
+  const styles = useStyles();
   return (
     <FlashList
       ref={listRef}
@@ -89,23 +92,25 @@ function GridFooter({
   loadMoreFailed: boolean;
   onRetry?: () => void;
 }) {
+  const { colors, text } = useTheme();
+  const styles = useStyles();
   if (loadMoreFailed) {
     return (
       <View style={styles.footer}>
-        <Text style={text.body}>Couldn&apos;t load more.</Text>
+        <Text style={text.body}>{t('loadMoreFailed')}</Text>
         <Pressable
           onPress={onRetry}
           accessibilityRole="button"
-          accessibilityLabel="Try again"
+          accessibilityLabel={t('tryAgain')}
           style={({ pressed }) => [styles.retry, pressed && styles.pressed]}>
-          <Text style={[text.labelSmall, styles.retryLabel]}>Try again</Text>
+          <Text style={[text.labelSmall, styles.retryLabel]}>{t('tryAgain')}</Text>
         </Pressable>
       </View>
     );
   }
   if (isLoadingMore) {
     return (
-      <View style={styles.footer} accessibilityRole="progressbar" accessibilityLabel="Loading more Pokémon">
+      <View style={styles.footer} accessibilityRole="progressbar" accessibilityLabel={t('loadingMore')}>
         <ActivityIndicator color={colors.purple} />
       </View>
     );
@@ -113,7 +118,8 @@ function GridFooter({
   return <View style={styles.footerSpace} />;
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors }) =>
+  StyleSheet.create({
   content: { paddingHorizontal: spacing.xl - spacing.s / 2 },
   cell: { flex: 1, paddingBottom: spacing.l },
   cellLeft: { paddingLeft: spacing.s / 2, paddingRight: spacing.s },
@@ -133,6 +139,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.card,
     backgroundColor: colors.purple,
   },
-  retryLabel: { color: colors.white },
+  retryLabel: { color: colors.onAccent },
   pressed: { opacity: 0.8 },
-});
+}),
+);

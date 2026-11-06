@@ -4,7 +4,8 @@ import type { ReactNode } from 'react';
 import { Image, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors, fonts, spacing, text } from '@/theme';
+import { fonts, makeStyles, spacing, useTheme } from '@/theme';
+import { t } from '@/i18n';
 
 type Props = {
   /** Centred title; hidden until `showTitle` (Figma "Detail - scroll"). */
@@ -19,6 +20,8 @@ type Props = {
  * Android: the Figma back arrow.
  */
 export function ScreenHeader({ title, showTitle = true, right }: Props) {
+  const { colors, text } = useTheme();
+  const styles = useStyles();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const ios = Platform.OS === 'ios';
@@ -29,7 +32,7 @@ export function ScreenHeader({ title, showTitle = true, right }: Props) {
         <Pressable
           onPress={() => router.back()}
           accessibilityRole="button"
-          accessibilityLabel="Back"
+          accessibilityLabel={t('back')}
           hitSlop={spacing.s}
           style={({ pressed }) => [styles.back, pressed && styles.pressed]}>
           {ios ? (
@@ -37,7 +40,7 @@ export function ScreenHeader({ title, showTitle = true, right }: Props) {
           ) : (
             <Image source={require('@/assets/icons/back.png')} style={styles.icon} tintColor={colors.midnight} />
           )}
-          {ios ? <Text style={styles.backLabel}>Back</Text> : null}
+          {ios ? <Text style={styles.backLabel}>{t('back')}</Text> : null}
         </Pressable>
         <Text style={[text.labelSmall, styles.title, !showTitle && styles.hidden]} numberOfLines={1}>
           {title}
@@ -48,7 +51,8 @@ export function ScreenHeader({ title, showTitle = true, right }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors }) =>
+  StyleSheet.create({
   bar: { backgroundColor: colors.daylight, zIndex: 2 },
   row: { height: 48, flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.l },
   back: { flexDirection: 'row', alignItems: 'center', gap: 5, minWidth: 80 },
@@ -58,4 +62,5 @@ const styles = StyleSheet.create({
   title: { flex: 1, textAlign: 'center', fontSize: 16 },
   hidden: { opacity: 0 },
   right: { minWidth: 80, alignItems: 'flex-end' },
-});
+}),
+);

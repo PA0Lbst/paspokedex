@@ -4,25 +4,30 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import type { Pokemon } from '@/services/pokeapi-types';
-import { colors, radius, softShadow, spacing, text } from '@/theme';
+import { makeStyles, radius, softShadow, spacing, useTheme } from '@/theme';
 import { formatPokemonName, formatPokemonNumber } from '@/utils/format';
 import {
   type EvolutionRow,
   formatBaseExperience,
   formatHeight,
   formatNameList,
+  formatTypeList,
   formatWeight,
   statLabel,
   statRatio,
 } from '@/utils/pokemon-detail';
 
 import { ErrorView, LoadingView } from './state-views';
+import { t } from '@/i18n';
 
 export const DETAIL_TABS = ['About', 'Stats', 'Evolution'] as const;
+const TAB_LABELS = { About: 'tabAbout', Stats: 'tabStats', Evolution: 'tabEvolution' } as const;
 export type DetailTab = (typeof DETAIL_TABS)[number];
 
 /** Figma "Tabs": three equal tabs, Purple underline on the active one. */
 export function DetailTabs({ active, onChange }: { active: DetailTab; onChange: (tab: DetailTab) => void }) {
+  const { text } = useTheme();
+  const styles = useStyles();
   return (
     <View style={styles.tabs} accessibilityRole="tablist">
       {DETAIL_TABS.map((tab) => {
@@ -34,7 +39,7 @@ export function DetailTabs({ active, onChange }: { active: DetailTab; onChange: 
             accessibilityRole="tab"
             accessibilityState={{ selected }}
             style={[styles.tab, selected && styles.tabActive]}>
-            <Text style={[text.labelSmall, styles.tabLabel, !selected && styles.tabLabelInactive]}>{tab}</Text>
+            <Text style={[text.labelSmall, styles.tabLabel, !selected && styles.tabLabelInactive]}>{t(TAB_LABELS[tab])}</Text>
           </Pressable>
         );
       })}
@@ -44,14 +49,16 @@ export function DetailTabs({ active, onChange }: { active: DetailTab; onChange: 
 
 /** About: label / value rows, as in Figma. */
 export function AboutSection({ pokemon }: { pokemon: Pokemon }) {
+  const { text } = useTheme();
+  const styles = useStyles();
   const rows: [string, string][] = [
-    ['Name', formatPokemonName(pokemon.name)],
-    ['ID', formatPokemonNumber(pokemon.id)],
-    ['Base', formatBaseExperience(pokemon.baseExperience)],
-    ['Weight', formatWeight(pokemon.weight)],
-    ['Height', formatHeight(pokemon.height)],
-    ['Types', formatNameList(pokemon.types)],
-    ['Abilities', formatNameList(pokemon.abilities)],
+    [t('aboutName'), formatPokemonName(pokemon.name)],
+    [t('aboutId'), formatPokemonNumber(pokemon.id)],
+    [t('aboutBase'), formatBaseExperience(pokemon.baseExperience)],
+    [t('aboutWeight'), formatWeight(pokemon.weight)],
+    [t('aboutHeight'), formatHeight(pokemon.height)],
+    [t('aboutTypes'), formatTypeList(pokemon.types)],
+    [t('aboutAbilities'), formatNameList(pokemon.abilities)],
   ];
   return (
     <View style={styles.section}>
@@ -67,6 +74,8 @@ export function AboutSection({ pokemon }: { pokemon: Pokemon }) {
 
 /** Stats: name and value, with a bar out of 255 under it. */
 export function StatsSection({ pokemon }: { pokemon: Pokemon }) {
+  const { text } = useTheme();
+  const styles = useStyles();
   return (
     <View style={[styles.section, styles.statsGap]}>
       {pokemon.stats.map((stat) => (
@@ -86,7 +95,10 @@ export function StatsSection({ pokemon }: { pokemon: Pokemon }) {
  * Animation 1 (#9): the bar fills from 0 to its value, so the eye reads the size of each stat
  * and, in Compare, who is ahead. Skipped when the phone asks for reduced motion.
  */
-export function StatBar({ ratio, color = colors.purple }: { ratio: number; color?: string }) {
+export function StatBar({ ratio, color }: { ratio: number; color?: string }) {
+  const { colors } = useTheme();
+  const styles = useStyles();
+  const fillColor = color ?? colors.purple;
   const progress = useSharedValue(0);
   useEffect(() => {
     progress.set(withTiming(ratio, { duration: 600, easing: Easing.out(Easing.cubic) }));
@@ -95,7 +107,7 @@ export function StatBar({ ratio, color = colors.purple }: { ratio: number; color
 
   return (
     <View style={styles.barTrack}>
-      <Animated.View testID="stat-bar-fill" style={[styles.barFill, { backgroundColor: color }, fill]} />
+      <Animated.View testID="stat-bar-fill" style={[styles.barFill, { backgroundColor: fillColor }, fill]} />
     </View>
   );
 }
@@ -111,9 +123,11 @@ type EvolutionProps = {
 
 /** Evolution: row-style Pokecards joined by a line; tap a stage to open it. */
 export function EvolutionSection({ currentId, rows, isLoading, isError, onRetry, onOpen }: EvolutionProps) {
-  if (isLoading) return <LoadingView message="Loading evolutions…" />;
-  if (isError) return <ErrorView message="We couldn't load the evolution chain." onRetry={onRetry} />;
-  if (rows.length <= 1) return <Text style={[text.body, styles.section]}>This Pokémon does not evolve.</Text>;
+  const { text } = useTheme();
+  const styles = useStyles();
+  if (isLoading) return <LoadingView message={t('loadingEvolutions')} />;
+  if (isError) return <ErrorView message={t('evolutionError')} onRetry={onRetry} />;
+  if (rows.length <= 1) return <Text style={[text.body, styles.section]}>{t('noEvolution')}</Text>;
 
   return (
     <View style={styles.section}>
@@ -127,7 +141,7 @@ export function EvolutionSection({ currentId, rows, isLoading, isError, onRetry,
               onPress={() => onOpen(row.id)}
               disabled={current}
               accessibilityRole="button"
-              accessibilityLabel={current ? `${name}, shown now` : `Open ${name}`}
+              accessibilityLabel={current ? t('shownNow', { name }) : t('openNamed', { name })}
               style={({ pressed }) => [styles.evoCard, current && styles.evoCurrent, pressed && styles.pressed]}>
               <View style={styles.evoImage}>
                 <Image source={row.spriteUrl} style={styles.evoSprite} contentFit="contain" accessible={false} />
@@ -146,7 +160,8 @@ export function EvolutionSection({ currentId, rows, isLoading, isError, onRetry,
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors }) =>
+  StyleSheet.create({
   tabs: { flexDirection: 'row' },
   tab: { flex: 1, paddingTop: 5, paddingBottom: 10, borderBottomWidth: 2, borderBottomColor: colors.silver },
   tabActive: { borderBottomColor: colors.purple },
@@ -176,4 +191,5 @@ const styles = StyleSheet.create({
   evoSprite: { width: 64, height: 64 },
   evoText: { flex: 1, paddingHorizontal: spacing.l, gap: spacing.xs, alignItems: 'flex-start' },
   numberLabel: { paddingHorizontal: 6, paddingTop: spacing.xs, paddingBottom: 2, borderRadius: 4, backgroundColor: colors.purple },
-});
+}),
+);
