@@ -27,11 +27,12 @@ export function HeaderActions({ pokemon }: { pokemon: Pokemon }) {
         accessibilityLabel={favorite ? 'Remove from favorites' : 'Add to favorites'}
         accessibilityState={{ selected: favorite }}
         hitSlop={spacing.s}>
-        <Image
-          source={require('@/assets/icons/favorite.png')}
-          style={styles.heart}
-          tintColor={favorite ? colors.purple : colors.midnight}
-        />
+        {/* Favorite: filled red heart; not yet: Midnight outline (Figma Favorite icon). */}
+        {favorite ? (
+          <Image testID="heart-filled" source={require('@/assets/icons/favorite-filled.png')} style={styles.heart} />
+        ) : (
+          <Image testID="heart-outline" source={require('@/assets/icons/favorite.png')} style={styles.heart} tintColor={colors.midnight} />
+        )}
       </Pressable>
     </View>
   );

@@ -36,7 +36,7 @@ Each feature is one file in `specs/features/` and one GitHub issue. The file is 
 Each choice: what we picked, what else we could have done, and why.
 
 - **Stored in SQLite**: the favorites (#7) and the search index (#5). Other API data is only cached by TanStack Query. The index was first meant to stay in memory too, but storing it lets search work offline after the first launch and avoids downloading 93 KB at every start; it is refreshed after 7 days or on pull to refresh.
-- **Native feature**: Share, from the ⋮ Options sheet on a card (as in Figma), with React Native `Share` (the system share sheet, works in Expo Go). `expo-sharing` was the alternative, but it shares files and we send text.
+- **Native feature**: Share, from the ⋮ Options menu on a card (as in Figma, shown as the system's own action sheet / dialog), with React Native `Share` (the system share sheet, works in Expo Go). `expo-sharing` was the alternative, but it shares files and we send text.
 - **Expo Go, fonts with `useFonts`**: the Expo docs recommend the `expo-font` config plugin, but it needs a development build. We run in Expo Go, so the font is loaded at startup with `useFonts`, behind the splash screen.
 - **Rubik only**: Figma also uses Cabinet Grotesk (titles) and Inter (search field), but the course provides Rubik only. Titles use Rubik Bold, the search field Rubik Regular. Adding the other two would mean more files and a new dependency for a small visual gain.
 - **Fonts as one name per weight** (`Rubik-Regular`, `Rubik-Medium`...), not one `Rubik` family with `fontWeight`: expo-font 58 supports families, but on Android below API 29 a family only loads its default face. Separate names behave the same everywhere in Expo Go.

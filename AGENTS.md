@@ -17,7 +17,7 @@ A Pokédex for iOS and Android: browse, search, inspect, favorite, compare and s
 - **Fonts**: `src/hooks/use-app-fonts.ts` loads Rubik as `Rubik-Regular`, `Rubik-Medium`, `Rubik-SemiBold`, `Rubik-Bold` (one name per weight, no `fontWeight`). The root layout keeps the splash screen up until they are loaded.
 - **State views**: `src/components/state-views.tsx` (`LoadingView`, `ErrorView` with Try again, `EmptyState`). Every screen that loads data uses them.
 - **Type badge**: `src/components/type-badge.tsx` (`TypeBadge`, `capitalize`).
-- **Icons**: PNGs exported from Figma in `assets/icons/` (@1x/@2x/@3x), SVG sources in `assets/icons/figma/`. Tint them with `tintColor`; don't add an icon library.
+- **Icons**: PNGs exported from Figma in `assets/icons/` (@1x/@2x/@3x), SVG sources in `assets/icons/figma/`. Tint them with `tintColor`; don't add an icon library. Exception: `favorite-filled.png` is the filled red heart (`#FF4F68`, Figma red) shown once a Pokémon is a favorite; never tint it, and never show a favorite as a tinted outline.
 - **API client**: `src/services/pokeapi.ts` (`fetchPokemonPage`, `fetchPokemon`, `fetchSpecies`, `fetchEvolutionChain`, `getIdFromUrl`, `spriteUrl`, `artworkUrl`, `PAGE_SIZE`). Types in `src/services/pokeapi-types.ts`. Never call `fetch` anywhere else.
 - **JSON readers**: `src/services/json.ts` turns `unknown` JSON into typed data and throws `ApiError('invalid')` on a wrong shape. Use them for any new endpoint; no `any`, no `as`, no zod.
 - **Errors**: `src/services/api-error.ts` (`ApiError` with `kind` network / http / invalid, `getErrorMessage` for the error views).
@@ -26,7 +26,7 @@ A Pokédex for iOS and Android: browse, search, inspect, favorite, compare and s
 - **List data**: `src/hooks/use-pokemon-list.ts` (`usePokemonList`: infinite query, 20 per page, `loadMore` is safe to call often).
 - **Cards and grid**: `src/components/pokemon-card.tsx` (`PokemonCard`, Figma Pokecard, sprite placeholder) and `src/components/pokemon-grid.tsx` (`PokemonGrid`: FlashList, 2 columns, `header` slot above the first row, footer for loading more and its error). Any screen that shows Pokémon as cards (search results, favorites) reuses them.
 - **Favorites**: `src/services/favorites-store.ts` (SQLite table `favorites`, migration step 2) and `src/hooks/use-favorites.ts` (`useFavorites`: list, `isFavorite`, `toggleFavorite`). Never read the table anywhere else.
-- **Options sheet and share**: `src/hooks/use-pokemon-options.tsx` (`usePokemonOptions` → `openOptions` for a grid's `onMorePokemon`, and `sheet` to render once per screen); sheet UI in `src/components/pokemon-options-sheet.tsx`; share text in `src/utils/share.ts`.
+- **Options menu and share**: `src/hooks/use-pokemon-options.tsx` (`usePokemonOptions` → `openOptions` for a grid's `onMorePokemon`). It opens the system's own menu: `ActionSheetIOS` on iOS, a native `Alert` on Android. Never draw the menu in JS. Share text in `src/utils/share.ts`.
 - **Detail**: `src/hooks/use-pokemon-detail.ts` (pokemon → species → evolution chain), sections in `src/components/pokemon-detail-sections.tsx` (`DetailTabs`, `AboutSection`, `StatsSection`, `StatBar`, `EvolutionSection`), helpers in `src/utils/pokemon-detail.ts` (incl. `shouldShowTitle` for the collapsing header). Header buttons in `src/components/detail-header-actions.tsx` (`HeaderActions`): a component, so it reads the favorites itself inside the native header.
 - **Screen header**: `src/components/screen-header.tsx` (`ScreenHeader`: back, centred title, `right` slot). Screens pushed over the tabs use it with `headerShown: false`, never the native Stack header (see rules).
 - **Compare**: `src/app/compare.tsx` (params `first`, `second`), `src/hooks/use-compare.ts`, `src/utils/compare.ts`, picker `src/components/pokemon-picker.tsx` (search over the stored index).
@@ -49,6 +49,7 @@ A Pokédex for iOS and Android: browse, search, inspect, favorite, compare and s
 - expo-image test events need a `nativeEvent`: `fireEvent(image, 'error', { nativeEvent: { error: '...' } })`.
 - No Xcode on this Mac (Command Line Tools only), so no iOS simulator: check UI changes with the user in Expo Go on their phone.
 - When a test mocks `@/services/pokeapi`, spread `jest.requireActual('@/services/pokeapi')` and override only the fetchers: stores use its helpers (`spriteUrl`), and a missing helper makes a query fail silently (it keeps its old data).
+- The ⋮ Options menu must be native (user's rule): `ActionSheetIOS` / `Alert`, not a JS Modal sheet. System menus show no icons; that is accepted.
 - iOS 26 draws native Stack header buttons inside Liquid Glass capsules, which Figma doesn't have. Pushed screens hide the native header and use `ScreenHeader`.
 - RN 0.88 removed `StyleSheet.absoluteFillObject`: use `StyleSheet.absoluteFill`.
 - Typed routes (`.expo/types/router.d.ts`) only learn a new route when Metro runs: after adding a route, run `npx expo start` or `npx expo export` before `tsc`.

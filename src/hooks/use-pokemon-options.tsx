@@ -1,36 +1,48 @@
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { Share } from 'react-native';
+import { ActionSheetIOS, Alert, Platform, Share } from 'react-native';
 
-import { PokemonOptionsSheet } from '@/components/pokemon-options-sheet';
 import type { PokemonSummary } from '@/services/pokeapi-types';
+import { formatPokemonName } from '@/utils/format';
 import { buildShareMessage } from '@/utils/share';
 
 import { useFavorites } from './use-favorites';
 
+/** Labels of the Figma Options menu, in order. The favorite one depends on the current state. */
+export function optionLabels(isFavorite: boolean): [string, string, string] {
+  return ['Open Pokémon', isFavorite ? 'Remove from favorites' : 'Add to favorites', 'Share'];
+}
+
 /**
- * The Options sheet of a card's ⋮ button (#22). A screen renders `sheet` once and passes
- * `openOptions` to its grid.
+ * The Options menu of a card's ⋮ button (#22), as the system's own menu: the iOS action
+ * sheet, and a native dialog on Android (React Native has no Android action sheet).
  */
 export function usePokemonOptions() {
   const router = useRouter();
   const { isFavorite, toggleFavorite } = useFavorites();
-  const [selected, setSelected] = useState<PokemonSummary | null>(null);
 
-  const sheet = (
-    <PokemonOptionsSheet
-      pokemon={selected}
-      isFavorite={selected ? isFavorite(selected.id) : false}
-      onClose={() => setSelected(null)}
-      onOpen={(pokemon) => router.push({ pathname: '/pokemon/[id]', params: { id: String(pokemon.id) } })}
-      onToggleFavorite={(pokemon) => {
+  const openOptions = (pokemon: PokemonSummary) => {
+    const favorite = isFavorite(pokemon.id);
+    const labels = optionLabels(favorite);
+    const actions = [
+      () => router.push({ pathname: '/pokemon/[id]', params: { id: String(pokemon.id) } }),
+      () => {
         toggleFavorite(pokemon);
-      }}
-      onShare={(pokemon) => {
+      },
+      () => {
         Share.share({ message: buildShareMessage(pokemon) });
-      }}
-    />
-  );
+      },
+    ];
+    const title = formatPokemonName(pokemon.name);
 
-  return { openOptions: setSelected, sheet };
+    if (Platform.OS === 'ios') {
+      ActionSheetIOS.showActionSheetWithOptions(
+        { title, options: [...labels, 'Cancel'], cancelButtonIndex: labels.length, destructiveButtonIndex: favorite ? 1 : undefined },
+        (index) => actions[index]?.(),
+      );
+    } else {
+      Alert.alert(title, undefined, labels.map((text, i) => ({ text, onPress: actions[i] })), { cancelable: true });
+    }
+  };
+
+  return { openOptions };
 }

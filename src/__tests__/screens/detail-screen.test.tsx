@@ -95,7 +95,11 @@ describe('ScreenHeader', () => {
 describe('HeaderActions', () => {
   it('turns the heart into "Remove from favorites" once added', async () => {
     await render(<HeaderActions pokemon={bulbasaur} />, { wrapper: createWrapper() });
+    expect(await screen.findByTestId('heart-outline')).toBeOnTheScreen();
     await fireEvent.press(await screen.findByRole('button', { name: 'Add to favorites' }));
     expect(await screen.findByRole('button', { name: 'Remove from favorites' })).toBeOnTheScreen();
+    // Favorite: the filled red heart, not a tinted outline.
+    expect(screen.getByTestId('heart-filled')).toBeOnTheScreen();
+    expect(screen.queryByTestId('heart-outline')).toBeNull();
   });
 });

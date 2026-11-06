@@ -20,7 +20,7 @@ See everything about one Pokémon: name, number, artwork, types, then About, Sta
 - [ ] Stats: the six base stats with a bar out of 255.
 - [ ] Evolution: every stage from the API (branches included); tapping another stage opens its detail.
 - [ ] Switching tabs is instant (no new request).
-- [ ] The heart adds or removes the favorite.
+- [ ] The heart adds or removes the favorite: Midnight outline when not a favorite, filled red heart when it is.
 - [ ] Loading and error (Try again) for the detail; the Evolution tab has its own loading and error, and the rest of the detail stays.
 
 ## Out of Scope
