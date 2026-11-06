@@ -28,9 +28,9 @@ Find any Pokémon by typing part of its name or its number in the field on Home,
 - [x] Android: while the field is focused or has text, the search icon becomes a back arrow (Figma Search frame). The arrow and the system back button clear the query and hide the keyboard.
 - [x] Dragging the grid or pressing the keyboard's Search key hides the keyboard and keeps the query.
 - [x] Opening a result and coming back shows the same query and results.
-- [ ] Pressing the Pokémons tab while already on it resets Home in two presses: the first hides the keyboard and scrolls the results to the top (search kept), the second clears the search and shows the list at the top. Typing or scrolling the results in between starts over. Without a search, each press scrolls the list to the top. Pressing it from the Favorites tab only switches tabs.
+- [x] Pressing the Pokémons tab while already on it resets Home in two presses: the first hides the keyboard and scrolls the results to the top (search kept), the second clears the search and shows the list at the top. Typing or scrolling the results in between starts over. Without a search, each press scrolls the list to the top. Pressing it from the Favorites tab only switches tabs.
 
-Checked by logic and screen tests, and in Expo Go on an iPhone (2026-11-06). The Android back arrow and system back are covered by screen tests only so far. The tab re-press reset (added 2026-11-06) still needs a check in Expo Go.
+Checked by logic and screen tests, and in Expo Go on an iPhone (2026-11-06). The Android back arrow and system back are covered by screen tests only so far. The tab re-press reset (added 2026-11-06, two presses) was checked in Expo Go too.
 
 ## Out of Scope
 
