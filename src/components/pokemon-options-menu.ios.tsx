@@ -1,18 +1,29 @@
-import { Button, Host, Menu, RNHostView } from '@expo/ui/swift-ui';
+import { Button, Host, Image, Menu } from '@expo/ui/swift-ui';
+import { accessibilityLabel, contentShape, frame, rotationEffect, shapes } from '@expo/ui/swift-ui/modifiers';
 
 import type { PokemonOption } from '@/hooks/use-pokemon-options';
+import { colors } from '@/theme';
 
-import { MoreIcon } from './more-icon';
-
-/** iOS: the native SwiftUI menu, opened by a tap on ⋮, with an SF Symbol per option (as in Figma). */
+/**
+ * iOS: the native SwiftUI menu, opened by a tap on ⋮, with an SF Symbol per option (as in Figma).
+ * The ⋮ is a SwiftUI image, not a React Native view: SwiftUI doesn't get taps on hosted RN views.
+ */
 export function PokemonOptionsMenu({ name, options }: { name: string; options: PokemonOption[] }) {
   return (
     <Host matchContents>
       <Menu
         label={
-          <RNHostView matchContents>
-            <MoreIcon name={name} />
-          </RNHostView>
+          <Image
+            systemName="ellipsis"
+            size={18}
+            color={colors.midnight}
+            modifiers={[
+              rotationEffect(90),
+              frame({ width: 32, height: 32 }),
+              contentShape(shapes.rectangle()),
+              accessibilityLabel(`Options for ${name}`),
+            ]}
+          />
         }>
         {options.map((option) => (
           <Button

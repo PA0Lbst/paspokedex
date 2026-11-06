@@ -50,6 +50,7 @@ A Pokédex for iOS and Android: browse, search, inspect, favorite, compare and s
 - No Xcode on this Mac (Command Line Tools only), so no iOS simulator: check UI changes with the user in Expo Go on their phone.
 - When a test mocks `@/services/pokeapi`, spread `jest.requireActual('@/services/pokeapi')` and override only the fetchers: stores use its helpers (`spriteUrl`), and a missing helper makes a query fail silently (it keeps its old data).
 - The ⋮ Options menu must be native (user's rule): the SwiftUI `Menu` of `@expo/ui` on iOS (in Expo Go, icons as SF Symbols), a native `Alert` on Android. Not a JS Modal sheet, not `ActionSheetIOS` (old alert style). Tests mock `@expo/ui/swift-ui` as plain views (see `favorites-options.test.tsx`).
+- A SwiftUI `Menu` label must be SwiftUI (`Image systemName`, `Text`), never a React Native view in `RNHostView`: SwiftUI doesn't receive the tap and the menu never opens (seen on the phone).
 - iOS 26 draws native Stack header buttons inside Liquid Glass capsules, which Figma doesn't have. Pushed screens hide the native header and use `ScreenHeader`.
 - RN 0.88 removed `StyleSheet.absoluteFillObject`: use `StyleSheet.absoluteFill`.
 - Typed routes (`.expo/types/router.d.ts`) only learn a new route when Metro runs: after adding a route, run `npx expo start` or `npx expo export` before `tsc`.

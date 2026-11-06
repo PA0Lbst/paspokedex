@@ -10,6 +10,13 @@ const mockDb = createFakeDatabase();
 const mockPush = jest.fn();
 jest.mock('expo-sqlite', () => ({ openDatabaseAsync: jest.fn(async () => mockDb) }));
 jest.mock('react-native-safe-area-context', () => mockSafeAreaContext);
+jest.mock('@expo/ui/swift-ui/modifiers', () => ({
+  accessibilityLabel: (label: string) => ({ label }),
+  contentShape: () => ({}),
+  frame: () => ({}),
+  rotationEffect: () => ({}),
+  shapes: { rectangle: () => ({}) },
+}));
 // The native SwiftUI menu, as plain views: its label, then one pressable per Button.
 jest.mock('@expo/ui/swift-ui', () => {
   const { Pressable, Text, View } = jest.requireActual('react-native');
@@ -21,6 +28,10 @@ jest.mock('@expo/ui/swift-ui', () => {
         {label}
         {children}
       </View>
+    ),
+    // The ⋮: a SwiftUI image whose accessibility label comes from a modifier.
+    Image: ({ modifiers }: { modifiers: { label?: string }[] }) => (
+      <View accessible accessibilityRole="button" accessibilityLabel={modifiers.find((m) => m.label)?.label} />
     ),
     Button: ({ label, onPress, systemImage }: { label: string; onPress: () => void; systemImage: string }) => (
       <Pressable accessibilityRole="menuitem" accessibilityLabel={label} accessibilityHint={systemImage} onPress={onPress}>
