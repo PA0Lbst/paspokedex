@@ -54,6 +54,7 @@ Each choice: what we picked, what else we could have done, and why.
 - **Stack over tabs**: the root is a Stack with the tab group `(tabs)` inside it, so the detail opens on top of the tabs without the tab bar, as in Figma. Putting the detail inside the tabs would keep the tab bar on screen.
 - **Compare opens from the detail**, not from a third tab: Figma has two tabs, and a comparison starts from a Pokémon you are looking at.
 - **Own header on pushed screens** (`ScreenHeader`), not the native Stack header: on iOS 26 the native header puts its buttons in glass capsules, which don't match Figma (plain chevron, "Back", heart). Seen on the phone, fixed by hiding the native header.
+- **Own splash logo**: the Figma splash shows a logo image (216 × 79) that couldn't be exported (Figma connector call limit, no browser sign-in). `assets/images/splash-logo.png` is our own mark in the Figma style: the Purple Poké Ball of the tab bar and "Pokédex" in Rubik Bold Midnight, centred on Daylight. Swap it for the Figma export if it becomes available.
 - **iOS and Android only**: the brief and Figma only cover mobile, so the template's web support was removed (#21).
 - **Template code deleted, not kept in `/example`**: git history keeps it (#21).
 

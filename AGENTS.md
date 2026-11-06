@@ -80,7 +80,7 @@ Figma file: https://www.figma.com/design/XEmD1t64AlsTeM4nBh6aen/Pokedex-App-Reac
 - If the Figma file can't be read, tell the user. Never guess a design value from memory.
 
 Screens in Figma (Page 1, each in an iOS and an Android version):
-- **Splashscreen**: logo centred.
+- **Splashscreen**: logo centred (216 × 79). The app uses its own mark in that slot (`assets/images/splash-logo.png`, see `specs/product.md`) because the Figma image couldn't be exported.
 - **Home**: search field, "All Pokémon" title, 2-column grid of `Pokecard`, bottom tab bar (Pokémons / Favorites). A `Pokecard` is a white card (radius 8, soft shadow) with the pixel sprite on `#F6F6FF`, a purple number label ("001"), the name in Rubik Medium 16 and a ⋮ button that opens **Options**.
 - **Search**: the same grid filtered while typing. On Android the search icon becomes a back arrow.
 - **Detail**: name, number, type badges, artwork, `Tabs` with three parts (about = label/value rows, stats = bars, evolution = stacked row-style `Pokecard`s), back button and favorite button. Plus a **Detail - scroll** state with a collapsed header.
