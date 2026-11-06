@@ -52,3 +52,11 @@ export function flattenEvolution(stage: EvolutionStage, depth = 0): EvolutionRow
   const { evolvesTo, ...row } = stage;
   return [{ ...row, depth }, ...evolvesTo.flatMap((next) => flattenEvolution(next, depth + 1))];
 }
+
+/** Scroll offset after which the big name has left the screen (top padding + name line). */
+export const TITLE_SCROLL_OFFSET = 56;
+
+/** Figma "Detail - scroll": the name moves into the nav bar once it scrolls away. */
+export function shouldShowTitle(scrollY: number): boolean {
+  return scrollY > TITLE_SCROLL_OFFSET;
+}

@@ -34,6 +34,8 @@ export default function RootLayout() {
           headerTintColor: colors.midnight,
           headerTitleStyle: { fontFamily: fonts.semiBold },
           headerShadowVisible: false,
+          // iOS labels the back button with the previous title; the (tabs) group has none (Figma: "Back").
+          headerBackTitle: 'Back',
         }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="pokemon/[id]" options={{ title: '' }} />

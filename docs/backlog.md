@@ -83,7 +83,7 @@ Order: #21 → #3 → #18 (moved up from the optionals as the no-regression guar
 - [ ] Evolution chain from the API; tapping a stage opens its detail.
 - [ ] Favorite / unfavorite.
 - [ ] Loading and error state on detail and on the evolution chain.
-- Found while testing #5: the detail's iOS back button reads "(tabs)". The root Stack shows its native header on `pokemon/[id]`, and iOS labels the back button with the previous screen's title; the `(tabs)` screen has none, so the route group name is used. Fix in #6 with the Figma Detail header (check the back label there).
+- Found while testing #5: the detail's iOS back button reads "(tabs)". The root Stack shows its native header on `pokemon/[id]`, and iOS labels the back button with the previous screen's title; the `(tabs)` screen has none, so the route group name is used. Fixed: `headerBackTitle: 'Back'` on the root Stack (`src/app/_layout.tsx`), as the Figma Detail ("Vorige" = Back).
 
 ### 7. Feature: Favorites
 `feature` `priority: high`

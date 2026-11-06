@@ -7,6 +7,7 @@ import {
   formatHeight,
   formatNameList,
   formatWeight,
+  shouldShowTitle,
   statLabel,
   statRatio,
 } from '../pokemon-detail';
@@ -53,6 +54,14 @@ describe('detail helpers', () => {
   it('keeps every branch (Eevee)', () => {
     const rows = flattenEvolution(stage(133, 'eevee', [stage(134, 'vaporeon'), stage(135, 'jolteon')]));
     expect(rows.map((r) => r.name)).toEqual(['eevee', 'vaporeon', 'jolteon']);
+  });
+});
+
+describe('collapsing header', () => {
+  it('shows the name in the nav bar only after the big name scrolled away', () => {
+    expect(shouldShowTitle(0)).toBe(false);
+    expect(shouldShowTitle(56)).toBe(false);
+    expect(shouldShowTitle(57)).toBe(true);
   });
 });
 
