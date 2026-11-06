@@ -30,7 +30,7 @@ Scroll through every Pokémon in a 2-column grid of cards, as in the Figma Home 
 - The search field at the top of Home (#5).
 - The ⋮ button and the Options sheet on a card (#22).
 - Favorites (#7) and the detail content (#6): #4 only adds an empty detail route to navigate to.
-- Pull to refresh, sorting and filters by type.
+- Sorting and filters by type. (Pull to refresh was out of scope here; it came with search, #5.)
 
 ## Decisions
 

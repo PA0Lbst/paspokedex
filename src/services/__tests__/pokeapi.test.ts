@@ -3,6 +3,7 @@ import {
   artworkUrl,
   fetchEvolutionChain,
   fetchPokemon,
+  fetchPokemonIndex,
   fetchPokemonPage,
   fetchSpecies,
   getIdFromUrl,
@@ -59,6 +60,33 @@ describe('fetchPokemonPage', () => {
     respond({ count: 1351, next: null, results: [resource('pecharunt', 'pokemon', 1025)] });
     const page = await fetchPokemonPage(1350, 20);
     expect(page.nextOffset).toBeNull();
+  });
+});
+
+describe('fetchPokemonIndex', () => {
+  it('gets every Pokémon in one call, sorted by id', async () => {
+    respond({
+      count: 3,
+      next: null,
+      results: [resource('calyrex-ice', 'pokemon', 10193), resource('bulbasaur', 'pokemon', 1), resource('pikachu', 'pokemon', 25)],
+    });
+
+    const index = await fetchPokemonIndex();
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledWith('https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0');
+    expect(index.map((p) => p.id)).toEqual([1, 25, 10193]);
+    expect(index[1]).toEqual({ id: 25, name: 'pikachu', spriteUrl: spriteUrl(25) });
+  });
+
+  it('throws an invalid ApiError on a wrong shape', async () => {
+    respond({ count: 1, results: 'nope' });
+    await expect(fetchPokemonIndex()).rejects.toMatchObject({ kind: 'invalid' });
+  });
+
+  it('throws a network ApiError when offline', async () => {
+    fetchMock.mockRejectedValueOnce(new TypeError('Network request failed'));
+    await expect(fetchPokemonIndex()).rejects.toMatchObject({ kind: 'network' });
   });
 });
 

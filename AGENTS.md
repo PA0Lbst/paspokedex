@@ -27,6 +27,12 @@ A Pokédex for iOS and Android: browse, search, inspect, favorite, compare and s
 - **Cards and grid**: `src/components/pokemon-card.tsx` (`PokemonCard`, Figma Pokecard, sprite placeholder) and `src/components/pokemon-grid.tsx` (`PokemonGrid`: FlashList, 2 columns, `header` slot above the first row, footer for loading more and its error). Any screen that shows Pokémon as cards (search results, favorites) reuses them.
 - **Test helpers**: `src/test-utils/query.tsx` (`createWrapper` with a no-retry QueryClient, `makePage` for fake list pages).
 - **Formatting helpers**: `src/utils/format.ts` (`formatPokemonNumber`, `formatPokemonName`).
+- **Database**: `src/services/database.ts` (`getDatabase`: the one expo-sqlite connection, `paspokedex.db`, migrated with `PRAGMA user_version`). Add a table as a new migration step there; never open a second database.
+- **Search index**: `src/services/pokemon-index.ts` (`loadPokemonIndex`, `downloadPokemonIndex`, stored by `pokemon-index-store.ts` in SQLite) and `src/hooks/use-pokemon-index.ts`. All 1351 Pokémon (`id`, `name`) for any feature that needs every name (search, compare picker).
+- **Search rules**: `src/utils/search.ts` (`normalizeSearchText`, `isSearchQuery`, `searchPokemon`). Reuse them for any other search field.
+- **Search field**: `src/components/search-field.tsx` (`SearchField`, Figma field with the Android back arrow). Theme token `fieldShadow` for its shadow.
+- **Debounce**: `src/hooks/use-debounced-value.ts` (`useDebouncedValue`).
+- **Fake database for tests**: `src/test-utils/fake-database.ts` (`createFakeDatabase`, an in-memory stand-in for expo-sqlite: `jest.mock('expo-sqlite', () => ({ openDatabaseAsync: jest.fn(async () => mockDb) }))`). It throws on SQL it doesn't know, so teach it each new statement.
 
 ### Rules learned while building
 
@@ -39,6 +45,9 @@ A Pokédex for iOS and Android: browse, search, inspect, favorite, compare and s
 - `npx expo install` puts dev tools in `dependencies`: move test and lint packages to `devDependencies`.
 - Jest resolves `@/assets/*` only because of the `moduleNameMapper` in `package.json` (TypeScript and Metro pick the most specific path, Jest the first). Keep `@/assets` above `@/`.
 - jest-expo replaces `fetch` in every test environment (node too). Mock it with `jest.spyOn(globalThis, 'fetch')` and real `new Response(...)` objects; tests never hit the network.
+- RN 0.88 types: type a TextInput ref as `useRef<ComponentRef<typeof TextInput>>(null)`; `useRef<TextInput>` doesn't compile.
+- Tabs stay mounted under pushed screens. A `BackHandler` listener in a tab must be registered with `useFocusEffect`, or it also fires on the detail screen.
+- expo-sqlite has no Jest mock and no testing docs: mock `expo-sqlite` with the fake database above, and check real storage in Expo Go.
 - The Figma connector is on the Starter plan, with a small call limit. Download the assets you need (they expire after 7 days) and note design values in this file or the spec, so you don't need to call Figma again.
 
 ## Documentation

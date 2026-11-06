@@ -1,6 +1,6 @@
 import { FlashList } from '@shopify/flash-list';
 import type { ReactElement } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, RefreshControl, StyleSheet, Text, View } from 'react-native';
 
 import type { PokemonSummary } from '@/services/pokeapi-types';
 import { colors, radius, spacing, text } from '@/theme';
@@ -10,7 +10,7 @@ import { PokemonCard } from './pokemon-card';
 type Props = {
   pokemon: PokemonSummary[];
   onPressPokemon: (pokemon: PokemonSummary) => void;
-  /** Shown above the first row (title, later the search field). */
+  /** Shown above the first row (the title). */
   header?: ReactElement;
   onEndReached?: () => void;
   isLoadingMore?: boolean;
@@ -18,6 +18,9 @@ type Props = {
   onRetryLoadMore?: () => void;
   /** Top padding, e.g. the safe area inset. */
   topInset?: number;
+  /** Pull to refresh: shown only when onRefresh is given. */
+  refreshing?: boolean;
+  onRefresh?: () => void;
 };
 
 /** 2-column grid of PokemonCards, with a footer for "loading more" and its error. */
@@ -30,6 +33,8 @@ export function PokemonGrid({
   loadMoreFailed = false,
   onRetryLoadMore,
   topInset = 0,
+  refreshing = false,
+  onRefresh,
 }: Props) {
   return (
     <FlashList
@@ -48,6 +53,19 @@ export function PokemonGrid({
       onEndReached={onEndReached}
       onEndReachedThreshold={0.5}
       contentContainerStyle={{ ...styles.content, paddingTop: topInset + spacing.l }}
+      // Dragging the grid hides the keyboard of the search field; a tap on a card still works.
+      keyboardDismissMode="on-drag"
+      keyboardShouldPersistTaps="handled"
+      refreshControl={
+        onRefresh ? (
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={colors.purple}
+            colors={[colors.purple]}
+          />
+        ) : undefined
+      }
     />
   );
 }

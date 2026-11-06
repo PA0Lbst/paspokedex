@@ -1,7 +1,7 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { type InfiniteData, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 
 import { fetchPokemonPage } from '@/services/pokeapi';
-import type { PokemonSummary } from '@/services/pokeapi-types';
+import type { PokemonPage, PokemonSummary } from '@/services/pokeapi-types';
 import { queryKeys } from '@/services/query-client';
 
 export type PokemonList = {
@@ -21,10 +21,13 @@ export type PokemonList = {
   loadMoreFailed: boolean;
   retryLoadMore: () => void;
   hasMore: boolean;
+  /** Pull to refresh: reloads from page 1, keeping the cards on screen meanwhile. */
+  refresh: () => Promise<void>;
 };
 
 /** All Pokémon, 20 per page, for the grid on the Pokémons tab. */
 export function usePokemonList(): PokemonList {
+  const queryClient = useQueryClient();
   const query = useInfiniteQuery({
     queryKey: queryKeys.pokemonList,
     queryFn: ({ pageParam }) => fetchPokemonPage(pageParam),
@@ -55,5 +58,12 @@ export function usePokemonList(): PokemonList {
       query.fetchNextPage({ cancelRefetch: false });
     },
     hasMore: query.hasNextPage,
+    refresh: async () => {
+      // Keep only the first page, so the refetch reloads page 1 instead of every loaded page.
+      queryClient.setQueryData<InfiniteData<PokemonPage, number>>(queryKeys.pokemonList, (data) =>
+        data ? { pages: data.pages.slice(0, 1), pageParams: data.pageParams.slice(0, 1) } : data,
+      );
+      await query.refetch();
+    },
   };
 }

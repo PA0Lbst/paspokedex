@@ -23,6 +23,7 @@ export function createQueryClient(): QueryClient {
 /** All query keys in one place, so screens share the same cache entries. */
 export const queryKeys = {
   pokemonList: ['pokemon', 'list'] as const,
+  pokemonIndex: ['pokemon', 'index'] as const,
   pokemon: (id: number) => ['pokemon', id] as const,
   species: (id: number) => ['species', id] as const,
   evolutionChain: (id: number) => ['evolution-chain', id] as const,

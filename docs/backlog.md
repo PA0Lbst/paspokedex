@@ -8,7 +8,7 @@ Source of truth for the GitHub issues and the Project board. Each section below 
 - **Order:** core tasks first. Optionals get issues too, but with the `priority: low` label, and we start them only after the core is done.
 - **Constraints** (loading/error states, design font) are not features. They're listed as acceptance criteria in every feature issue, and the font itself is set up in one setup issue (#1).
 - **One feature = one spec file + one issue.** Each feature issue starts by writing `specs/features/<feature>.md` (course template: Goal, Constraints, Acceptance Criteria, Out of Scope), following the workflow in AGENTS.md.
-- **Course templates** (`templates/`, 2026-11-05): the course expects `specs/product.md`, `specs/features/`, `docs/explanation.md` and `chat-history/`. They are the project documentation. Technical core adds SQLite (favorites, #7) and one native feature (Share, #22).
+- **Course templates** (`templates/`, 2026-11-05): the course expects `specs/product.md`, `specs/features/`, `docs/explanation.md` and `chat-history/`. They are the project documentation. Technical core adds SQLite (favorites, #7; the shared database came first with the search index, #5) and one native feature (Share, #22).
 
 ## Labels
 
@@ -67,11 +67,12 @@ Order: #21 → #3 → #18 (moved up from the optionals as the no-regression guar
 
 ### 5. Feature: Search
 `feature` `priority: high`
-- [ ] Search field as in the design; results update while typing.
-- [ ] Partial name, any case: "pika" finds Pikachu.
-- [ ] Finds every Pokémon, including ones not scrolled to yet.
-- [ ] Results look like list rows; no match shows an empty state.
+- [x] Search field as in the design; results update while typing.
+- [x] Partial name, any case: "pika" finds Pikachu.
+- [x] Finds every Pokémon, including ones not scrolled to yet.
+- [x] Results use the same grid cards as the list (Figma Search frame); no match shows an empty state.
 - Note: PokeAPI has no search endpoint. Study what the API returns before choosing an approach in the spec.
+- Spec: `specs/features/search.md`. One index call (`/pokemon?limit=100000`) stored in SQLite, filtered on the phone. Also brought pull to refresh into scope.
 
 ### 6. Feature: Detail
 `feature` `priority: high`

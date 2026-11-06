@@ -7,10 +7,15 @@ import { fetchPokemonPage } from '@/services/pokeapi';
 import { createWrapper, makePage } from '@/test-utils/query';
 
 jest.mock('@/services/pokeapi', () => ({ fetchPokemonPage: jest.fn() }));
+// The search index is tested in search-screen.test.tsx; here it just never arrives.
+jest.mock('@/services/pokemon-index', () => ({
+  loadPokemonIndex: jest.fn(() => new Promise(() => {})),
+  downloadPokemonIndex: jest.fn(),
+}));
 jest.mock('react-native-safe-area-context', () => mockSafeAreaContext);
 
 const mockPush = jest.fn();
-jest.mock('expo-router', () => ({ useRouter: () => ({ push: mockPush }) }));
+jest.mock('expo-router', () => ({ useRouter: () => ({ push: mockPush }), useFocusEffect: jest.fn() }));
 
 const fetchPage = jest.mocked(fetchPokemonPage);
 

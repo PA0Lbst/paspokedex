@@ -22,17 +22,20 @@ Each feature is one file in `specs/features/` and one GitHub issue. The file is 
 - **API**: [PokeAPI v2](https://pokeapi.co/docs/v2). Public, no login, no key.
 - **Endpoints**:
   - `GET /pokemon?limit=20&offset=n`: one page of the list (`name`, `url`). The id is read from the `url`, and the sprite URL is built from the id, so the list needs no call per Pokémon. `count` is 1351.
+  - `GET /pokemon?limit=100000`: every `name` and `url` in one call (about 93 KB), the search index (#5).
   - `GET /pokemon/{id}`: types, stats, height, weight, abilities, artwork (detail, compare).
   - `GET /pokemon-species/{id}`: description and the evolution chain URL (detail).
   - `GET /evolution-chain/{id}`: the evolution chain (detail).
 - **Images**: sprite `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{id}.png` on cards, official artwork `.../sprites/pokemon/other/official-artwork/{id}.png` on the detail.
-- **Stored on the phone**: table `favorites` in SQLite (columns decided in #7).
+- **Stored on the phone** (SQLite, one shared database `paspokedex.db`):
+  - `pokemon_index(id, name)`: the search index, plus its download date in `meta` (#5).
+  - `favorites`: columns decided in #7.
 
 ## Technical choices
 
 Each choice: what we picked, what else we could have done, and why.
 
-- **Stored in SQLite**: the favorites only, not the API data. A favorite must survive a restart; API data is cached by TanStack Query. Details in #7.
+- **Stored in SQLite**: the favorites (#7) and the search index (#5). Other API data is only cached by TanStack Query. The index was first meant to stay in memory too, but storing it lets search work offline after the first launch and avoids downloading 93 KB at every start; it is refreshed after 7 days or on pull to refresh.
 - **Native feature**: Share, from the ⋮ Options sheet on a card (as in Figma), using the native share sheet. Details in #22.
 - **Expo Go, fonts with `useFonts`**: the Expo docs recommend the `expo-font` config plugin, but it needs a development build. We run in Expo Go, so the font is loaded at startup with `useFonts`, behind the splash screen.
 - **Rubik only**: Figma also uses Cabinet Grotesk (titles) and Inter (search field), but the course provides Rubik only. Titles use Rubik Bold, the search field Rubik Regular. Adding the other two would mean more files and a new dependency for a small visual gain.
@@ -44,6 +47,9 @@ Each choice: what we picked, what else we could have done, and why.
 - **Typed API data without a library**: `response.json()` is read as `unknown` and checked by small readers (`src/services/json.ts`), rather than trusting it untyped or adding zod. It keeps the Clean TypeScript optional (#12) within reach with no new dependency, and a changed API shows a clear error instead of a crash deeper in the UI.
 - **Retry and freshness**: failed calls are retried twice, except 404 and broken responses, which can't get better. Data stays fresh for a day, since Pokémon data barely changes.
 - **Pagination, 20 per page** with infinite scroll in FlashList, rather than the whole list at once: the first screen shows fast, and it covers the Pagination optional (#11). Search (#5) needs all names, which it handles on its own.
+- **Search over a local index** (#5): PokeAPI has no search endpoint, so the app downloads all names once and filters them on the phone. Alternatives: filtering only the pages already loaded (misses Pokémon not scrolled to yet), or `GET /pokemon/{name}` (exact names only, one call per try). Matching ignores case, spaces, dashes and apostrophes, and also accepts the number.
+- **Search inline on Home**, not a separate screen: the Figma Search frame is Home with text in the field. Results reuse the list grid and cards.
+- **Pull to refresh on Home** (#5): reloads the search index and the list. It was out of scope in #4; the index needed a way to force a refresh.
 - **Stack over tabs**: the root is a Stack with the tab group `(tabs)` inside it, so the detail opens on top of the tabs without the tab bar, as in Figma. Putting the detail inside the tabs would keep the tab bar on screen.
 - **iOS and Android only**: the brief and Figma only cover mobile, so the template's web support was removed (#21).
 - **Template code deleted, not kept in `/example`**: git history keeps it (#21).

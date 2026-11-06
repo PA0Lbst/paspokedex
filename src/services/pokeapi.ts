@@ -1,5 +1,6 @@
 import { ApiError } from './api-error';
 import {
+  type JsonRecord,
   readArray,
   readNamedResource,
   readNullableString,
@@ -14,6 +15,8 @@ export const API_BASE_URL = 'https://pokeapi.co/api/v2';
 const SPRITES_BASE_URL = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon';
 
 export const PAGE_SIZE = 20;
+/** Higher than the number of Pokémon (1351), so one call returns them all. */
+export const INDEX_LIMIT = 100000;
 
 /** "https://pokeapi.co/api/v2/pokemon/25/" → 25. */
 export function getIdFromUrl(url: string): number {
@@ -50,20 +53,33 @@ async function getJson(path: string): Promise<unknown> {
   }
 }
 
-/** One page of the list: GET /pokemon?limit&offset. No call per Pokémon. */
-export async function fetchPokemonPage(offset: number, limit: number = PAGE_SIZE): Promise<PokemonPage> {
-  const body = readRecord(await getJson(`/pokemon?limit=${limit}&offset=${offset}`), 'page');
-  const items: PokemonSummary[] = readArray(body, 'results').map((entry) => {
+function readSummaries(body: JsonRecord): PokemonSummary[] {
+  return readArray(body, 'results').map((entry) => {
     const { name, url } = readNamedResource(entry, 'result');
     const id = getIdFromUrl(url);
     return { id, name, spriteUrl: spriteUrl(id) };
   });
+}
+
+/** One page of the list: GET /pokemon?limit&offset. No call per Pokémon. */
+export async function fetchPokemonPage(offset: number, limit: number = PAGE_SIZE): Promise<PokemonPage> {
+  const body = readRecord(await getJson(`/pokemon?limit=${limit}&offset=${offset}`), 'page');
+  const items = readSummaries(body);
   const next = readNullableString(body, 'next');
   return {
     count: readNumber(body, 'count'),
     items,
     nextOffset: next === null ? null : offset + items.length,
   };
+}
+
+/**
+ * Every Pokémon in one call, for search: GET /pokemon?limit=100000 (about 93 KB).
+ * PokeAPI has no search endpoint, so the app filters this index itself. Sorted by id.
+ */
+export async function fetchPokemonIndex(): Promise<PokemonSummary[]> {
+  const body = readRecord(await getJson(`/pokemon?limit=${INDEX_LIMIT}&offset=0`), 'index');
+  return readSummaries(body).sort((a, b) => a.id - b.id);
 }
 
 /** GET /pokemon/{id}: types, stats, size, abilities. */

@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Search mockup (#5)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --midnight:#0E0940; --purple:#5631E8; --daylight:#EDF6FF; --silver:#DBDAE6; --card-image:#F6F6FF; --shadow:0 2px 15px rgba(48,55,115,.15); --field-shadow:0 2px 7.5px rgba(48,55,115,.15); }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 40px 16px; background: #c9ced6; font-family: Rubik, sans-serif; color: var(--midnight); }
+  h1 { font: 700 24px Rubik; margin: 0 0 4px; }
+  h2.section { font: 600 18px Rubik; margin: 48px 0 36px; }
+  .note { font-size: 14px; opacity: .7; margin: 0 0 12px; max-width: 860px; line-height: 1.45; }
+  .phones { display: flex; flex-wrap: wrap; gap: 48px 32px; }
+  .wrap { position: relative; }
+  .label { position: absolute; top: -26px; left: 0; font-size: 13px; font-weight: 600; }
+  .phone { width: 390px; height: 760px; background: var(--daylight); border-radius: 40px; overflow: hidden; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,.15); display: flex; flex-direction: column; }
+  .phone.android { border-radius: 24px; }
+
+  /* Search field (Figma: white, radius 8, padding 12/16, gap 12, 16 from edges) */
+  .field { margin: 60px 16px 0; background: #fff; border-radius: 8px; box-shadow: var(--field-shadow); padding: 12px 16px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+  .android .field { margin-top: 68px; }
+  .field .icon { width: 24px; height: 24px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .field .icon img { width: 24px; height: 24px; }
+  .field .icon.back { cursor: pointer; }
+  .field input { border: 0; outline: 0; flex: 1; min-width: 0; font: 400 16px Rubik; color: var(--midnight); background: transparent; padding: 0; height: 19px; }
+  .field input::placeholder { color: var(--midnight); opacity: .3; }
+  .field .text { font: 400 16px Rubik; }
+  .field .text.placeholder { opacity: .3; }
+  .caret { display: inline-block; width: 1.5px; height: 20px; background: var(--purple); vertical-align: middle; margin-left: 1px; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .scroll { flex: 1; overflow: hidden; padding: 32px 24px 0; position: relative; }
+  .scroll.live { overflow-y: auto; }
+  .title { font: 700 24px/1.2 Rubik; margin: 0 0 16px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding-bottom: 24px; }
+  .card { background: #fff; border-radius: 8px; box-shadow: var(--shadow); overflow: hidden; }
+  .img { aspect-ratio: 1; background: var(--card-image); position: relative; display: flex; align-items: center; justify-content: center; }
+  .img img { width: 80%; height: 80%; object-fit: contain; image-rendering: pixelated; }
+  .num { position: absolute; left: 8px; top: 8px; background: var(--purple); color: #fff; font: 500 10px Rubik; padding: 4px 6px 2px; border-radius: 4px; }
+  .name { font: 500 16px/1.2 Rubik; padding: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; padding: 0 32px 80px; }
+  .heading { font: 600 18px Rubik; margin: 4px 0 0; }
+  .muted { font-size: 14px; opacity: .65; margin: 0; max-width: 240px; line-height: 1.4; }
+  .spinner { width: 36px; height: 36px; border-radius: 50%; border: 4px solid rgba(86,49,232,.2); border-top-color: var(--purple); animation: spin .8s linear infinite; }
+  .spinner.small { width: 24px; height: 24px; border-width: 3px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .err { background: #fff; border-radius: 8px; box-shadow: var(--shadow); padding: 24px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .btn { background: var(--purple); color: #fff; border: 0; border-radius: 8px; padding: 12px 20px; font: 600 16px Rubik; cursor: pointer; }
+  .ball { width: 64px; height: 64px; border-radius: 50%; border: 4px solid var(--silver); position: relative; }
+  .ball::before { content: ""; position: absolute; left: -4px; right: -4px; top: 26px; height: 4px; background: var(--silver); }
+  .ball::after { content: ""; position: absolute; left: 20px; top: 20px; width: 16px; height: 16px; border-radius: 50%; background: var(--daylight); border: 4px solid var(--silver); box-sizing: border-box; }
+  .refresh { display: flex; justify-content: center; padding: 4px 0 20px; }
+
+  .keyboard { height: 291px; background: #d1d3d9; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font: 500 13px -apple-system, system-ui, sans-serif; color: rgba(0,0,0,.4); }
+  .android .keyboard { height: 272px; background: #e8eaed; }
+  .keyboard span { background: #fff; border-radius: 6px; padding: 6px 10px; box-shadow: 0 1px 0 rgba(0,0,0,.2); }
+  .tabbar { height: 84px; background: rgba(237,246,255,.85); backdrop-filter: blur(25px); display: flex; padding-top: 6px; border-top: 1px solid rgba(14,9,64,.06); flex-shrink: 0; }
+  .android .tabbar { height: 80px; padding-top: 12px; }
+  .tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; font: 500 10px -apple-system, system-ui, sans-serif; }
+  .tab.on { color: var(--purple); font-weight: 700; }
+  .tab svg { width: 24px; height: 24px; }
+  .tab.off img { filter: brightness(0) saturate(100%) invert(6%) sepia(60%) saturate(5000%) hue-rotate(240deg); }
+  .flag { position: absolute; right: 12px; bottom: 8px; font-size: 11px; background: #fff3cd; border-radius: 4px; padding: 2px 6px; }
+
+  .controls { display: flex; gap: 8px; margin: 0 0 40px; flex-wrap: wrap; align-items: center; font-size: 14px; }
+  .controls button { font: 500 14px Rubik; border: 1px solid var(--silver); background: #fff; border-radius: 8px; padding: 6px 12px; cursor: pointer; color: var(--midnight); }
+  .controls button.on { background: var(--midnight); color: #fff; border-color: var(--midnight); }
+  .status { font-size: 13px; opacity: .7; }
+  @media (max-width: 430px) { .phone { width: 100%; } }
+</style>
+</head>
+<body>
+  <h1>Search mockup: issue #5</h1>
+  <p class="note">Figma Home and Search frames. The field is fixed above the grid. Typing hides "All Pokémon" and shows results in the same grid and cards as the list. Matching ignores case, spaces, dashes and apostrophes, and also accepts the number. Results are in number order. The loading, error and empty states reuse the state views from #1. The Android back arrow is a <b>placeholder drawing</b> until the Figma <code>Back</code> icon is exported.</p>
+
+  <h2 class="section">1 · Try it: real PokeAPI index, 200 ms debounce</h2>
+  <div class="controls">
+    <button id="btn-ios" class="on">iOS</button><button id="btn-android">Android</button>
+    <span class="status" id="status">Loading the index…</span>
+  </div>
+  <div class="phones">
+    <div class="wrap"><span class="label">Interactive</span>
+      <div class="phone" id="live">
+        <div class="field"><span class="icon" id="live-icon"></span><input id="q" placeholder="Search for Pokémon.." autocomplete="off" enterkeyhint="search"></div>
+        <div class="scroll live" id="live-scroll"></div>
+        <div class="tabbar"><div class="tab on"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Pokemon"><g id="Active"><path d="M15.874 13H21.9506C21.4489 18.0533 17.1854 22 12 22C6.81465 22 2.5511 18.0533 2.04938 13H8.12602C8.57006 14.7252 10.1362 16 12 16C13.8638 16 15.4299 14.7252 15.874 13Z" fill="#5631E8"/><path d="M12 2C17.1854 2 21.4489 5.94668 21.9506 11H15.874C15.4299 9.27477 13.8638 8 12 8C10.1362 8 8.57006 9.27477 8.12602 11H2.04938C2.5511 5.94668 6.81465 2 12 2Z" fill="#5631E8"/><path d="M12 14C13.1046 14 14 13.1046 14 12C14 10.8954 13.1046 10 12 10C10.8954 10 10 10.8954 10 12C10 13.1046 10.8954 14 12 14Z" fill="#5631E8"/></g></g></svg>Pokémons</div><div class="tab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Favorite"><path id="Vector" d="M12 21L10.55 19.7C8.86667 18.1833 7.475 16.875 6.375 15.775C5.275 14.675 4.4 13.6873 3.75 12.812C3.1 11.9373 2.646 11.1333 2.388 10.4C2.12933 9.66667 2 8.91667 2 8.15C2 6.58333 2.525 5.275 3.575 4.225C4.625 3.175 5.93333 2.65 7.5 2.65C8.36667 2.65 9.19167 2.83333 9.975 3.2C10.7583 3.56667 11.4333 4.08333 12 4.75C12.5667 4.08333 13.2417 3.56667 14.025 3.2C14.8083 2.83333 15.6333 2.65 16.5 2.65C18.0667 2.65 19.375 3.175 20.425 4.225C21.475 5.275 22 6.58333 22 8.15C22 8.91667 21.871 9.66667 21.613 10.4C21.3543 11.1333 20.9 11.9373 20.25 12.812C19.6 13.6873 18.725 14.675 17.625 15.775C16.525 16.875 15.1333 18.1833 13.45 19.7L12 21ZM12 18.3C13.6 16.8667 14.9167 15.6373 15.95 14.612C16.9833 13.5873 17.8 12.696 18.4 11.938C19 11.1793 19.4167 10.504 19.65 9.912C19.8833 9.32067 20 8.73333 20 8.15C20 7.15 19.6667 6.31667 19 5.65C18.3333 4.98333 17.5 4.65 16.5 4.65C15.7167 4.65 14.9917 4.87067 14.325 5.312C13.6583 5.754 13.2 6.31667 12.95 7H11.05C10.8 6.31667 10.3417 5.754 9.675 5.312C9.00833 4.87067 8.28333 4.65 7.5 4.65C6.5 4.65 5.66667 4.98333 5 5.65C4.33333 6.31667 4 7.15 4 8.15C4 8.73333 4.11667 9.32067 4.35 9.912C4.58333 10.504 5 11.1793 5.6 11.938C6.2 12.696 7.01667 13.5873 8.05 14.612C9.08333 15.6373 10.4 16.8667 12 18.3Z" fill="#0E0940"/></g></svg>Favorites</div></div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section">2 · Every state</h2>
+  <div class="phones" id="frames"></div>
+
+<script>
+  const SEARCH_ICON = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="search_FILL0_wght400_GRAD0_opsz24 1"><path id="Vector" d="M19.6 21L13.3 14.7C12.8 15.1 12.225 15.4167 11.575 15.65C10.925 15.8833 10.2333 16 9.5 16C7.68333 16 6.146 15.371 4.888 14.113C3.62933 12.8543 3 11.3167 3 9.5C3 7.68333 3.62933 6.14567 4.888 4.887C6.146 3.629 7.68333 3 9.5 3C11.3167 3 12.8543 3.629 14.113 4.887C15.371 6.14567 16 7.68333 16 9.5C16 10.2333 15.8833 10.925 15.65 11.575C15.4167 12.225 15.1 12.8 14.7 13.3L21 19.6L19.6 21ZM9.5 14C10.75 14 11.8127 13.5627 12.688 12.688C13.5627 11.8127 14 10.75 14 9.5C14 8.25 13.5627 7.18733 12.688 6.312C11.8127 5.43733 10.75 5 9.5 5C8.25 5 7.18733 5.43733 6.312 6.312C5.43733 7.18733 5 8.25 5 9.5C5 10.75 5.43733 11.8127 6.312 12.688C7.18733 13.5627 8.25 14 9.5 14Z" fill="#0E0940"/></g></svg>';
+  // Placeholder for the Figma "Back" icon (Material arrow_back shape).
+  const BACK_ICON = '<svg width="24" height="24" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="#0E0940"/></svg>';
+  const sprite = (id) => `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+  const num = (id) => String(id).padStart(3, '0');
+  const cap = (n) => { const s = n.replace(/-/g, ' '); return s.charAt(0).toUpperCase() + s.slice(1); };
+  const card = ([id, name]) => `<div class="card"><div class="img"><img src="${sprite(id)}" alt="" loading="lazy"><span class="num">${num(id)}</span></div><div class="name">${cap(name)}</div></div>`;
+
+  // Same rules as src/utils/search.ts will have.
+  const normalize = (s) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+  function search(index, raw) {
+    const q = normalize(raw);
+    if (!q) return null;
+    const asNumber = /^\d+$/.test(q) ? Number(q) : null;
+    return index.filter(([id, name]) => id === asNumber || normalize(name).includes(q));
+  }
+
+  const tabbar = '<div class="tabbar"><div class="tab on"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Pokemon"><g id="Active"><path d="M15.874 13H21.9506C21.4489 18.0533 17.1854 22 12 22C6.81465 22 2.5511 18.0533 2.04938 13H8.12602C8.57006 14.7252 10.1362 16 12 16C13.8638 16 15.4299 14.7252 15.874 13Z" fill="#5631E8"/><path d="M12 2C17.1854 2 21.4489 5.94668 21.9506 11H15.874C15.4299 9.27477 13.8638 8 12 8C10.1362 8 8.57006 9.27477 8.12602 11H2.04938C2.5511 5.94668 6.81465 2 12 2Z" fill="#5631E8"/><path d="M12 14C13.1046 14 14 13.1046 14 12C14 10.8954 13.1046 10 12 10C10.8954 10 10 10.8954 10 12C10 13.1046 10.8954 14 12 14Z" fill="#5631E8"/></g></g></svg>Pokémons</div><div class="tab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Favorite"><path id="Vector" d="M12 21L10.55 19.7C8.86667 18.1833 7.475 16.875 6.375 15.775C5.275 14.675 4.4 13.6873 3.75 12.812C3.1 11.9373 2.646 11.1333 2.388 10.4C2.12933 9.66667 2 8.91667 2 8.15C2 6.58333 2.525 5.275 3.575 4.225C4.625 3.175 5.93333 2.65 7.5 2.65C8.36667 2.65 9.19167 2.83333 9.975 3.2C10.7583 3.56667 11.4333 4.08333 12 4.75C12.5667 4.08333 13.2417 3.56667 14.025 3.2C14.8083 2.83333 15.6333 2.65 16.5 2.65C18.0667 2.65 19.375 3.175 20.425 4.225C21.475 5.275 22 6.58333 22 8.15C22 8.91667 21.871 9.66667 21.613 10.4C21.3543 11.1333 20.9 11.9373 20.25 12.812C19.6 13.6873 18.725 14.675 17.625 15.775C16.525 16.875 15.1333 18.1833 13.45 19.7L12 21ZM12 18.3C13.6 16.8667 14.9167 15.6373 15.95 14.612C16.9833 13.5873 17.8 12.696 18.4 11.938C19 11.1793 19.4167 10.504 19.65 9.912C19.8833 9.32067 20 8.73333 20 8.15C20 7.15 19.6667 6.31667 19 5.65C18.3333 4.98333 17.5 4.65 16.5 4.65C15.7167 4.65 14.9917 4.87067 14.325 5.312C13.6583 5.754 13.2 6.31667 12.95 7H11.05C10.8 6.31667 10.3417 5.754 9.675 5.312C9.00833 4.87067 8.28333 4.65 7.5 4.65C6.5 4.65 5.66667 4.98333 5 5.65C4.33333 6.31667 4 7.15 4 8.15C4 8.73333 4.11667 9.32067 4.35 9.912C4.58333 10.504 5 11.1793 5.6 11.938C6.2 12.696 7.01667 13.5873 8.05 14.612C9.08333 15.6373 10.4 16.8667 12 18.3Z" fill="#0E0940"/></g></svg>Favorites</div></div>';
+  const keyboard = (android) => `<div class="keyboard"><span>${android ? 'Android keyboard' : 'iOS keyboard'} · Search ⏎</span></div>`;
+  const field = (text, { android = false, focused = false } = {}) => {
+    const icon = android && (focused || text) ? BACK_ICON : SEARCH_ICON;
+    const content = text ? `<span class="text">${text}</span>` : `<span class="text placeholder">Search for Pokémon..</span>`;
+    return `<div class="field"><span class="icon">${icon}</span><span>${content}${focused ? '<span class="caret"></span>' : ''}</span></div>`;
+  };
+  const frame = (label, { android = false, text = '', focused = false, body, kb = false, flag = '' }) =>
+    `<div class="wrap"><span class="label">${label}</span><div class="phone ${android ? 'android' : ''}">${field(text, { android, focused })}<div class="scroll">${body}</div>${kb ? keyboard(android) : tabbar}${flag ? `<span class="flag">${flag}</span>` : ''}</div></div>`;
+
+  const grid = (items) => `<div class="grid">${items.map(card).join('')}</div>`;
+  const firstSix = [[1,'bulbasaur'],[2,'ivysaur'],[3,'venusaur'],[4,'charmander'],[5,'charmeleon'],[6,'charizard']];
+  const ch = [[4,'charmander'],[5,'charmeleon'],[6,'charizard'],[25,'pikachu'],[26,'raichu'],[66,'machop']];
+  const loading = `<div class="center"><div class="spinner"></div><p class="muted">Loading Pokémon…</p></div>`;
+  const error = `<div class="center"><div class="err"><p class="heading" style="margin:0">Something went wrong</p><p class="muted">We couldn't load the Pokémon. Check your connection and try again.</p><button class="btn">Try again</button></div></div>`;
+  const empty = (q) => `<div class="center"><div class="ball"></div><p class="heading">No Pokémon found for “${q}”</p><p class="muted">Check the spelling, or try part of the name or the number.</p></div>`;
+
+  document.getElementById('frames').innerHTML = [
+    frame('iOS · Home, field idle', { body: `<h2 class="title">All Pokémon</h2>${grid(firstSix)}` }),
+    frame('iOS · typing "Ch" (anywhere in the name)', { text: 'Ch', focused: true, body: grid(ch), kb: true }),
+    frame('Android · typing "Ch" → back arrow', { android: true, text: 'Ch', focused: true, body: grid(ch), kb: true, flag: 'Back icon: placeholder' }),
+    frame('Android · focused, empty → back arrow', { android: true, focused: true, body: `<h2 class="title">All Pokémon</h2>${grid(firstSix)}`, kb: true }),
+    frame('Number: "25" or "025"', { text: '025', body: grid([[25,'pikachu']]) }),
+    frame('Not loaded yet: "zygarde"', { text: 'zygarde', body: grid([[718,'zygarde-50'],[10118,'zygarde-10-power-construct'],[10119,'zygarde-50-power-construct'],[10120,'zygarde-complete'],[10181,'zygarde-10'],[10301,'zygarde-mega']]) }),
+    frame('Loose: "mr mime"', { text: 'mr mime', body: grid([[122,'mr-mime'],[10168,'mr-mime-galar']]) }),
+    frame('No match', { text: 'xyz', body: empty('xyz') }),
+    frame('First launch, index downloading', { text: 'pika', body: loading }),
+    frame('First download failed, nothing stored', { text: 'pika', body: error }),
+    frame('Pull to refresh (list or results)', { text: 'pika', body: `<div class="refresh"><div class="spinner small"></div></div>${grid([[25,'pikachu'],[10080,'pikachu-rock-star'],[10081,'pikachu-belle'],[10082,'pikachu-pop-star']])}` }),
+  ].join('');
+
+  // Interactive phone
+  let index = [];
+  let platform = 'ios';
+  let timer = null;
+  const live = document.getElementById('live');
+  const q = document.getElementById('q');
+  const icon = document.getElementById('live-icon');
+  const scroll = document.getElementById('live-scroll');
+  const status = document.getElementById('status');
+
+  function renderIcon() {
+    const back = platform === 'android' && (document.activeElement === q || q.value);
+    icon.innerHTML = back ? BACK_ICON : SEARCH_ICON;
+    icon.className = back ? 'icon back' : 'icon';
+  }
+  function render() {
+    if (!index.length) { scroll.innerHTML = loading; return; }
+    const results = search(index, q.value);
+    if (results === null) { scroll.innerHTML = `<h2 class="title">All Pokémon</h2>${grid(index.slice(0, 20))}`; return; }
+    if (!results.length) { scroll.innerHTML = empty(q.value.trim()); return; }
+    scroll.innerHTML = grid(results.slice(0, 60));
+    scroll.scrollTop = 0;
+  }
+  q.addEventListener('input', () => { renderIcon(); clearTimeout(timer); timer = setTimeout(render, 200); });
+  q.addEventListener('focus', renderIcon);
+  q.addEventListener('blur', () => setTimeout(renderIcon, 0));
+  q.addEventListener('keydown', (e) => { if (e.key === 'Enter') q.blur(); });
+  icon.addEventListener('mousedown', (e) => {
+    if (!icon.classList.contains('back')) return;
+    e.preventDefault(); q.value = ''; q.blur(); render(); setTimeout(renderIcon, 0);
+  });
+  scroll.addEventListener('wheel', () => q.blur(), { passive: true });
+  const setPlatform = (p) => {
+    platform = p;
+    live.classList.toggle('android', p === 'android');
+    document.getElementById('btn-ios').classList.toggle('on', p === 'ios');
+    document.getElementById('btn-android').classList.toggle('on', p === 'android');
+    renderIcon();
+  };
+  document.getElementById('btn-ios').onclick = () => setPlatform('ios');
+  document.getElementById('btn-android').onclick = () => setPlatform('android');
+
+  renderIcon(); render();
+  fetch('https://pokeapi.co/api/v2/pokemon?limit=100000')
+    .then((r) => r.json())
+    .then((data) => {
+      index = data.results.map(({ name, url }) => [Number(url.match(/\/(\d+)\/?$/)[1]), name]).sort((a, b) => a[0] - b[0]);
+      status.textContent = `${index.length} Pokémon in the index. Try "pika", "CHU", "025", "mr mime", "farfetchd", "zygarde".`;
+      render();
+    })
+    .catch(() => { status.textContent = 'Index download failed (offline?)'; scroll.innerHTML = error; });
+</script>
+</body>
+</html>

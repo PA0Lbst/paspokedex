@@ -28,9 +28,9 @@ describe('usePokemonList', () => {
     const { result } = await renderList();
     await waitFor(() => expect(result.current.isLoading).toBe(false));
 
+    await waitFor(() => expect(result.current.pokemon).toHaveLength(20));
     expect(fetchPage).toHaveBeenCalledTimes(1);
     expect(fetchPage).toHaveBeenCalledWith(0);
-    expect(result.current.pokemon).toHaveLength(20);
     expect(result.current.pokemon[0].id).toBe(1);
     expect(result.current.total).toBe(1351);
     expect(result.current.hasMore).toBe(true);
@@ -109,5 +109,21 @@ describe('usePokemonList', () => {
     await act(async () => result.current.retryLoadMore());
     await waitFor(() => expect(result.current.pokemon).toHaveLength(40));
     expect(result.current.loadMoreFailed).toBe(false);
+  });
+
+  it('pull to refresh reloads from page 1 and keeps the cards on screen meanwhile', async () => {
+    serveList(1351);
+    const { result } = await renderList();
+    await waitFor(() => expect(result.current.pokemon).toHaveLength(20));
+    await act(async () => result.current.loadMore());
+    await waitFor(() => expect(result.current.pokemon).toHaveLength(40));
+    fetchPage.mockClear();
+
+    await act(async () => result.current.refresh());
+
+    await waitFor(() => expect(result.current.pokemon).toHaveLength(20));
+    expect(fetchPage).toHaveBeenCalledTimes(1);
+    expect(fetchPage).toHaveBeenCalledWith(0);
+    expect(result.current.isLoading).toBe(false);
   });
 });

@@ -20,3 +20,8 @@ export const radius = {
 export const softShadow: ViewStyle = {
   boxShadow: '0px 2px 15px rgba(48, 55, 115, 0.15)',
 };
+
+/** Figma search field drop shadow: 0 2 7.5 rgba(48,55,115,0.15). */
+export const fieldShadow: ViewStyle = {
+  boxShadow: '0px 2px 7.5px rgba(48, 55, 115, 0.15)',
+};
