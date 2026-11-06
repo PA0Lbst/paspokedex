@@ -32,7 +32,7 @@ export default function FavoritesScreen() {
   if (isLoading) body = <LoadingView message="Loading favorites…" />;
   else if (isError) body = <ErrorView message="We couldn't read your favorites." onRetry={retry} />;
   else if (favorites.length === 0) {
-    body = <EmptyState title="No favorites yet" image={require('@/assets/images/snorlax.png')} />;
+    body = <EmptyState title="No favorites yet" image={require('@/assets/images/snorlax.png')} style={styles.emptyHigh} />;
   }
 
   return (
@@ -46,7 +46,7 @@ export default function FavoritesScreen() {
         <PokemonGrid
           pokemon={favorites}
           onPressPokemon={openPokemon}
-          onMorePokemon={options.openOptions}
+          getOptions={options.getOptions}
           header={title}
           topInset={insets.top}
           listRef={listRef}
@@ -60,5 +60,7 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.daylight },
   body: { flex: 1 },
   titleRow: { paddingHorizontal: spacing.xl },
+  // Snorlax sits in the upper part of the screen, not at its centre.
+  emptyHigh: { justifyContent: 'flex-start', paddingTop: spacing.xxl * 2 },
   title: { marginBottom: spacing.l, marginHorizontal: spacing.s / 2 },
 });

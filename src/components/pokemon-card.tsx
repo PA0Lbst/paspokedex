@@ -1,22 +1,25 @@
 import { Image } from 'expo-image';
 import { useState } from 'react';
-import { Image as NativeImage, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+
+import type { PokemonOption } from '@/hooks/use-pokemon-options';
 
 import type { PokemonSummary } from '@/services/pokeapi-types';
 import { colors, radius, softShadow, spacing, text } from '@/theme';
 import { formatPokemonName, formatPokemonNumber } from '@/utils/format';
 
+import { PokemonOptionsMenu } from './pokemon-options-menu';
 import { PokeBallOutline } from './state-views';
 
 type Props = {
   pokemon: PokemonSummary;
   onPress: (pokemon: PokemonSummary) => void;
-  /** The ⋮ button, shown only when given: opens the Options sheet (#22). */
-  onMore?: (pokemon: PokemonSummary) => void;
+  /** The ⋮ menu (#22), shown only when given: the native Options menu. */
+  getOptions?: (pokemon: PokemonSummary) => PokemonOption[];
 };
 
 /** Figma "Pokecard": sprite on a light square, Purple number label, name. */
-export function PokemonCard({ pokemon, onPress, onMore }: Props) {
+export function PokemonCard({ pokemon, onPress, getOptions }: Props) {
   const [spriteFailed, setSpriteFailed] = useState(false);
   const name = formatPokemonName(pokemon.name);
   const number = formatPokemonNumber(pokemon.id);
@@ -49,15 +52,7 @@ export function PokemonCard({ pokemon, onPress, onMore }: Props) {
         <Text style={[text.cardName, styles.name]} numberOfLines={1}>
           {name}
         </Text>
-        {onMore ? (
-          <Pressable
-            onPress={() => onMore(pokemon)}
-            hitSlop={spacing.s}
-            accessibilityRole="button"
-            accessibilityLabel={`Options for ${name}`}>
-            <NativeImage source={require('@/assets/icons/more.png')} style={styles.more} tintColor={colors.midnight} />
-          </Pressable>
-        ) : null}
+        {getOptions ? <PokemonOptionsMenu name={name} options={getOptions(pokemon)} /> : null}
       </View>
     </Pressable>
   );
@@ -91,5 +86,4 @@ const styles = StyleSheet.create({
   },
   footer: { flexDirection: 'row', alignItems: 'center', padding: spacing.m, gap: spacing.xs },
   name: { flex: 1 },
-  more: { width: 24, height: 24 },
 });

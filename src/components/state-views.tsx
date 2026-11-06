@@ -1,4 +1,4 @@
-import { ActivityIndicator, Image, type ImageSourcePropType, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Image, type ImageSourcePropType, Pressable, type StyleProp, StyleSheet, Text, View, type ViewStyle } from 'react-native';
 
 import { colors, radius, softShadow, spacing, text } from '@/theme';
 
@@ -68,11 +68,13 @@ type EmptyProps = {
   message?: string;
   /** Shown instead of the outlined Poké Ball (e.g. Snorlax on the empty Favorites tab). */
   image?: ImageSourcePropType;
+  /** E.g. to sit higher than the vertical centre. */
+  style?: StyleProp<ViewStyle>;
 };
 
-export function EmptyState({ title, message, image }: EmptyProps) {
+export function EmptyState({ title, message, image, style }: EmptyProps) {
   return (
-    <View style={styles.center}>
+    <View style={[styles.center, style]}>
       {image ? (
         <Image testID="empty-image" source={image} style={styles.emptyImage} resizeMode="contain" accessible={false} />
       ) : (

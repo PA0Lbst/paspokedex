@@ -1,48 +1,62 @@
+import type { SFSymbol } from 'expo-symbols';
 import { useRouter } from 'expo-router';
-import { ActionSheetIOS, Alert, Platform, Share } from 'react-native';
+import { Share } from 'react-native';
 
 import type { PokemonSummary } from '@/services/pokeapi-types';
-import { formatPokemonName } from '@/utils/format';
 import { buildShareMessage } from '@/utils/share';
 
 import { useFavorites } from './use-favorites';
+
+export type PokemonOption = {
+  key: 'open' | 'favorite' | 'share';
+  label: string;
+  /** SF Symbol of the iOS menu (Figma shows an icon per option). */
+  systemImage: SFSymbol;
+  destructive: boolean;
+  run: () => void;
+};
 
 /** Labels of the Figma Options menu, in order. The favorite one depends on the current state. */
 export function optionLabels(isFavorite: boolean): [string, string, string] {
   return ['Open Pokémon', isFavorite ? 'Remove from favorites' : 'Add to favorites', 'Share'];
 }
 
-/**
- * The Options menu of a card's ⋮ button (#22), as the system's own menu: the iOS action
- * sheet, and a native dialog on Android (React Native has no Android action sheet).
- */
+/** The actions of a card's ⋮ menu (#22); `PokemonOptionsMenu` shows them as the system's menu. */
 export function usePokemonOptions() {
   const router = useRouter();
   const { isFavorite, toggleFavorite } = useFavorites();
 
-  const openOptions = (pokemon: PokemonSummary) => {
+  const getOptions = (pokemon: PokemonSummary): PokemonOption[] => {
     const favorite = isFavorite(pokemon.id);
-    const labels = optionLabels(favorite);
-    const actions = [
-      () => router.push({ pathname: '/pokemon/[id]', params: { id: String(pokemon.id) } }),
-      () => {
-        toggleFavorite(pokemon);
+    const [open, favoriteLabel, share] = optionLabels(favorite);
+    return [
+      {
+        key: 'open',
+        label: open,
+        systemImage: 'arrow.up.left.and.arrow.down.right',
+        destructive: false,
+        run: () => router.push({ pathname: '/pokemon/[id]', params: { id: String(pokemon.id) } }),
       },
-      () => {
-        Share.share({ message: buildShareMessage(pokemon) });
+      {
+        key: 'favorite',
+        label: favoriteLabel,
+        systemImage: favorite ? 'heart.slash' : 'heart',
+        destructive: favorite,
+        run: () => {
+          toggleFavorite(pokemon);
+        },
+      },
+      {
+        key: 'share',
+        label: share,
+        systemImage: 'square.and.arrow.up',
+        destructive: false,
+        run: () => {
+          Share.share({ message: buildShareMessage(pokemon) });
+        },
       },
     ];
-    const title = formatPokemonName(pokemon.name);
-
-    if (Platform.OS === 'ios') {
-      ActionSheetIOS.showActionSheetWithOptions(
-        { title, options: [...labels, 'Cancel'], cancelButtonIndex: labels.length, destructiveButtonIndex: favorite ? 1 : undefined },
-        (index) => actions[index]?.(),
-      );
-    } else {
-      Alert.alert(title, undefined, labels.map((text, i) => ({ text, onPress: actions[i] })), { cancelable: true });
-    }
   };
 
-  return { openOptions };
+  return { getOptions };
 }
