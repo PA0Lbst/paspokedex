@@ -111,7 +111,6 @@ export default function PokemonListScreen() {
           />
         </View>
       ) : null}
-      {options.dialog}
     </View>
   );
 }

@@ -40,6 +40,18 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="pokemon/[id]" options={{ headerShown: false }} />
         <Stack.Screen name="compare" options={{ headerShown: false }} />
+        {/* Figma Options: a native bottom sheet that fits its rows. */}
+        <Stack.Screen
+          name="options/[id]"
+          options={{
+            presentation: 'formSheet',
+            sheetAllowedDetents: 'fitToContents',
+            sheetGrabberVisible: true,
+            sheetCornerRadius: 24,
+            headerShown: false,
+            contentStyle: { backgroundColor: colors.daylight },
+          }}
+        />
       </Stack>
     </QueryClientProvider>
   );
