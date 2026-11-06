@@ -117,7 +117,8 @@ function SlotCard({ label, pokemon, hasId, onPress }: { label: string; pokemon?:
   );
 }
 
-const sideColor = (winner: Winner, side: Slot) => (winner === side ? colors.purple : colors.silver);
+/** The stronger side in Purple; the other one still visible on the Silver track. */
+const sideColor = (winner: Winner, side: Slot) => (winner === side ? colors.purple : colors.midnightFaint);
 
 /** One stat: value and bar on each side, the stronger side in Purple. */
 function StatRow({ row, max = MAX_STAT }: { row: CompareRow; max?: number }) {
@@ -129,14 +130,16 @@ function StatRow({ row, max = MAX_STAT }: { row: CompareRow; max?: number }) {
       <Text style={[text.labelSmall, styles.rowLabel]}>{row.label}</Text>
       <View style={styles.rowSides}>
         <View style={styles.side}>
-          <Text style={[text.body, row.winner === 'first' && styles.strong]}>{row.first}</Text>
+          <Text style={[text.body, styles.value, row.winner === 'first' && styles.strong]}>{row.first}</Text>
           <View style={styles.mirror}>
             <StatBar ratio={statRatio(row.first, max)} color={sideColor(row.winner, 'first')} />
           </View>
         </View>
         <View style={styles.side}>
-          <StatBar ratio={statRatio(row.second, max)} color={sideColor(row.winner, 'second')} />
-          <Text style={[text.body, row.winner === 'second' && styles.strong]}>{row.second}</Text>
+          <View style={styles.bar}>
+            <StatBar ratio={statRatio(row.second, max)} color={sideColor(row.winner, 'second')} />
+          </View>
+          <Text style={[text.body, styles.value, styles.valueRight, row.winner === 'second' && styles.strong]}>{row.second}</Text>
         </View>
       </View>
     </View>
@@ -167,5 +170,9 @@ const styles = StyleSheet.create({
   rowSides: { flexDirection: 'row', gap: spacing.m },
   side: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: spacing.s },
   mirror: { flex: 1, transform: [{ scaleX: -1 }] },
+  bar: { flex: 1 },
+  // Same width for 2 and 3 digits, so every bar starts at the same place.
+  value: { width: 32 },
+  valueRight: { textAlign: 'right' },
   strong: { fontFamily: text.labelSmall.fontFamily, color: colors.purple },
 });
