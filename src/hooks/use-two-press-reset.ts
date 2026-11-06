@@ -11,7 +11,7 @@ type Options = {
 
 /**
  * Pressing the active tab, in two steps so a search is never lost by one stray press
- * (specs/features/search.md): the first press scrolls to the top, the next one clears
+ * (docs/features/search.md): the first press scrolls to the top, the next one clears
  * the search. Without a search, every press just scrolls to the top.
  */
 export function useTwoPressReset({ query, scrollToTop, clearSearch }: Options) {

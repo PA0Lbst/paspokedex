@@ -1,7 +1,7 @@
 /**
  * Colour of each Pokémon type, shown as the dot in a type badge.
  * Grass, poison, fire and electric come from Figma; the others are our own choice
- * (see specs/product.md → "Type colours").
+ * (see docs/product.md → "Type colours").
  */
 export const typeColors = {
   normal: '#A8A77A',

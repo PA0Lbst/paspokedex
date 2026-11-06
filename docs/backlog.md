@@ -7,8 +7,8 @@ Source of truth for the GitHub issues and the Project board. Each section below 
 - **Tracking:** GitHub issues plus a GitHub Project board (Todo / In progress / Done). Board: https://github.com/users/PA0Lbst/projects/1. Issue numbers below match the GitHub issue numbers (#1–#20).
 - **Order:** core tasks first. Optionals get issues too, but with the `priority: low` label, and we start them only after the core is done.
 - **Constraints** (loading/error states, design font) are not features. They're listed as acceptance criteria in every feature issue, and the font itself is set up in one setup issue (#1).
-- **One feature = one spec file + one issue.** Each feature issue starts by writing `specs/features/<feature>.md` (course template: Goal, Constraints, Acceptance Criteria, Out of Scope), following the workflow in AGENTS.md.
-- **Course templates** (`templates/`, 2026-11-05): the course expects `specs/product.md`, `specs/features/`, `docs/explanation.md` and `chat-history/`. They are the project documentation. Technical core adds SQLite (favorites, #7; the shared database came first with the search index, #5) and one native feature (Share, #22).
+- **One feature = one spec file + one issue.** Each feature issue starts by writing `docs/features/<feature>.md` (course template: Goal, Constraints, Acceptance Criteria, Out of Scope), following the workflow in AGENTS.md.
+- **Course templates** (`templates/`, 2026-11-05): the course expects `docs/product.md`, `docs/features/`, `docs/explanation.md` and `docs/chat-history/`. They are the project documentation. Technical core adds SQLite (favorites, #7; the shared database came first with the search index, #5) and one native feature (Share, #22).
 
 ## Labels
 
@@ -73,7 +73,7 @@ Order: #21 → #3 → #18 (moved up from the optionals as the no-regression guar
 - [x] Results use the same grid cards as the list (Figma Search frame); no match shows an empty state.
 - Note: PokeAPI has no search endpoint. Study what the API returns before choosing an approach in the spec.
 - Pressing the active Pokémons tab: first press scrolls to the top, second clears the search (added after the first phone test).
-- Spec: `specs/features/search.md`. One index call (`/pokemon?limit=100000`) stored in SQLite, filtered on the phone. Also brought pull to refresh into scope.
+- Spec: `docs/features/search.md`. One index call (`/pokemon?limit=100000`) stored in SQLite, filtered on the phone. Also brought pull to refresh into scope.
 
 ### 6. Feature: Detail
 `feature` `priority: high`
@@ -111,7 +111,7 @@ Order: #21 → #3 → #18 (moved up from the optionals as the no-regression guar
 
 ### 23. Hand-in: explanation and chat history
 `setup` `priority: high`
-- `docs/explanation.md`, `specs/` up to date, conversations in `chat-history/`.
+- `docs/explanation.md`, `docs/` up to date, conversations in `docs/chat-history/`.
 
 ## Optionals (+0.5 each)
 

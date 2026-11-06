@@ -21,7 +21,7 @@ import { makeStyles, spacing, useTheme } from '@/theme';
 import { formatPokemonName, formatPokemonNumber } from '@/utils/format';
 import { shouldShowTitle } from '@/utils/pokemon-detail';
 
-/** Figma Detail: name, number, types, artwork, then About / Stats / Evolution (specs/features/detail.md). */
+/** Figma Detail: name, number, types, artwork, then About / Stats / Evolution (docs/features/detail.md). */
 export default function PokemonDetailScreen() {
   const { text } = useTheme();
   const styles = useStyles();

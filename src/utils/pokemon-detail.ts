@@ -3,7 +3,7 @@ import type { EvolutionStage } from '@/services/pokeapi-types';
 import { formatPokemonName } from './format';
 import { formatDecimal, type MessageKey, t, typeName } from '@/i18n';
 
-/** Helpers for the detail screen (specs/features/detail.md). */
+/** Helpers for the detail screen (docs/features/detail.md). */
 
 /** The API gives hectograms: 69 → "6.9 kg". */
 export function formatWeight(hectograms: number): string {

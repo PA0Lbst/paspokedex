@@ -9,7 +9,7 @@ import { t } from '@/i18n';
 
 /**
  * Figma "Options", as a native bottom sheet (Stack `formSheet`, see the root layout):
- * Open Pokémon, Add to / Remove from favorites, Share, and Cancel on iOS (specs/features/share.md).
+ * Open Pokémon, Add to / Remove from favorites, Share, and Cancel on iOS (docs/features/share.md).
  */
 export default function PokemonOptionsScreen() {
   const { colors } = useTheme();

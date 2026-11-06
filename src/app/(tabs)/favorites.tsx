@@ -13,7 +13,7 @@ import type { PokemonSummary } from '@/services/pokeapi-types';
 import { makeStyles, spacing, useTheme } from '@/theme';
 import { t } from '@/i18n';
 
-/** Favorites tab: the favorites stored in SQLite, newest first (specs/features/favorites.md). */
+/** Favorites tab: the favorites stored in SQLite, newest first (docs/features/favorites.md). */
 export default function FavoritesScreen() {
   const { text } = useTheme();
   const styles = useStyles();

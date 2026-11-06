@@ -20,6 +20,7 @@ src/app/
   (tabs)/favorites.tsx Favorites tab, from SQLite (#7)
   pokemon/[id].tsx     Detail, pushed over the tabs (#6)
   compare.tsx          Compare two Pokémon (#8)
+  options/[id].tsx     Options sheet of a card's ⋮ (#22), a native formSheet
 src/test-utils/  Query wrapper, fake list pages and in-memory fake database for tests
 src/theme/       Light/dark palettes, useTheme, makeStyles, type colours, spacing, typography
 src/i18n/        English and French strings, type names (follows the phone)
@@ -30,18 +31,17 @@ src/utils/       Pure helpers (format.ts, search.ts) + __tests__/
 src/__tests__/screens/  Screen tests (kept out of src/app/)
 assets/
   expo.icon/     iOS app icon (still the Expo default)
-  images/        App icon, Android adaptive icon, splash icon (still the Expo defaults)
+  images/        Splash logo, Snorlax (empty favorites), app and Android icons (Expo defaults)
 assets/fonts/    Rubik (all weights), from the course fonts.zip
 assets/icons/    Figma icons as PNG (@1x/@2x/@3x); figma/ holds the SVG sources
 mockups/         HTML mockups shown before each UI issue
-specs/
-  product.md       What the app is, data, technical choices
-  features/        One spec per feature (written when its issue starts)
-docs/
-  backlog.md       Issues and tracking order
+docs/              All the project documentation, for the teacher
+  product.md       What the app is, data, technical choices, checklists
+  features/        One spec per feature (list, search, detail, favorites, share, compare)
+  explanation.md   Hand-in explanation
   architecture.md  This file
-  explanation.md   Hand-in explanation (filled before hand-in)
-chat-history/      Exported agent conversations
+  backlog.md       Issues and tracking order
+  chat-history/    Exported agent conversations
 templates/         Course templates (reference)
 ```
 
@@ -69,4 +69,4 @@ One SQLite database, `paspokedex.db` (`src/services/database.ts`), opened once a
 
 ## Decisions
 
-Technical choices live in [specs/product.md](../specs/product.md) → "Technical choices".
+Technical choices live in [docs/product.md](../docs/product.md) → "Technical choices".

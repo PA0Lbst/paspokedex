@@ -29,7 +29,7 @@ export type PokemonSearch = {
   refresh: () => Promise<void>;
 };
 
-/** Search over the whole index, 200 ms after the last keystroke (specs/features/search.md). */
+/** Search over the whole index, 200 ms after the last keystroke (docs/features/search.md). */
 export function usePokemonSearch(): PokemonSearch {
   const [query, setQuery] = useState('');
   const debounced = useDebouncedValue(query, SEARCH_DEBOUNCE_MS);

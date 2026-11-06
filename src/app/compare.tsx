@@ -23,7 +23,7 @@ function parseId(value: string | undefined): number | null {
   return Number.isInteger(id) && id > 0 ? id : null;
 }
 
-/** Compare two Pokémon stat by stat (specs/features/compare.md). Not in Figma: built in its Detail style. */
+/** Compare two Pokémon stat by stat (docs/features/compare.md). Not in Figma: built in its Detail style. */
 export default function CompareScreen() {
   const { text } = useTheme();
   const styles = useStyles();

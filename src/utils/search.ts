@@ -1,7 +1,7 @@
 import type { PokemonSummary } from '@/services/pokeapi-types';
 
 /**
- * Search rules (specs/features/search.md): any case, anywhere in the name, spaces,
+ * Search rules (docs/features/search.md): any case, anywhere in the name, spaces,
  * dashes and apostrophes ignored, and a number finds that Pokémon.
  */
 

@@ -2,7 +2,7 @@ import type { PokemonStat } from '@/services/pokeapi-types';
 
 import { statLabel } from './pokemon-detail';
 
-/** Who is stronger, stat by stat (specs/features/compare.md). */
+/** Who is stronger, stat by stat (docs/features/compare.md). */
 
 export type Winner = 'first' | 'second' | 'tie';
 

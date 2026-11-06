@@ -21,7 +21,7 @@ export type PokemonIndexState = {
 /**
  * The search index: stored copy from SQLite, or a download on first launch.
  * A copy older than 7 days shows at once and is replaced in the background
- * when a new download works (specs/features/search.md).
+ * when a new download works (docs/features/search.md).
  */
 export function usePokemonIndex(): PokemonIndexState {
   const queryClient = useQueryClient();

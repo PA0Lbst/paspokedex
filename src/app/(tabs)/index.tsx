@@ -18,8 +18,8 @@ import { makeStyles, spacing, useTheme } from '@/theme';
 import { t } from '@/i18n';
 
 /**
- * Pokémons tab: the search field (specs/features/search.md) above every Pokémon in a
- * 2-column grid, 20 at a time (specs/features/list.md).
+ * Pokémons tab: the search field (docs/features/search.md) above every Pokémon in a
+ * 2-column grid, 20 at a time (docs/features/list.md).
  */
 export default function PokemonListScreen() {
   const { text } = useTheme();
@@ -36,7 +36,7 @@ export default function PokemonListScreen() {
   useBackClearsSearch(search.query !== '', search.clear);
 
   // Pressing the Pokémons tab while on it: 1st press scrolls to the top, 2nd clears the search
-  // (specs/features/search.md).
+  // (docs/features/search.md).
   const reset = useTwoPressReset({
     query: search.query,
     scrollToTop: () => {

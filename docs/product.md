@@ -8,7 +8,7 @@ Find a Pokémon and see what it is worth.
 
 ## Features
 
-Each feature is one file in `specs/features/` and one GitHub issue. The file is written when the issue starts.
+Each feature is one file in `docs/features/` and one GitHub issue. The file is written when the issue starts.
 
 1. [Browse the list](./features/list.md) (#4, done): all Pokémon in a 2-column grid, loaded page by page.
 2. [Search by name](./features/search.md) (#5): part of the name, any case, over all Pokémon.

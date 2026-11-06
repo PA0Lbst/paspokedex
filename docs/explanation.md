@@ -28,7 +28,7 @@ While the first page loads I see the loading view. If it fails I see the error v
 
 ## 3. Name a suggestion from the agent that you rejected or changed.
 
-**Keeping the search list in memory only.** For search, the agent suggested keeping the downloaded list of all names in the TanStack cache only. It even matched my product spec at that time, which said SQLite was only for favorites. I said no: I wanted it stored in SQLite, so search still works offline after the first launch and the 93 KB isn't downloaded at every start. I changed the spec to match. It is `loadPokemonIndex` (`src/services/pokemon-index.ts:35`) with the `pokemon_index` table. Chat: `chat-history/issue-05-search.md`, in the clarification questions at the start.
+**Keeping the search list in memory only.** For search, the agent suggested keeping the downloaded list of all names in the TanStack cache only. It even matched my product spec at that time, which said SQLite was only for favorites. I said no: I wanted it stored in SQLite, so search still works offline after the first launch and the 93 KB isn't downloaded at every start. I changed the spec to match. It is `loadPokemonIndex` (`src/services/pokemon-index.ts:35`) with the `pokemon_index` table. Chat: `docs/chat-history/issue-05-search.md`, in the clarification questions at the start.
 
 Other times I steered the agent:
 - **The Options menu.** I asked for a native menu. The agent tried `ActionSheetIOS` (it showed in the middle of the screen on iOS 26), a SwiftUI menu (it opened next to the button), a native sheet with our own rows, and the iOS confirmation dialog. I tried each on my phone and kept the sheet with the Figma rows and icons (`src/app/_layout.tsx:65`), because it matches the design and still rises from the bottom.
