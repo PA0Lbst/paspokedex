@@ -5,6 +5,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { StatBar } from '@/components/pokemon-detail-sections';
 import { PokemonPicker } from '@/components/pokemon-picker';
+import { ScreenHeader } from '@/components/screen-header';
 import { ErrorView, LoadingView } from '@/components/state-views';
 import { useCompare } from '@/hooks/use-compare';
 import { getErrorMessage } from '@/services/api-error';
@@ -55,22 +56,25 @@ export default function CompareScreen() {
   }
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <View style={styles.slots}>
-        <SlotCard label="First" pokemon={compare.first} hasId={ids.first !== null} onPress={() => setPicking('first')} />
-        <Text style={[text.title, styles.vs]}>vs</Text>
-        <SlotCard label="Second" pokemon={compare.second} hasId={ids.second !== null} onPress={() => setPicking('second')} />
-      </View>
-      {result}
-      <PokemonPicker
-        visible={picking !== null}
-        onClose={() => setPicking(null)}
-        onPick={(pokemon) => {
-          if (picking) setIds((current) => ({ ...current, [picking]: pokemon.id }));
-          setPicking(null);
-        }}
-      />
-    </ScrollView>
+    <View style={styles.screen}>
+      <ScreenHeader title="Compare" />
+      <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
+        <View style={styles.slots}>
+          <SlotCard label="First" pokemon={compare.first} hasId={ids.first !== null} onPress={() => setPicking('first')} />
+          <Text style={[text.label, styles.vs]}>VS</Text>
+          <SlotCard label="Second" pokemon={compare.second} hasId={ids.second !== null} onPress={() => setPicking('second')} />
+        </View>
+        {result}
+        <PokemonPicker
+          visible={picking !== null}
+          onClose={() => setPicking(null)}
+          onPick={(pokemon) => {
+            if (picking) setIds((current) => ({ ...current, [picking]: pokemon.id }));
+            setPicking(null);
+          }}
+        />
+      </ScrollView>
+    </View>
   );
 }
 
@@ -80,6 +84,7 @@ function summary(first: Pokemon, second: Pokemon, wins: { first: number; second:
   return `${formatPokemonName(winner.name)} is stronger on ${count} of ${first.stats.length} stats`;
 }
 
+/** A Figma Pokecard for one side; empty, it invites to pick a Pokémon. Both sides keep the same size. */
 function SlotCard({ label, pokemon, hasId, onPress }: { label: string; pokemon?: Pokemon; hasId: boolean; onPress: () => void }) {
   const name = pokemon ? formatPokemonName(pokemon.name) : null;
   return (
@@ -89,13 +94,25 @@ function SlotCard({ label, pokemon, hasId, onPress }: { label: string; pokemon?:
       accessibilityLabel={name ? `${label} Pokémon: ${name}. Change` : `Pick the ${label.toLowerCase()} Pokémon`}
       style={({ pressed }) => [styles.slot, pressed && styles.pressed]}>
       <View style={styles.slotImage}>
-        {pokemon ? <Image source={pokemon.spriteUrl} style={styles.slotSprite} contentFit="contain" accessible={false} /> : null}
-        {!pokemon ? <Text style={[text.title, styles.plus]}>{hasId ? '…' : '+'}</Text> : null}
+        {pokemon ? (
+          <Image source={pokemon.spriteUrl} style={styles.slotSprite} contentFit="contain" accessible={false} />
+        ) : (
+          <View style={styles.plusCircle}>
+            <Text style={[text.title, styles.plus]}>{hasId ? '…' : '+'}</Text>
+          </View>
+        )}
+        {pokemon ? (
+          <View style={styles.numberLabel}>
+            <Text style={text.badge}>{formatPokemonNumber(pokemon.id)}</Text>
+          </View>
+        ) : null}
       </View>
-      <Text style={[text.cardName, styles.slotName]} numberOfLines={1}>
-        {name ?? `Pick ${label.toLowerCase()}`}
-      </Text>
-      {pokemon ? <Text style={text.body}>#{formatPokemonNumber(pokemon.id)}</Text> : null}
+      <View style={styles.slotFooter}>
+        <Text style={[text.cardName, !pokemon && styles.pickLabel]} numberOfLines={1}>
+          {name ?? 'Pick a Pokémon'}
+        </Text>
+        <Text style={[text.body, styles.change]}>{pokemon ? 'Tap to change' : ' '}</Text>
+      </View>
     </Pressable>
   );
 }
@@ -128,15 +145,20 @@ function StatRow({ row, max = MAX_STAT }: { row: CompareRow; max?: number }) {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.daylight },
+  scroll: { flex: 1 },
   content: { padding: spacing.xl, gap: spacing.xl },
   slots: { flexDirection: 'row', alignItems: 'center', gap: spacing.m },
-  vs: { color: colors.midnightFaint },
-  slot: { flex: 1, alignItems: 'center', gap: spacing.xs, paddingBottom: spacing.m, borderRadius: radius.card, backgroundColor: colors.white, overflow: 'hidden', ...softShadow },
+  vs: { color: colors.purple },
+  slot: { flex: 1, overflow: 'hidden', borderRadius: radius.card, backgroundColor: colors.white, ...softShadow },
   pressed: { opacity: 0.85 },
-  slotImage: { alignSelf: 'stretch', aspectRatio: 1.4, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.cardImage, marginBottom: spacing.s },
-  slotSprite: { width: '70%', height: '90%' },
-  plus: { color: colors.purple },
-  slotName: { paddingHorizontal: spacing.s },
+  slotImage: { width: '100%', aspectRatio: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.cardImage },
+  slotSprite: { width: '85%', height: '85%' },
+  plusCircle: { width: 56, height: 56, borderRadius: 28, borderWidth: 2, borderColor: colors.purple, borderStyle: 'dashed', alignItems: 'center', justifyContent: 'center' },
+  plus: { color: colors.purple, lineHeight: 32 },
+  numberLabel: { position: 'absolute', top: spacing.s, left: spacing.s, paddingHorizontal: 6, paddingTop: spacing.xs, paddingBottom: 2, borderRadius: 4, backgroundColor: colors.purple },
+  slotFooter: { padding: spacing.m, gap: 2 },
+  pickLabel: { color: colors.purple },
+  change: { fontSize: 12 },
   hint: { textAlign: 'center' },
   card: { gap: spacing.l, padding: spacing.xl, borderRadius: radius.card, backgroundColor: colors.white, ...softShadow },
   summary: { textAlign: 'center' },

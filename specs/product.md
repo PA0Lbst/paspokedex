@@ -53,7 +53,7 @@ Each choice: what we picked, what else we could have done, and why.
 - **Pressing the active tab resets it** (#5): the usual iOS/Android pattern. On Pokémons the first press scrolls to the top and the second clears the search, so one stray press never loses it; Favorites gets the same scroll-to-top in #7. Done in JS from the `tabPress` event (`useTabRePress`), not with the native special effect, so the screen decides what "reset" means.
 - **Stack over tabs**: the root is a Stack with the tab group `(tabs)` inside it, so the detail opens on top of the tabs without the tab bar, as in Figma. Putting the detail inside the tabs would keep the tab bar on screen.
 - **Compare opens from the detail**, not from a third tab: Figma has two tabs, and a comparison starts from a Pokémon you are looking at.
-- **Native Stack header on the detail**: its back button is the iOS chevron of Figma; Compare and the favorite heart sit on its right.
+- **Own header on pushed screens** (`ScreenHeader`), not the native Stack header: on iOS 26 the native header puts its buttons in glass capsules, which don't match Figma (plain chevron, "Back", heart). Seen on the phone, fixed by hiding the native header.
 - **iOS and Android only**: the brief and Figma only cover mobile, so the template's web support was removed (#21).
 - **Template code deleted, not kept in `/example`**: git history keeps it (#21).
 

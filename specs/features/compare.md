@@ -9,7 +9,7 @@ Put two Pokémon side by side and see, stat by stat, who is stronger.
 ## Constraints
 
 - Not in Figma: built in its Detail style (white card, Rubik, bars as in Stats, Purple for the stronger side).
-- Route `src/app/compare.tsx` (stack, title "Compare"), opened from "Compare" in the detail header with that Pokémon in the first slot.
+- Route `src/app/compare.tsx` (stack, own `ScreenHeader` titled "Compare"). Each side is a Figma Pokecard: square sprite on `#F6F6FF`, Purple number label, name; an empty side shows a dashed Purple "+" and "Pick a Pokémon", opened from "Compare" in the detail header with that Pokémon in the first slot.
 - Picker `src/components/pokemon-picker.tsx`: search over the stored index of every Pokémon (#5), so any Pokémon can be picked.
 - Logic in `src/utils/compare.ts` (`compareStats`), data in `src/hooks/use-compare.ts`.
 

@@ -38,8 +38,8 @@ export default function RootLayout() {
           headerBackTitle: 'Back',
         }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="pokemon/[id]" options={{ title: '' }} />
-        <Stack.Screen name="compare" options={{ title: 'Compare' }} />
+        <Stack.Screen name="pokemon/[id]" options={{ headerShown: false }} />
+        <Stack.Screen name="compare" options={{ headerShown: false }} />
       </Stack>
     </QueryClientProvider>
   );

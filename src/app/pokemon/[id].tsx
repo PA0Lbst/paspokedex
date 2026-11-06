@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
@@ -11,11 +11,12 @@ import {
   StatsSection,
 } from '@/components/pokemon-detail-sections';
 import { HeaderActions } from '@/components/detail-header-actions';
+import { ScreenHeader } from '@/components/screen-header';
 import { ErrorView, LoadingView } from '@/components/state-views';
 import { TypeBadge } from '@/components/type-badge';
 import { usePokemonDetail } from '@/hooks/use-pokemon-detail';
 import { getErrorMessage } from '@/services/api-error';
-import { colors, fonts, spacing, text } from '@/theme';
+import { colors, spacing, text } from '@/theme';
 import { formatPokemonName, formatPokemonNumber } from '@/utils/format';
 import { shouldShowTitle } from '@/utils/pokemon-detail';
 
@@ -31,59 +32,70 @@ export default function PokemonDetailScreen() {
   const pokemon = detail.pokemon;
 
   const header = (
-    <Stack.Screen
-      options={{
-        title: showTitle && pokemon ? formatPokemonName(pokemon.name) : '',
-        headerTitleStyle: { fontFamily: fonts.semiBold, color: colors.midnight },
-        // A component (not inline JSX) so it reads the favorites itself and updates in the native header.
-        headerRight: () => (pokemon ? <HeaderActions pokemon={pokemon} /> : null),
-      }}
+    <ScreenHeader
+      title={pokemon ? formatPokemonName(pokemon.name) : ''}
+      showTitle={showTitle}
+      right={pokemon ? <HeaderActions pokemon={pokemon} /> : null}
     />
   );
 
-  if (detail.isLoading) return <>{header}<LoadingView /></>;
+  if (detail.isLoading) {
+    return (
+      <View style={styles.screen}>
+        {header}
+        <LoadingView />
+      </View>
+    );
+  }
   if (detail.isError || !pokemon) {
-    return <>{header}<ErrorView message={getErrorMessage(detail.error)} onRetry={detail.retry} /></>;
+    return (
+      <View style={styles.screen}>
+        {header}
+        <ErrorView message={getErrorMessage(detail.error)} onRetry={detail.retry} />
+      </View>
+    );
   }
 
   const openStage = (stageId: number) => router.push({ pathname: '/pokemon/[id]', params: { id: String(stageId) } });
 
   return (
-    <ScrollView
-      style={styles.screen}
-      contentContainerStyle={styles.content}
-      scrollEventThrottle={16}
-      onScroll={(event) => setShowTitle(shouldShowTitle(event.nativeEvent.contentOffset.y))}>
+    <View style={styles.screen}>
       {header}
-      <View style={styles.top}>
-        <View style={styles.titleRow}>
-          <Text style={[text.display, styles.name]} numberOfLines={1} adjustsFontSizeToFit>
-            {formatPokemonName(pokemon.name)}
-          </Text>
-          <Text style={styles.number}>#{formatPokemonNumber(pokemon.id)}</Text>
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.content}
+        scrollEventThrottle={16}
+        onScroll={(event) => setShowTitle(shouldShowTitle(event.nativeEvent.contentOffset.y))}>
+        <View style={styles.top}>
+          <View style={styles.titleRow}>
+            <Text style={[text.display, styles.name]} numberOfLines={1} adjustsFontSizeToFit>
+              {formatPokemonName(pokemon.name)}
+            </Text>
+            <Text style={styles.number}>#{formatPokemonNumber(pokemon.id)}</Text>
+          </View>
+          <View style={styles.types}>
+            {pokemon.types.map((type) => (
+              <TypeBadge key={type} type={type} />
+            ))}
+          </View>
+          <Image
+            source={pokemon.artworkUrl}
+            style={styles.artwork}
+            contentFit="contain"
+            transition={200}
+            accessibilityLabel={`${formatPokemonName(pokemon.name)} artwork`}
+          />
         </View>
-        <View style={styles.types}>
-          {pokemon.types.map((type) => (
-            <TypeBadge key={type} type={type} />
-          ))}
+        <View style={styles.panel}>
+          <DetailTabs active={tab} onChange={setTab} />
+          {tab === 'About' ? <AboutSection pokemon={pokemon} /> : null}
+          {tab === 'Stats' ? <StatsSection pokemon={pokemon} /> : null}
+          {tab === 'Evolution' ? (
+            <EvolutionSection currentId={pokemon.speciesId} {...detail.evolution} onRetry={detail.evolution.retry} onOpen={openStage} />
+          ) : null}
         </View>
-        <Image
-          source={pokemon.artworkUrl}
-          style={styles.artwork}
-          contentFit="contain"
-          transition={200}
-          accessibilityLabel={`${formatPokemonName(pokemon.name)} artwork`}
-        />
-      </View>
-      <View style={styles.panel}>
-        <DetailTabs active={tab} onChange={setTab} />
-        {tab === 'About' ? <AboutSection pokemon={pokemon} /> : null}
-        {tab === 'Stats' ? <StatsSection pokemon={pokemon} /> : null}
-        {tab === 'Evolution' ? (
-          <EvolutionSection currentId={pokemon.speciesId} {...detail.evolution} onRetry={detail.evolution.retry} onOpen={openStage} />
-        ) : null}
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -91,6 +103,7 @@ const ARTWORK = 200;
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.daylight },
+  scroll: { flex: 1 },
   content: { flexGrow: 1 },
   top: { paddingHorizontal: spacing.xl, paddingTop: spacing.l, gap: spacing.m },
   titleRow: { flexDirection: 'row', alignItems: 'baseline', gap: spacing.m },

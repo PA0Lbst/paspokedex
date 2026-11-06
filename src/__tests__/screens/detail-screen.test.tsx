@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import mockSafeAreaContext from 'react-native-safe-area-context/jest/mock';
 
 import PokemonDetailScreen from '@/app/pokemon/[id]';
 import { HeaderActions } from '@/components/detail-header-actions';
@@ -8,6 +9,8 @@ import { createWrapper } from '@/test-utils/query';
 
 const mockDb = createFakeDatabase();
 const mockPush = jest.fn();
+const mockBack = jest.fn();
+jest.mock('react-native-safe-area-context', () => mockSafeAreaContext);
 jest.mock('expo-sqlite', () => ({ openDatabaseAsync: jest.fn(async () => mockDb) }));
 jest.mock('@/services/pokeapi', () => ({
   ...jest.requireActual('@/services/pokeapi'),
@@ -19,7 +22,7 @@ jest.mock('expo-router', () => {
   // The header is rendered by the Stack in the app; here its headerRight is rendered inline.
   const { View } = jest.requireActual('react-native');
   return {
-    useRouter: () => ({ push: mockPush }),
+    useRouter: () => ({ push: mockPush, back: mockBack }),
     useLocalSearchParams: () => ({ id: '1' }),
     Stack: { Screen: ({ options }: { options: { headerRight?: () => unknown } }) => <View>{options.headerRight?.()}</View> },
   };
@@ -76,6 +79,16 @@ describe('Detail screen', () => {
     await renderDetail();
     await fireEvent.press(await screen.findByRole('button', { name: 'Compare Bulbasaur' }));
     expect(mockPush).toHaveBeenCalledWith({ pathname: '/compare', params: { first: '1' } });
+  });
+});
+
+describe('ScreenHeader', () => {
+  it('goes back, and shows its title only when asked', async () => {
+    const { ScreenHeader } = jest.requireActual<typeof import('@/components/screen-header')>('@/components/screen-header');
+    await render(<ScreenHeader title="Bulbasaur" showTitle={false} />);
+    await fireEvent.press(screen.getByRole('button', { name: 'Back' }));
+    expect(mockBack).toHaveBeenCalled();
+    expect(screen.getByText('Bulbasaur')).toHaveStyle({ opacity: 0 });
   });
 });
 

@@ -28,6 +28,7 @@ A Pokédex for iOS and Android: browse, search, inspect, favorite, compare and s
 - **Favorites**: `src/services/favorites-store.ts` (SQLite table `favorites`, migration step 2) and `src/hooks/use-favorites.ts` (`useFavorites`: list, `isFavorite`, `toggleFavorite`). Never read the table anywhere else.
 - **Options sheet and share**: `src/hooks/use-pokemon-options.tsx` (`usePokemonOptions` → `openOptions` for a grid's `onMorePokemon`, and `sheet` to render once per screen); sheet UI in `src/components/pokemon-options-sheet.tsx`; share text in `src/utils/share.ts`.
 - **Detail**: `src/hooks/use-pokemon-detail.ts` (pokemon → species → evolution chain), sections in `src/components/pokemon-detail-sections.tsx` (`DetailTabs`, `AboutSection`, `StatsSection`, `StatBar`, `EvolutionSection`), helpers in `src/utils/pokemon-detail.ts` (incl. `shouldShowTitle` for the collapsing header). Header buttons in `src/components/detail-header-actions.tsx` (`HeaderActions`): a component, so it reads the favorites itself inside the native header.
+- **Screen header**: `src/components/screen-header.tsx` (`ScreenHeader`: back, centred title, `right` slot). Screens pushed over the tabs use it with `headerShown: false`, never the native Stack header (see rules).
 - **Compare**: `src/app/compare.tsx` (params `first`, `second`), `src/hooks/use-compare.ts`, `src/utils/compare.ts`, picker `src/components/pokemon-picker.tsx` (search over the stored index).
 - **Test helpers**: `src/test-utils/query.tsx` (`createWrapper` with a no-retry QueryClient, `makePage` for fake list pages).
 - **Formatting helpers**: `src/utils/format.ts` (`formatPokemonNumber`, `formatPokemonName`).
@@ -48,6 +49,7 @@ A Pokédex for iOS and Android: browse, search, inspect, favorite, compare and s
 - expo-image test events need a `nativeEvent`: `fireEvent(image, 'error', { nativeEvent: { error: '...' } })`.
 - No Xcode on this Mac (Command Line Tools only), so no iOS simulator: check UI changes with the user in Expo Go on their phone.
 - When a test mocks `@/services/pokeapi`, spread `jest.requireActual('@/services/pokeapi')` and override only the fetchers: stores use its helpers (`spriteUrl`), and a missing helper makes a query fail silently (it keeps its old data).
+- iOS 26 draws native Stack header buttons inside Liquid Glass capsules, which Figma doesn't have. Pushed screens hide the native header and use `ScreenHeader`.
 - RN 0.88 removed `StyleSheet.absoluteFillObject`: use `StyleSheet.absoluteFill`.
 - Typed routes (`.expo/types/router.d.ts`) only learn a new route when Metro runs: after adding a route, run `npx expo start` or `npx expo export` before `tsc`.
 - `npx expo install` puts dev tools in `dependencies`: move test and lint packages to `devDependencies`.
