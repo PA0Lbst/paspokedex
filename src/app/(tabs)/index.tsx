@@ -8,7 +8,7 @@ import { PokemonGrid } from '@/components/pokemon-grid';
 import { SearchField } from '@/components/search-field';
 import { EmptyState, ErrorView, LoadingView } from '@/components/state-views';
 import { usePokemonList } from '@/hooks/use-pokemon-list';
-import { type PokemonOption, usePokemonOptions } from '@/hooks/use-pokemon-options';
+import { usePokemonOptions } from '@/hooks/use-pokemon-options';
 import { type PokemonSearch, usePokemonSearch } from '@/hooks/use-pokemon-search';
 import { useTabRePress } from '@/hooks/use-tab-repress';
 import { useTwoPressReset } from '@/hooks/use-two-press-reset';
@@ -84,7 +84,7 @@ export default function PokemonListScreen() {
           <PokemonGrid
             pokemon={list.pokemon}
             onPressPokemon={openPokemon}
-            getOptions={options.getOptions}
+            onMorePokemon={options.openOptions}
             header={title}
             onEndReached={list.loadMore}
             isLoadingMore={list.isLoadingMore}
@@ -103,7 +103,7 @@ export default function PokemonListScreen() {
           <SearchResults
             search={search}
             onPressPokemon={openPokemon}
-            getOptions={options.getOptions}
+            onMorePokemon={options.openOptions}
             refreshing={refreshing}
             onRefresh={refresh}
             resultsRef={resultsRef}
@@ -118,7 +118,7 @@ export default function PokemonListScreen() {
 function SearchResults({
   search,
   onPressPokemon,
-  getOptions,
+  onMorePokemon,
   refreshing,
   onRefresh,
   resultsRef,
@@ -126,7 +126,7 @@ function SearchResults({
 }: {
   search: PokemonSearch;
   onPressPokemon: (pokemon: PokemonSummary) => void;
-  getOptions: (pokemon: PokemonSummary) => PokemonOption[];
+  onMorePokemon: (pokemon: PokemonSummary) => void;
   refreshing: boolean;
   onRefresh: () => void;
   resultsRef: RefObject<FlashListRef<PokemonSummary> | null>;
@@ -146,7 +146,7 @@ function SearchResults({
     <PokemonGrid
       pokemon={search.results}
       onPressPokemon={onPressPokemon}
-      getOptions={getOptions}
+      onMorePokemon={onMorePokemon}
       topInset={spacing.l}
       refreshing={refreshing}
       onRefresh={onRefresh}

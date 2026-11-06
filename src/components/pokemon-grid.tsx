@@ -2,7 +2,6 @@ import { FlashList, type FlashListRef } from '@shopify/flash-list';
 import type { ReactElement, Ref } from 'react';
 import { ActivityIndicator, Pressable, RefreshControl, StyleSheet, Text, View } from 'react-native';
 
-import type { PokemonOption } from '@/hooks/use-pokemon-options';
 import type { PokemonSummary } from '@/services/pokeapi-types';
 import { colors, radius, spacing, text } from '@/theme';
 
@@ -11,8 +10,8 @@ import { PokemonCard } from './pokemon-card';
 type Props = {
   pokemon: PokemonSummary[];
   onPressPokemon: (pokemon: PokemonSummary) => void;
-  /** ⋮ menu on each card (#22). */
-  getOptions?: (pokemon: PokemonSummary) => PokemonOption[];
+  /** ⋮ on each card: opens the Options sheet (#22). */
+  onMorePokemon?: (pokemon: PokemonSummary) => void;
   /** Shown above the first row (the title). */
   header?: ReactElement;
   onEndReached?: () => void;
@@ -33,7 +32,7 @@ type Props = {
 export function PokemonGrid({
   pokemon,
   onPressPokemon,
-  getOptions,
+  onMorePokemon,
   header,
   onEndReached,
   isLoadingMore = false,
@@ -53,7 +52,7 @@ export function PokemonGrid({
       keyExtractor={(item) => String(item.id)}
       renderItem={({ item, index }) => (
         <View style={[styles.cell, index % 2 === 0 ? styles.cellLeft : styles.cellRight]}>
-          <PokemonCard pokemon={item} onPress={onPressPokemon} getOptions={getOptions} />
+          <PokemonCard pokemon={item} onPress={onPressPokemon} onMore={onMorePokemon} />
         </View>
       )}
       ListHeaderComponent={header}

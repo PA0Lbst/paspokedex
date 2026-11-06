@@ -46,7 +46,7 @@ export default function FavoritesScreen() {
         <PokemonGrid
           pokemon={favorites}
           onPressPokemon={openPokemon}
-          getOptions={options.getOptions}
+          onMorePokemon={options.openOptions}
           header={title}
           topInset={insets.top}
           listRef={listRef}

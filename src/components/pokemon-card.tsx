@@ -2,25 +2,24 @@ import { Image } from 'expo-image';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import type { PokemonOption } from '@/hooks/use-pokemon-options';
 
 import type { PokemonSummary } from '@/services/pokeapi-types';
 import { colors, radius, softShadow, spacing, text } from '@/theme';
 import { formatPokemonName, formatPokemonNumber } from '@/utils/format';
 
 import { MENU_SIZE } from './menu-size';
-import { PokemonOptionsMenu } from './pokemon-options-menu';
+import { MoreIcon } from './more-icon';
 import { PokeBallOutline } from './state-views';
 
 type Props = {
   pokemon: PokemonSummary;
   onPress: (pokemon: PokemonSummary) => void;
-  /** The ⋮ menu (#22), shown only when given: the native Options menu. */
-  getOptions?: (pokemon: PokemonSummary) => PokemonOption[];
+  /** The ⋮ button (#22), shown only when given: opens the Options sheet. */
+  onMore?: (pokemon: PokemonSummary) => void;
 };
 
 /** Figma "Pokecard": sprite on a light square, Purple number label, name. */
-export function PokemonCard({ pokemon, onPress, getOptions }: Props) {
+export function PokemonCard({ pokemon, onPress, onMore }: Props) {
   const [spriteFailed, setSpriteFailed] = useState(false);
   const name = formatPokemonName(pokemon.name);
   const number = formatPokemonNumber(pokemon.id);
@@ -54,14 +53,19 @@ export function PokemonCard({ pokemon, onPress, getOptions }: Props) {
           <Text style={[text.cardName, styles.name]} numberOfLines={1}>
             {name}
           </Text>
-          {/* Keeps room for the ⋮, which sits above the Pressable (not inside it) so the native menu gets the tap. */}
-          {getOptions ? <View style={styles.menuSpace} /> : null}
+          {/* Keeps room for the ⋮ button, which sits on top of the card. */}
+          {onMore ? <View style={styles.menuSpace} /> : null}
         </View>
       </Pressable>
-      {getOptions ? (
-        <View style={styles.menu}>
-          <PokemonOptionsMenu name={name} options={getOptions(pokemon)} />
-        </View>
+      {onMore ? (
+        <Pressable
+          onPress={() => onMore(pokemon)}
+          hitSlop={spacing.xs}
+          accessibilityRole="button"
+          accessibilityLabel={`Options for ${name}`}
+          style={({ pressed }) => [styles.menu, pressed && styles.pressed]}>
+          <MoreIcon />
+        </Pressable>
       ) : null}
     </View>
   );
@@ -97,5 +101,13 @@ const styles = StyleSheet.create({
   name: { flex: 1 },
   menuSpace: { width: MENU_SIZE - spacing.s },
   // Bottom right of the footer: 12 padding + 19 line → 43 high; the 32 pt menu is centred in it.
-  menu: { position: 'absolute', right: spacing.xs, bottom: (43 - MENU_SIZE) / 2 },
+  menu: {
+    position: 'absolute',
+    right: spacing.xs,
+    bottom: (43 - MENU_SIZE) / 2,
+    width: MENU_SIZE,
+    height: MENU_SIZE,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });

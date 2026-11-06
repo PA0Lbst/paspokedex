@@ -1,61 +1,35 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
-import { Alert, Share } from 'react-native';
+import { Share } from 'react-native';
 import mockSafeAreaContext from 'react-native-safe-area-context/jest/mock';
 
 import FavoritesScreen from '@/app/(tabs)/favorites';
+import PokemonOptionsScreen from '@/app/options/[id]';
 import { createFakeDatabase } from '@/test-utils/fake-database';
 import { createWrapper } from '@/test-utils/query';
 
 const mockDb = createFakeDatabase();
 const mockPush = jest.fn();
+const mockBack = jest.fn();
+let mockParams: Record<string, string> = {};
 jest.mock('expo-sqlite', () => ({ openDatabaseAsync: jest.fn(async () => mockDb) }));
 jest.mock('react-native-safe-area-context', () => mockSafeAreaContext);
-jest.mock('@expo/ui/swift-ui/modifiers', () => ({
-  accessibilityLabel: (label: string) => ({ label }),
-  contentShape: () => ({}),
-  frame: () => ({}),
-  rotationEffect: () => ({}),
-  shapes: { rectangle: () => ({}) },
-}));
-// The native SwiftUI menu, as plain views: its label, then one pressable per Button.
-jest.mock('@expo/ui/swift-ui', () => {
-  const { Pressable, Text, View } = jest.requireActual('react-native');
-  return {
-    Host: ({ children }: { children: unknown }) => <View>{children}</View>,
-    RNHostView: ({ children }: { children: unknown }) => <View>{children}</View>,
-    Menu: ({ label, children }: { label: unknown; children: unknown }) => (
-      <View>
-        {label}
-        {children}
-      </View>
-    ),
-    // The ⋮: a SwiftUI image whose accessibility label comes from a modifier.
-    Image: ({ modifiers }: { modifiers: { label?: string }[] }) => (
-      <View accessible accessibilityRole="button" accessibilityLabel={modifiers.find((m) => m.label)?.label} />
-    ),
-    Button: ({ label, onPress, systemImage }: { label: string; onPress: () => void; systemImage: string }) => (
-      <Pressable accessibilityRole="menuitem" accessibilityLabel={label} accessibilityHint={systemImage} onPress={onPress}>
-        <Text>{label}</Text>
-      </Pressable>
-    ),
-  };
-});
 jest.mock('expo-router', () => ({
-  useRouter: () => ({ push: mockPush }),
+  useRouter: () => ({ push: mockPush, back: mockBack }),
+  useLocalSearchParams: () => mockParams,
   useNavigation: () => ({ isFocused: () => true, addListener: () => () => {} }),
 }));
 
 beforeEach(() => {
   mockDb.clearData();
   mockPush.mockReset();
+  mockBack.mockReset();
+  mockParams = { id: '25', name: 'pikachu' };
 });
 
-
-describe('Favorites tab and Options sheet', () => {
-  it('shows the empty state with no favorites', async () => {
+describe('Favorites tab', () => {
+  it('shows Snorlax and "No favorites yet" with no favorites', async () => {
     await render(<FavoritesScreen />, { wrapper: createWrapper() });
     expect(await screen.findByText('No favorites yet')).toBeOnTheScreen();
-    // Snorlax above the title; no Poké Ball and no subtitle.
     expect(screen.getByTestId('empty-image', { includeHiddenElements: true })).toBeOnTheScreen();
     expect(screen.queryByTestId('poke-ball-outline', { includeHiddenElements: true })).toBeNull();
     expect(screen.queryByText(/Add to favorites/)).toBeNull();
@@ -68,39 +42,48 @@ describe('Favorites tab and Options sheet', () => {
     expect(mockPush).toHaveBeenCalledWith({ pathname: '/pokemon/[id]', params: { id: '25' } });
   });
 
-  it('shares from the ⋮ sheet with the native share sheet', async () => {
+  it('opens the Options sheet from ⋮', async () => {
+    mockDb.favorites.set(25, { name: 'pikachu', addedAt: 1 });
+    await render(<FavoritesScreen />, { wrapper: createWrapper() });
+    await fireEvent.press(await screen.findByRole('button', { name: 'Options for Pikachu' }));
+    expect(mockPush).toHaveBeenCalledWith({ pathname: '/options/[id]', params: { id: '25', name: 'pikachu' } });
+  });
+});
+
+describe('Options sheet', () => {
+  it('lists the Figma options for a Pokémon that is not a favorite', async () => {
+    await render(<PokemonOptionsScreen />, { wrapper: createWrapper() });
+    expect(screen.getByText('Pikachu')).toBeOnTheScreen();
+    expect(await screen.findByRole('button', { name: 'Add to favorites' })).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: 'Open Pokémon' })).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: 'Share' })).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeOnTheScreen();
+  });
+
+  it('shares with the native share sheet and closes', async () => {
     const share = jest.spyOn(Share, 'share').mockResolvedValue({ action: 'sharedAction', activityType: undefined });
-    mockDb.favorites.set(25, { name: 'pikachu', addedAt: 1 });
-    await render(<FavoritesScreen />, { wrapper: createWrapper() });
-    expect(await screen.findByRole('button', { name: 'Options for Pikachu' })).toBeOnTheScreen();
-    const items = screen.getAllByRole('menuitem');
-    expect(items.map((item) => item.props.accessibilityLabel)).toEqual(['Open Pokémon', 'Remove from favorites', 'Share']);
-    expect(items.map((item) => item.props.accessibilityHint)).toEqual(['arrow.up.left.and.arrow.down.right', 'heart.slash', 'square.and.arrow.up']);
-    await fireEvent.press(screen.getByRole('menuitem', { name: 'Share' }));
+    await render(<PokemonOptionsScreen />, { wrapper: createWrapper() });
+    await fireEvent.press(screen.getByRole('button', { name: 'Share' }));
     expect(share).toHaveBeenCalledWith({ message: expect.stringContaining('Pikachu #025') });
+    expect(mockBack).toHaveBeenCalled();
   });
 
-  it('removes a favorite from the ⋮ sheet', async () => {
-    mockDb.favorites.set(25, { name: 'pikachu', addedAt: 1 });
-    await render(<FavoritesScreen />, { wrapper: createWrapper() });
-    await fireEvent.press(await screen.findByRole('menuitem', { name: 'Remove from favorites' }));
+  it('adds then removes the favorite', async () => {
+    await render(<PokemonOptionsScreen />, { wrapper: createWrapper() });
+    await fireEvent.press(await screen.findByRole('button', { name: 'Add to favorites' }));
+    await waitFor(() => expect(mockDb.favorites.has(25)).toBe(true));
+    await fireEvent.press(await screen.findByRole('button', { name: 'Remove from favorites' }));
     await waitFor(() => expect(mockDb.favorites.size).toBe(0));
-    expect(await screen.findByText('No favorites yet')).toBeOnTheScreen();
   });
 
-  it('uses a native dialog on Android', async () => {
-    // The default (Android) file, imported by its full name since Jest resolves .ios first.
-    const { PokemonOptionsMenu } = jest.requireActual<typeof import('@/components/pokemon-options-menu.tsx')>(
-      '@/components/pokemon-options-menu.tsx',
-    );
-    const open = jest.fn();
-    const alert = jest.spyOn(Alert, 'alert').mockImplementation((_title, _message, buttons) => {
-      buttons?.find((button) => button.text === 'Open Pokémon')?.onPress?.();
-    });
-    const options = [{ key: 'open' as const, label: 'Open Pokémon', systemImage: 'arrow.up.left.and.arrow.down.right' as const, destructive: false, run: open }];
-    await render(<PokemonOptionsMenu name="Pikachu" options={options} />);
-    await fireEvent.press(screen.getByRole('button', { name: 'Options for Pikachu' }));
-    expect(alert).toHaveBeenCalledWith('Pikachu', undefined, expect.any(Array), { cancelable: true });
-    expect(open).toHaveBeenCalled();
+  it('opens the detail, and Cancel only closes', async () => {
+    await render(<PokemonOptionsScreen />, { wrapper: createWrapper() });
+    await fireEvent.press(screen.getByRole('button', { name: 'Open Pokémon' }));
+    expect(mockBack).toHaveBeenCalledTimes(1);
+    expect(mockPush).toHaveBeenCalledWith({ pathname: '/pokemon/[id]', params: { id: '25' } });
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Cancel' }));
+    expect(mockBack).toHaveBeenCalledTimes(2);
+    expect(mockPush).toHaveBeenCalledTimes(1);
   });
 });
