@@ -15,7 +15,11 @@ jest.mock('@/services/pokemon-index', () => ({
 jest.mock('react-native-safe-area-context', () => mockSafeAreaContext);
 
 const mockPush = jest.fn();
-jest.mock('expo-router', () => ({ useRouter: () => ({ push: mockPush }), useFocusEffect: jest.fn() }));
+jest.mock('expo-router', () => ({
+  useRouter: () => ({ push: mockPush }),
+  useFocusEffect: jest.fn(),
+  useNavigation: () => ({ isFocused: () => true, addListener: () => () => {} }),
+}));
 
 const fetchPage = jest.mocked(fetchPokemonPage);
 

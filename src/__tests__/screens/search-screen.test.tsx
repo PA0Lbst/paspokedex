@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { BackHandler, Platform } from 'react-native';
 import mockSafeAreaContext from 'react-native-safe-area-context/jest/mock';
 
@@ -14,14 +14,27 @@ jest.mock('@/services/pokemon-index', () => ({ loadPokemonIndex: jest.fn(), down
 jest.mock('react-native-safe-area-context', () => mockSafeAreaContext);
 
 const mockPush = jest.fn();
+const mockTabPressListeners = new Set<() => void>();
+let mockTabFocused = true;
 jest.mock('expo-router', () => {
   const { useEffect } = jest.requireActual<typeof import('react')>('react');
+  const navigation = {
+    isFocused: () => mockTabFocused,
+    addListener: (_event: 'tabPress', callback: () => void) => {
+      mockTabPressListeners.add(callback);
+      return () => mockTabPressListeners.delete(callback);
+    },
+  };
   return {
     useRouter: () => ({ push: mockPush }),
     // The tab is focused for the whole test.
     useFocusEffect: (effect: () => undefined | (() => void)) => useEffect(effect, [effect]),
+    useNavigation: () => navigation,
   };
 });
+
+/** What NativeTabs does when the Pokémons tab is pressed. */
+const pressPokemonsTab = () => mockTabPressListeners.forEach((listener) => listener());
 
 const fetchPage = jest.mocked(fetchPokemonPage);
 const loadIndex = jest.mocked(loadPokemonIndex);
@@ -37,6 +50,7 @@ async function renderScreen() {
 const field = () => screen.getByLabelText('Search for Pokémon');
 
 beforeEach(() => {
+  mockTabFocused = true;
   mockPush.mockReset();
   fetchPage.mockReset();
   fetchPage.mockImplementation(async (offset) => makePage(offset, 1351));
@@ -108,6 +122,30 @@ describe('Search on the Pokémons tab', () => {
     await fireEvent.press(screen.getByRole('button', { name: 'Try again' }));
 
     expect(await screen.findByText('Pikachu')).toBeOnTheScreen();
+  });
+
+  it('clears the search and shows the list when the Pokémons tab is pressed while on it', async () => {
+    await renderScreen();
+    await fireEvent.changeText(field(), 'pika');
+    await screen.findByText('Pikachu');
+
+    await act(async () => pressPokemonsTab());
+
+    expect(field()).toHaveDisplayValue('');
+    expect(screen.getByText('All Pokémon')).toBeOnTheScreen();
+    expect(screen.getByText('Pokemon 1')).toBeOnTheScreen();
+  });
+
+  it('keeps the search when the Pokémons tab is pressed from another tab', async () => {
+    await renderScreen();
+    await fireEvent.changeText(field(), 'pika');
+    await screen.findByText('Pikachu');
+    mockTabFocused = false;
+
+    await act(async () => pressPokemonsTab());
+
+    expect(field()).toHaveDisplayValue('pika');
+    expect(screen.getByText('Pikachu')).toBeOnTheScreen();
   });
 
   describe('on Android', () => {

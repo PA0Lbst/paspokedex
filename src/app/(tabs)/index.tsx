@@ -1,5 +1,6 @@
+import type { FlashListRef } from '@shopify/flash-list';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { BackHandler, Keyboard, Platform, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -8,6 +9,7 @@ import { SearchField } from '@/components/search-field';
 import { EmptyState, ErrorView, LoadingView } from '@/components/state-views';
 import { usePokemonList } from '@/hooks/use-pokemon-list';
 import { type PokemonSearch, usePokemonSearch } from '@/hooks/use-pokemon-search';
+import { useTabRePress } from '@/hooks/use-tab-repress';
 import { getErrorMessage } from '@/services/api-error';
 import type { PokemonSummary } from '@/services/pokeapi-types';
 import { colors, spacing, text } from '@/theme';
@@ -22,8 +24,18 @@ export default function PokemonListScreen() {
   const list = usePokemonList();
   const search = usePokemonSearch();
   const [refreshing, setRefreshing] = useState(false);
+  const listRef = useRef<FlashListRef<PokemonSummary>>(null);
 
   useBackClearsSearch(search.query !== '', search.clear);
+
+  // Pressing the Pokémons tab while on it resets Home in one press (specs/features/search.md).
+  const { clear } = search;
+  const resetHome = useCallback(() => {
+    clear();
+    Keyboard.dismiss();
+    listRef.current?.scrollToOffset({ offset: 0, animated: true });
+  }, [clear]);
+  useTabRePress(resetHome);
 
   const openPokemon = (pokemon: PokemonSummary) => {
     router.push({ pathname: '/pokemon/[id]', params: { id: String(pokemon.id) } });
@@ -69,6 +81,7 @@ export default function PokemonListScreen() {
             topInset={spacing.l}
             refreshing={refreshing}
             onRefresh={refresh}
+            listRef={listRef}
           />
         )}
       </View>

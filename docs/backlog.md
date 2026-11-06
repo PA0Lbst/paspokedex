@@ -72,6 +72,7 @@ Order: #21 → #3 → #18 (moved up from the optionals as the no-regression guar
 - [x] Finds every Pokémon, including ones not scrolled to yet.
 - [x] Results use the same grid cards as the list (Figma Search frame); no match shows an empty state.
 - Note: PokeAPI has no search endpoint. Study what the API returns before choosing an approach in the spec.
+- Pressing the active Pokémons tab clears the search and scrolls to the top (added after the first phone test).
 - Spec: `specs/features/search.md`. One index call (`/pokemon?limit=100000`) stored in SQLite, filtered on the phone. Also brought pull to refresh into scope.
 
 ### 6. Feature: Detail
@@ -89,6 +90,7 @@ Order: #21 → #3 → #18 (moved up from the optionals as the no-regression guar
 - [ ] Favorites are stored in SQLite and still there after a restart.
 - [ ] Empty state.
 - [ ] Tapping a favorite opens the detail.
+- [ ] Pressing the Favorites tab while on it scrolls the list to the top (same rule as Pokémons, see `useTabRePress`, #5).
 
 ### 8. Feature: Compare (own design)
 `feature` `priority: high`

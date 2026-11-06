@@ -28,8 +28,9 @@ Find any Pokémon by typing part of its name or its number in the field on Home,
 - [x] Android: while the field is focused or has text, the search icon becomes a back arrow (Figma Search frame). The arrow and the system back button clear the query and hide the keyboard.
 - [x] Dragging the grid or pressing the keyboard's Search key hides the keyboard and keeps the query.
 - [x] Opening a result and coming back shows the same query and results.
+- [ ] Pressing the Pokémons tab while already on it resets Home in one press: the search is cleared, the keyboard closes and the list scrolls back to the top. Without a search, it just scrolls the list to the top. Pressing it from the Favorites tab only switches tabs.
 
-Checked by logic and screen tests, and in Expo Go on an iPhone (2026-11-06). The Android back arrow and system back are covered by screen tests only so far.
+Checked by logic and screen tests, and in Expo Go on an iPhone (2026-11-06). The Android back arrow and system back are covered by screen tests only so far. The tab re-press reset (added 2026-11-06) still needs a check in Expo Go.
 
 ## Out of Scope
 
@@ -45,4 +46,5 @@ Checked by logic and screen tests, and in Expo Go on an iPhone (2026-11-06). The
 - **Same grid as the list** for results. The issue's "results look like list rows" means the same cards as the list.
 - **One index call stored in SQLite**, not filtering only the loaded pages (misses Pokémon not scrolled to yet) and not `GET /pokemon/{name}` (exact names only). 93 KB once a week is cheap, and SQLite makes search work offline.
 - **Normalised matching**: query and name are lowercased and stripped of everything except letters and digits before comparing.
+- **Pressing the active tab resets Home** (common iOS and Android pattern, added after the first phone test): one press clears the search, hides the keyboard and scrolls the list to the top, rather than one step per press. It listens to the `tabPress` event of `NativeTabs` (`react-native-screens` reports repeated selections on both platforms) and acts only when Home was already focused. The native iOS scroll-to-top is turned off on this tab (`disableScrollToTop`), because with the hidden list and the results grid it could scroll the wrong one.
 - **The list stays mounted while searching**, hidden behind the results, so clearing the field returns to the same scroll position.

@@ -32,6 +32,7 @@ A Pokédex for iOS and Android: browse, search, inspect, favorite, compare and s
 - **Search rules**: `src/utils/search.ts` (`normalizeSearchText`, `isSearchQuery`, `searchPokemon`). Reuse them for any other search field.
 - **Search field**: `src/components/search-field.tsx` (`SearchField`, Figma field with the Android back arrow). Theme token `fieldShadow` for its shadow.
 - **Debounce**: `src/hooks/use-debounced-value.ts` (`useDebouncedValue`).
+- **Tab re-press**: `src/hooks/use-tab-repress.ts` (`useTabRePress(onRePress)`: fires when the user presses the tab they are already on). Every tab screen uses it to reset itself (scroll to top, clear its state), and its trigger in `src/app/(tabs)/_layout.tsx` gets `disableScrollToTop` so the native effect doesn't scroll the wrong list.
 - **Fake database for tests**: `src/test-utils/fake-database.ts` (`createFakeDatabase`, an in-memory stand-in for expo-sqlite: `jest.mock('expo-sqlite', () => ({ openDatabaseAsync: jest.fn(async () => mockDb) }))`). It throws on SQL it doesn't know, so teach it each new statement.
 
 ### Rules learned while building
@@ -46,6 +47,7 @@ A Pokédex for iOS and Android: browse, search, inspect, favorite, compare and s
 - Jest resolves `@/assets/*` only because of the `moduleNameMapper` in `package.json` (TypeScript and Metro pick the most specific path, Jest the first). Keep `@/assets` above `@/`.
 - jest-expo replaces `fetch` in every test environment (node too). Mock it with `jest.spyOn(globalThis, 'fetch')` and real `new Response(...)` objects; tests never hit the network.
 - RN 0.88 types: type a TextInput ref as `useRef<ComponentRef<typeof TextInput>>(null)`; `useRef<TextInput>` doesn't compile.
+- NativeTabs emits `tabPress` before switching tabs, also for a press on the active tab (`react-native-screens` reports repeated selections on iOS and Android). `navigation.isFocused()` inside the listener tells a re-press from a switch. The event map type isn't exported, so type the navigation yourself (see `use-tab-repress.ts`).
 - Tabs stay mounted under pushed screens. A `BackHandler` listener in a tab must be registered with `useFocusEffect`, or it also fires on the detail screen.
 - expo-sqlite has no Jest mock and no testing docs: mock `expo-sqlite` with the fake database above, and check real storage in Expo Go.
 - The Figma connector is on the Starter plan, with a small call limit. Download the assets you need (they expire after 7 days) and note design values in this file or the spec, so you don't need to call Figma again.

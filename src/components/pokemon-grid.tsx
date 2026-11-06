@@ -1,5 +1,5 @@
-import { FlashList } from '@shopify/flash-list';
-import type { ReactElement } from 'react';
+import { FlashList, type FlashListRef } from '@shopify/flash-list';
+import type { ReactElement, Ref } from 'react';
 import { ActivityIndicator, Pressable, RefreshControl, StyleSheet, Text, View } from 'react-native';
 
 import type { PokemonSummary } from '@/services/pokeapi-types';
@@ -21,6 +21,8 @@ type Props = {
   /** Pull to refresh: shown only when onRefresh is given. */
   refreshing?: boolean;
   onRefresh?: () => void;
+  /** To scroll from outside, e.g. back to the top when the active tab is pressed. */
+  listRef?: Ref<FlashListRef<PokemonSummary>>;
 };
 
 /** 2-column grid of PokemonCards, with a footer for "loading more" and its error. */
@@ -35,9 +37,11 @@ export function PokemonGrid({
   topInset = 0,
   refreshing = false,
   onRefresh,
+  listRef,
 }: Props) {
   return (
     <FlashList
+      ref={listRef}
       data={pokemon}
       numColumns={2}
       keyExtractor={(item) => String(item.id)}

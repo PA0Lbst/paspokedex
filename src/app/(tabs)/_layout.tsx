@@ -12,7 +12,8 @@ export default function TabsLayout() {
         default: { fontFamily: fonts.medium, fontSize: 10, color: colors.midnight },
         selected: { fontFamily: fonts.bold, fontSize: 10, color: colors.purple },
       }}>
-      <NativeTabs.Trigger name="index">
+      {/* Pressing the active tab is handled by the screen (useTabRePress), not the native scroll-to-top. */}
+      <NativeTabs.Trigger name="index" disableScrollToTop>
         <NativeTabs.Trigger.Label>Pokémons</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon src={require('@/assets/icons/tab-pokemon.png')} />
       </NativeTabs.Trigger>
