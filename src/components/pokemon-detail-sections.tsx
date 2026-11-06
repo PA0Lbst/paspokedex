@@ -179,7 +179,7 @@ const useStyles = makeStyles(({ colors }) =>
   evoCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 80,
+    minHeight: 80,
     overflow: 'hidden',
     borderRadius: radius.card,
     backgroundColor: colors.white,
@@ -187,7 +187,7 @@ const useStyles = makeStyles(({ colors }) =>
   },
   evoCurrent: { borderWidth: 2, borderColor: colors.purple },
   pressed: { opacity: 0.85 },
-  evoImage: { width: 80, height: '100%', alignItems: 'center', justifyContent: 'center', backgroundColor: colors.cardImage },
+  evoImage: { width: 80, alignSelf: 'stretch', alignItems: 'center', justifyContent: 'center', backgroundColor: colors.cardImage },
   evoSprite: { width: 64, height: 64 },
   evoText: { flex: 1, paddingHorizontal: spacing.l, gap: spacing.xs, alignItems: 'flex-start' },
   numberLabel: { paddingHorizontal: 6, paddingTop: spacing.xs, paddingBottom: 2, borderRadius: 4, backgroundColor: colors.purple },

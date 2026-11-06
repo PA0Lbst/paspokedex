@@ -64,7 +64,7 @@ export default function PokemonListScreen() {
     }
   };
 
-  const title = <Text style={[text.title, styles.title]}>{t('allPokemon')}</Text>;
+  const title = <Text style={[text.title, styles.title]} accessibilityRole="header">{t('allPokemon')}</Text>;
 
   return (
     <View style={styles.screen}>

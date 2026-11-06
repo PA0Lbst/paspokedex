@@ -42,7 +42,11 @@ export function ScreenHeader({ title, showTitle = true, right }: Props) {
           )}
           {ios ? <Text style={styles.backLabel}>{t('back')}</Text> : null}
         </Pressable>
-        <Text style={[text.labelSmall, styles.title, !showTitle && styles.hidden]} numberOfLines={1}>
+        <Text
+          style={[text.labelSmall, styles.title, !showTitle && styles.hidden]}
+          numberOfLines={1}
+          accessibilityRole="header"
+          accessibilityElementsHidden={!showTitle}>
           {title}
         </Text>
         <View style={styles.right}>{right}</View>
@@ -54,7 +58,7 @@ export function ScreenHeader({ title, showTitle = true, right }: Props) {
 const useStyles = makeStyles(({ colors }) =>
   StyleSheet.create({
   bar: { backgroundColor: colors.daylight, zIndex: 2 },
-  row: { height: 48, flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.l },
+  row: { minHeight: 48, flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.l },
   back: { flexDirection: 'row', alignItems: 'center', gap: 5, minWidth: 80 },
   pressed: { opacity: 0.6 },
   icon: { width: 24, height: 24 },

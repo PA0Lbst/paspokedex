@@ -29,7 +29,7 @@ export default function FavoritesScreen() {
     router.push({ pathname: '/pokemon/[id]', params: { id: String(pokemon.id) } });
   };
 
-  const title = <Text style={[text.title, styles.title]}>{t('myFavorites')}</Text>;
+  const title = <Text style={[text.title, styles.title]} accessibilityRole="header">{t('myFavorites')}</Text>;
 
   let body;
   if (isLoading) body = <LoadingView message={t('loadingFavorites')} />;

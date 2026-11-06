@@ -104,7 +104,8 @@ const useStyles = makeStyles(({ colors }) =>
   footer: { flexDirection: 'row', alignItems: 'center', padding: spacing.m, gap: spacing.xs },
   name: { flex: 1 },
   menuSpace: { width: MENU_SIZE - spacing.s },
-  // Bottom right of the footer: 12 padding + 19 line → 43 high; the 32 pt menu is centred in it.
+  // Bottom right of the footer (12 padding + one 19 pt line at the default text size); with
+  // larger text the footer grows and the ⋮ stays at its bottom right.
   menu: {
     position: 'absolute',
     right: spacing.xs,

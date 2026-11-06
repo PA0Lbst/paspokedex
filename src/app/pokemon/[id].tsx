@@ -71,7 +71,7 @@ export default function PokemonDetailScreen() {
         onScroll={(event) => setShowTitle(shouldShowTitle(event.nativeEvent.contentOffset.y))}>
         <View style={styles.top}>
           <View style={styles.titleRow}>
-            <Text style={[text.display, styles.name]} numberOfLines={1} adjustsFontSizeToFit>
+            <Text style={[text.display, styles.name]} numberOfLines={1} adjustsFontSizeToFit accessibilityRole="header">
               {formatPokemonName(pokemon.name)}
             </Text>
             <Text style={styles.number}>#{formatPokemonNumber(pokemon.id)}</Text>

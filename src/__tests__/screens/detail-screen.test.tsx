@@ -82,13 +82,24 @@ describe('Detail screen', () => {
   });
 });
 
+describe('Accessibility', () => {
+  it('gives every button a label for VoiceOver / TalkBack, and the name is a header', async () => {
+    await renderDetail();
+    const buttons = screen.getAllByRole('button');
+    expect(buttons.length).toBeGreaterThan(2);
+    for (const button of buttons) expect(button.props.accessibilityLabel).toEqual(expect.any(String));
+    expect(screen.getByRole('header', { name: 'Bulbasaur' })).toBeOnTheScreen();
+    expect(screen.getAllByRole('tab')).toHaveLength(3);
+  });
+});
+
 describe('ScreenHeader', () => {
   it('goes back, and shows its title only when asked', async () => {
     const { ScreenHeader } = jest.requireActual<typeof import('@/components/screen-header')>('@/components/screen-header');
     await render(<ScreenHeader title="Bulbasaur" showTitle={false} />);
     await fireEvent.press(screen.getByRole('button', { name: 'Back' }));
     expect(mockBack).toHaveBeenCalled();
-    expect(screen.getByText('Bulbasaur')).toHaveStyle({ opacity: 0 });
+    expect(screen.getByText('Bulbasaur', { includeHiddenElements: true })).toHaveStyle({ opacity: 0 });
   });
 });
 
